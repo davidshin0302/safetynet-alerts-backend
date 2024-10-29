@@ -1,7 +1,10 @@
 package com.safetynet.alerts.service;
 
-import org.springframework.stereotype.Service;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.repository.PersonRepository;
 
-@Service
-public class PersonService {
+
+public interface PersonService {
+    Person savePerson(Person person);
+
 }

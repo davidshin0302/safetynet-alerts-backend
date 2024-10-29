@@ -1,7 +1,8 @@
 package com.safetynet.alerts.service;
 
-import org.springframework.stereotype.Service;
 
-@Service
-public class FireStationService {
+import com.safetynet.alerts.model.FireStation;
+
+public interface FireStationService {
+    FireStation saveFireStation(FireStation fireStation);
 }

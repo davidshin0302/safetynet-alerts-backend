@@ -19,8 +19,7 @@ public class Person {
     private String phone;
     private String email;
 
-    public Person(Long id, String firstName, String lastName, String address, String city, String zip, String phone, String email) {
-        this.id = id;
+    public Person(String firstName, String lastName, String address, String city, String zip, String phone, String email) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.address = address;
