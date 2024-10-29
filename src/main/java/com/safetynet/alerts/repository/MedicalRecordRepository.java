@@ -2,6 +2,8 @@ package com.safetynet.alerts.repository;
 
 import com.safetynet.alerts.model.MedicalRecord;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface MedicationRecordRepository extends CrudRepository<MedicalRecord, Long> {
+@Repository
+public interface MedicalRecordRepository extends CrudRepository<MedicalRecord, Long> {
 }
