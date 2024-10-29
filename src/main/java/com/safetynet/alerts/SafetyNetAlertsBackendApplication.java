@@ -1,5 +1,6 @@
 package com.safetynet.alerts;
 
+import com.safetynet.alerts.model.FireStation;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +8,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class SafetyNetAlertsBackendApplication {
 
 	public static void main(String[] args) {
-		System.out.println("Hello World");
 		SpringApplication.run(SafetyNetAlertsBackendApplication.class, args);
 	}
 
