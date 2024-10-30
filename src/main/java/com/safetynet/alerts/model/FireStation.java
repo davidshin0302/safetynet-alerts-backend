@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 public class FireStation {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long Id;
     private String address;
     private String station;
