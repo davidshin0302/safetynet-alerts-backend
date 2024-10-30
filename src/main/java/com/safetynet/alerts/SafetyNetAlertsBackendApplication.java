@@ -1,7 +1,7 @@
 package com.safetynet.alerts;
 
 import com.safetynet.alerts.model.FireStation;
-import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.service.PersonService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
