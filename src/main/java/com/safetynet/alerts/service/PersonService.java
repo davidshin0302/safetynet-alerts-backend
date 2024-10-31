@@ -1,10 +1,14 @@
 package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.Person;
-import com.safetynet.alerts.repository.PersonRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 
 public interface PersonService {
-    Person savePerson(Person person);
-
+    ResponseEntity<List<Person>> getALlPersons();
+    ResponseEntity<HttpStatus> createPerson();
+    Person findPersonById(Long id);
 }
