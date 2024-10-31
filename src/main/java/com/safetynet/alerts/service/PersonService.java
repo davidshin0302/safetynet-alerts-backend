@@ -6,7 +6,7 @@ import java.util.List;
 
 
 public interface PersonService {
-    List<Person> getAllPersonList();
+    List<Person> getALlPersons();
+    Person findPersonById(Long id);
     Person savePerson(Person person);
-
 }
