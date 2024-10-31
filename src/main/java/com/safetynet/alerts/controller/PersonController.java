@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
 @RestController
 public class PersonController {
 
@@ -16,9 +17,15 @@ public class PersonController {
     PersonService personService;
 
     @GetMapping("/person")
-    public List<Person> getALlPersons() {
+    public  ResponseEntity<List<Person>> getALlPersons() {
         return personService.getALlPersons();
     }
+
+    @PostMapping("/person")
+    public ResponseEntity<HttpStatus> createPerson(Person person){
+        return personService.createPerson();
+    }
+
 
     @GetMapping("/person/{id}")
     public ResponseEntity<Person> findPersonById(@PathVariable("id") Long id) {
