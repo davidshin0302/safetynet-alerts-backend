@@ -11,19 +11,20 @@ import java.util.List;
 
 
 @RestController
+@RequestMapping("/person")
 public class PersonController {
 
     @Autowired
     PersonService personService;
 
-    @GetMapping("/person")
+    @GetMapping
     public  ResponseEntity<List<Person>> getALlPersons() {
         return personService.getALlPersons();
     }
 
-    @PostMapping("/person")
-    public ResponseEntity<HttpStatus> createPerson(Person person){
-        return personService.createPerson();
+    @PostMapping
+    public ResponseEntity<HttpStatus> createPerson(@RequestBody Person person){
+        return personService.addNewPerson(person);
     }
 
 

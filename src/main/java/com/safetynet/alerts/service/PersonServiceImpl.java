@@ -28,8 +28,8 @@ public class PersonServiceImpl implements PersonService{
     }
 
     @Override
-    public ResponseEntity<HttpStatus> createPerson() {
-        //TODO:: Need implmentation how to create person from interactino.
+    public ResponseEntity<HttpStatus> addNewPerson(Person person) {
+        personRepository.save(person);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
