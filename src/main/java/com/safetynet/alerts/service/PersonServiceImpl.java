@@ -1,6 +1,7 @@
 package com.safetynet.alerts.service;
 
-import com.safetynet.alerts.Exception.ResourceNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.alerts.Exception.GlobalExceptionHandler;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
@@ -17,6 +19,8 @@ public class PersonServiceImpl implements PersonService{
 
     @Autowired
     PersonRepository personRepository;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public ResponseEntity<List<Person>> getALlPersons(){
@@ -31,11 +35,5 @@ public class PersonServiceImpl implements PersonService{
     public ResponseEntity<HttpStatus> addNewPerson(Person person) {
         personRepository.save(person);
         return new ResponseEntity<>(HttpStatus.CREATED);
-    }
-
-    @Override
-    public Person findPersonById(Long id){
-        System.out.println(personRepository.findById(1L));
-       return personRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Person is not found " + id));
     }
 }
