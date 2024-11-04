@@ -10,5 +10,4 @@ import java.util.List;
 public interface PersonService {
     ResponseEntity<List<Person>> getALlPersons();
     ResponseEntity<HttpStatus> addNewPerson(Person person);
-    Person findPersonById(Long id);
 }
