@@ -1,7 +1,5 @@
 package com.safetynet.alerts.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.Exception.GlobalExceptionHandler;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -9,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 
 import java.util.List;
 
@@ -20,15 +17,13 @@ public class PersonServiceImpl implements PersonService {
     @Autowired
     PersonRepository personRepository;
 
-    ObjectMapper objectMapper = new ObjectMapper();
-
     @Override
     public ResponseEntity<List<Person>> getALlPersons() {
         Person person1 = new Person(1L, "david", "shin", "1", "1", "1", "2", "2");
         Person person2 = new Person(2L, "minji", "kim", "2", "2", "2", "2", "2");
         personRepository.save(person1);
         personRepository.save(person2);
-        return new ResponseEntity<List<Person>>(personRepository.findAll(), HttpStatus.FOUND);
+        return new ResponseEntity<>(personRepository.findAll(), HttpStatus.FOUND);
     }
 
     @Override
@@ -61,7 +56,7 @@ public class PersonServiceImpl implements PersonService {
     public Long findByFirstAndLastName(Person updatePerson) {
         Long personId = -1L;
         for (Person person : personRepository.findAll()) {
-            if ((updatePerson.getFirstName().equalsIgnoreCase(person.getFirstName())) && (person.getLastName().equalsIgnoreCase(person.getLastName()))) {
+            if ((updatePerson.getFirstName().equalsIgnoreCase(person.getFirstName())) && updatePerson.getLastName().equalsIgnoreCase(person.getLastName())) {
                 personId = person.getId();
                 break;
             }
