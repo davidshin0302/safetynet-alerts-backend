@@ -34,14 +34,14 @@ public class PersonServiceImpl implements PersonService {
 
     @Override
     public ResponseEntity<HttpStatus> updateExistingPerson(Person updatePerson) {
-        Long personId = findByFirstAndLastName(updatePerson);
+        Long existingPersonId = findByFirstAndLastName(updatePerson);
 
-        if (personId < 0) {
+        if (existingPersonId < 0) {
             log.info("Person doesn't not exit in DB");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         //findById return Optional<T> which is a container object that may or may not contain non-null value.
-        personRepository.findById(personId).map(existingPerson ->{
+        personRepository.findById(existingPersonId).map(existingPerson ->{
             existingPerson.setAddress(updatePerson.getAddress());
             existingPerson.setCity(updatePerson.getCity());
             existingPerson.setZip(updatePerson.getZip());
@@ -53,10 +53,23 @@ public class PersonServiceImpl implements PersonService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    public Long findByFirstAndLastName(Person updatePerson) {
+    @Override
+    public ResponseEntity<HttpStatus> deleteExistingPerson(Person removePerson){
+        Long deletingPersonId = findByFirstAndLastName(removePerson);
+        //TODO:: cod refactor might need as this logic repeats from the updateExistingPerson method.
+        if(deletingPersonId < 0 ){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        personRepository.deleteById(deletingPersonId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    public Long findByFirstAndLastName(Person searchPerson) {
         Long personId = -1L;
+
         for (Person person : personRepository.findAll()) {
-            if ((updatePerson.getFirstName().equalsIgnoreCase(person.getFirstName())) && updatePerson.getLastName().equalsIgnoreCase(person.getLastName())) {
+            if ((searchPerson.getFirstName().equalsIgnoreCase(person.getFirstName())) && searchPerson.getLastName().equalsIgnoreCase(person.getLastName())) {
                 personId = person.getId();
                 break;
             }

@@ -11,4 +11,5 @@ public interface PersonService {
     ResponseEntity<List<Person>> getALlPersons();
     ResponseEntity<HttpStatus> addNewPerson(Person person);
     ResponseEntity<HttpStatus> updateExistingPerson(Person person);
+    ResponseEntity<HttpStatus> deleteExistingPerson(Person person);
 }

@@ -32,4 +32,9 @@ public class PersonController {
     public ResponseEntity<HttpStatus> updateExistingPerson(@RequestBody Person updatePerson){
         return personService.updateExistingPerson(updatePerson);
     }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person removePerson){
+        return personService.deleteExistingPerson(removePerson);
+    }
 }
