@@ -1,8 +1,8 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.PersonService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +24,12 @@ public class PersonController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> createPerson(@RequestBody Person person){
+    public ResponseEntity<HttpStatus> addNewPerson(@Valid @RequestBody Person person){
         return personService.addNewPerson(person);
+    }
+
+    @PutMapping
+    public ResponseEntity<HttpStatus> updateExistingPerson(@RequestBody Person updatePerson){
+        return personService.updateExistingPerson(updatePerson);
     }
 }
