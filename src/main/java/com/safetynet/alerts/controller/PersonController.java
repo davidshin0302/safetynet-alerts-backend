@@ -19,8 +19,8 @@ public class PersonController {
     PersonService personService;
 
     @GetMapping
-    public  ResponseEntity<List<Person>> getALlPersons() {
-        return personService.getALlPersons();
+    public  ResponseEntity<List<Person>> getPeople() {
+        return personService.getPeople();
     }
 
     @PostMapping
