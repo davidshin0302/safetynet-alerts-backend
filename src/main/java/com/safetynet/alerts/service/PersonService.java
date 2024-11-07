@@ -21,7 +21,7 @@ public class PersonService {
         return new ResponseEntity<>(personRepository.findAll(), HttpStatus.OK);
     }
 
-    public ResponseEntity<HttpStatus> addNewPerson(Person person) {
+    public ResponseEntity<HttpStatus> addPerson(Person person) {
         personRepository.save(person);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -33,22 +33,23 @@ public class PersonService {
             log.info("Person doesn't not exit in DB");
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        //findById return Optional<T> which is a container object that may or may not contain non-null value.
-        personRepository.findById(existingPersonId).map(existingPerson -> {
-            existingPerson.setAddress(updatePerson.getAddress());
-            existingPerson.setCity(updatePerson.getCity());
-            existingPerson.setZip(updatePerson.getZip());
-            existingPerson.setPhone(updatePerson.getPhone());
-            existingPerson.setEmail(updatePerson.getEmail());
-            return personRepository.save(existingPerson);
-        });
+
+        Person existingPerson = personRepository.findById(existingPersonId);
+
+        existingPerson.setAddress(updatePerson.getAddress());
+        existingPerson.setCity(updatePerson.getCity());
+        existingPerson.setZip(updatePerson.getZip());
+        existingPerson.setPhone(updatePerson.getPhone());
+        existingPerson.setEmail(updatePerson.getEmail());
+
+        personRepository.save(existingPerson);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public ResponseEntity<HttpStatus> deleteExistingPerson(Person removePerson) {
         Long deletingPersonId = findByFirstAndLastName(removePerson);
-        //TODO:: cod refactor might need as this logic repeats from the updateExistingPerson method.
+
         if (deletingPersonId < 0) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

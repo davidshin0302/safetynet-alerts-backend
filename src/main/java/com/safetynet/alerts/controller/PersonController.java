@@ -24,8 +24,8 @@ public class PersonController {
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> addNewPerson(@Valid @RequestBody Person person){
-        return personService.addNewPerson(person);
+    public ResponseEntity<HttpStatus> addPerson(@Valid @RequestBody Person person){
+        return personService.addPerson(person);
     }
 
     @PutMapping

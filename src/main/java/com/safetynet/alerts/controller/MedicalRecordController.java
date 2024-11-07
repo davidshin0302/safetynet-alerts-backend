@@ -13,13 +13,13 @@ import java.util.List;
 @RequestMapping("/medicalRecord")
 public class MedicalRecordController {
 
-    @Autowired
-    MedicalRecordService medicalRecordService;
-
-    @GetMapping
-    public ResponseEntity<List<MedicalRecord>> getALlMedicalRecords(){
-        return medicalRecordService.getALlMedicalRecords();
-    }
+//    @Autowired
+//    MedicalRecordService medicalRecordService;
+//
+//    @GetMapping
+//    public ResponseEntity<List<MedicalRecord>> getALlMedicalRecords(){
+//        return medicalRecordService.getALlMedicalRecords();
+//    }
 
 //    @PostMapping
 //    public ResponseEntity<HttpStatus> createMedicalRecords(@Valid @RequestBody MedicalRecord medicalRecord){
