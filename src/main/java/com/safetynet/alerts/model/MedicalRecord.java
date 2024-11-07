@@ -14,7 +14,6 @@ import java.util.ArrayList;
 @NoArgsConstructor
 public class MedicalRecord {
 
-    private Long id;
     @NotBlank
     private String firstName;
     @NotBlank
@@ -27,7 +26,6 @@ public class MedicalRecord {
     @Override
     public String toString() {
         return "MedicalRecord{" +
-                "id=" + id +
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", birthdate='" + birthdate + '\'' +

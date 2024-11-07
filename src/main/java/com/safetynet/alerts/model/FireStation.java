@@ -11,12 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class FireStation {
 
-    private Long Id;
     private String address;
     private String station;
 
-    public FireStation(String address, String station) {
-        this.address = address;
-        this.station = station;
-    }
 }
