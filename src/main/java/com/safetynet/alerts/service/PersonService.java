@@ -27,46 +27,25 @@ public class PersonService {
     }
 
     public ResponseEntity<HttpStatus> updateExistingPerson(Person updatePerson) {
-        Long existingPersonId = findByFirstAndLastName(updatePerson);
+        Person existingPerson = personRepository.findByFirstAndLastName(updatePerson);
 
-        if (existingPersonId < 0) {
-            log.info("Person doesn't not exit in DB");
+        if (existingPerson != null) {
+            existingPerson.setAddress(updatePerson.getAddress());
+            existingPerson.setCity(updatePerson.getCity());
+            existingPerson.setZip(updatePerson.getZip());
+            existingPerson.setPhone(updatePerson.getPhone());
+            existingPerson.setEmail(updatePerson.getEmail());
+
+            personRepository.save(existingPerson);
+
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        Person existingPerson = personRepository.findById(existingPersonId);
-
-        existingPerson.setAddress(updatePerson.getAddress());
-        existingPerson.setCity(updatePerson.getCity());
-        existingPerson.setZip(updatePerson.getZip());
-        existingPerson.setPhone(updatePerson.getPhone());
-        existingPerson.setEmail(updatePerson.getEmail());
-
-        personRepository.save(existingPerson);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public ResponseEntity<HttpStatus> deleteExistingPerson(Person removePerson) {
-        Long deletingPersonId = findByFirstAndLastName(removePerson);
-
-        if (deletingPersonId < 0) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        personRepository.deleteById(deletingPersonId);
+        personRepository.delete(removePerson);
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    public Long findByFirstAndLastName(Person searchPerson) {
-        Long personId = -1L;
-
-        for (Person person : personRepository.findAll()) {
-            if ((searchPerson.getFirstName().equalsIgnoreCase(person.getFirstName())) && searchPerson.getLastName().equalsIgnoreCase(person.getLastName())) {
-                personId = person.getId();
-                break;
-            }
-        }
-        return personId;
     }
 }

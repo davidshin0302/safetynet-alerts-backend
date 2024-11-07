@@ -33,15 +33,20 @@ public class PersonRepository {
         return List.of();
     }
 
-    public Person findById(Long id) {
-        return findAll().stream().filter(person -> person.getId().equals(id)).findFirst().orElse(null);
+    public Person findByFirstAndLastName(Person findPerson) {
+        return findAll().stream()
+                .peek(person -> System.out.println("Checking " + person.toString()))
+                .filter(person -> person.equals(findPerson))
+                .findFirst()
+                .orElse(null);
+
     }
 
-    public void deleteById(Long id) {
+    public void delete(Person deletePerson) {
         List<Person> people = new ArrayList<Person>();
 
         findAll().forEach(person -> {
-            if (!person.getId().equals(id)) {
+            if (!person.equals(deletePerson)) {
                 people.add(person);
             }
         });
