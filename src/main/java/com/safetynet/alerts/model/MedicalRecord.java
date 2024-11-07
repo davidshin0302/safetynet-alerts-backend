@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -20,8 +20,8 @@ public class MedicalRecord {
     private String lastName;
     @NotBlank
     private String birthdate;
-    private ArrayList<String> medications;
-    private ArrayList<String> allergies;
+    private List<String> medications;
+    private List<String> allergies;
 
     @Override
     public String toString() {
