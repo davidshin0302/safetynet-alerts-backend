@@ -1,8 +1,8 @@
 package com.safetynet.alerts.repository;
 
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,8 +25,7 @@ public class PersonRepository {
 
     public List<Person> findAll() {
         try {
-            return objectMapper.readValue(new File(filePath), new TypeReference<List<Person>>() {
-            });
+            return objectMapper.readValue(new File(filePath), DataObject.class).getPersons();
         } catch (IOException ex) {
             log.error(ex.getMessage());
         }
