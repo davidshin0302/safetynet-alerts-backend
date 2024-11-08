@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @Slf4j
@@ -30,13 +31,15 @@ public class PersonRepository {
     }
 
     public List<Person> findAll() {
+        List<Person> personList = new ArrayList<>();
+
         try {
-            return objectMapper.readValue(new File(filePath + "data.json"), DataObject.class).getPersons();
+            personList.addAll(objectMapper.readValue(new File(filePath + "data.json"), DataObject.class)
+                    .getPersons());
         } catch (IOException ex) {
             log.error(ex.getMessage());
         }
-
-        return List.of();
+        return personList;
     }
 
     public Person findByFirstAndLastName(Person findPerson) {
@@ -46,11 +49,15 @@ public class PersonRepository {
                 .orElse(null);
     }
 
-    public boolean updateExistingPerson(Person updatePerson) throws IOException {
-        Person existingPerson = findByFirstAndLastName(updatePerson);
-        boolean updated = true;
+    //TODO:: Should updateExistingPerson checks all the fields to be update? or not.
+    public boolean updateExistingPerson(Person updatePerson) {
+        Optional<Person> personObject = Optional.ofNullable(updatePerson);
 
-        if (existingPerson != null) {
+        boolean result = false;
+
+        if (personObject.isPresent()) {
+            Person existingPerson = findByFirstAndLastName(updatePerson);
+
             existingPerson.setAddress(updatePerson.getAddress());
             existingPerson.setCity(updatePerson.getCity());
             existingPerson.setZip(updatePerson.getZip());
@@ -58,10 +65,9 @@ public class PersonRepository {
             existingPerson.setEmail(updatePerson.getEmail());
 
             save(existingPerson);
-        } else {
-            updated = false;
+            result = true;
         }
-        return updated;
+        return result;
     }
 
     //TODO: need to write into file again after deletion.
@@ -86,13 +92,13 @@ public class PersonRepository {
 
     public boolean save(Person person) {
         List<Person> personList = new ArrayList<>(findAll());
-        boolean saved = true;
+        boolean saved = false;
 
         try {
             personList.add(person);
             objectMapper.writeValue(new File(filePath + "tempData.json"), personList);
+            saved = true;
         } catch (IOException ex) {
-            saved = false;
             log.error(ex.getMessage());
         }
 
