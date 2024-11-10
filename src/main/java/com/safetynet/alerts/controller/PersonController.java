@@ -1,28 +1,39 @@
 package com.safetynet.alerts.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
-
 
 @RestController
 @RequestMapping("/person")
-//TODO:: refactor!
+@Slf4j
 public class PersonController {
+    private ObjectMapper objectMapper;
 
     @Autowired
     PersonRepository personRepository;
 
     @GetMapping
-    public ResponseEntity<List<Person>> getPeople() {
-        return new ResponseEntity<>(personRepository.findAll(), HttpStatus.OK);
+    public ResponseEntity<String> getPeople() {
+
+        try {
+            String personList = objectMapper.writeValueAsString(personRepository.findAll());
+            return new ResponseEntity<>(personList, HttpStatus.OK);
+        } catch (JsonProcessingException ex) {
+            log.error("Error at serializing data, " + ex.getMessage());
+            return new ResponseEntity<>("[PersonController]: ",HttpStatus.INTERNAL_SERVER_ERROR);
+
+        }
+
     }
 
     @PostMapping

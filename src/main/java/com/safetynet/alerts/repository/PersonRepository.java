@@ -4,60 +4,47 @@ package com.safetynet.alerts.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
-import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @Slf4j
 public class PersonRepository {
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String filePath = "src/main/resources/";
-    private List<Person> personList = new ArrayList<>();
+    private final String filePath = "src/main/resources/data.json";
+    private List<Person> personList;
 
-    public PersonRepository(List<Person> personList) {
-        this.personList = personList;
+    public PersonRepository() {
+        try {
+            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
+            personList =  dataObject.getPersons();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public List<Person> findAll() {
-        List<Person> personList = new ArrayList<>();
-
-        try {
-            personList.addAll(objectMapper.readValue(new File(filePath + "data.json"), DataObject.class)
-                    .getPersons());
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
-        }
         return personList;
     }
 
     public Person findByFirstAndLastName(Person findPerson) {
-        return findAll().stream()
+        return personList.stream()
                 .filter(existingPerson -> existingPerson.equals(findPerson))
                 .findFirst()
                 .orElse(null);
     }
-
     //TODO:: Should updateExistingPerson checks all the fields to be update? or not.
-    public boolean updateExistingPerson(Person updatePerson) {
-        Optional<Person> personObject = Optional.ofNullable(updatePerson);
+    public boolean updateExistingPerson(Person updatePerson) throws IOException {
+        Person existingPerson = findByFirstAndLastName(updatePerson);
+        boolean updated = true;
 
-        boolean result = false;
-
-        if (personObject.isPresent()) {
-            Person existingPerson = findByFirstAndLastName(updatePerson);
-
+        if (existingPerson != null) {
             existingPerson.setAddress(updatePerson.getAddress());
             existingPerson.setCity(updatePerson.getCity());
             existingPerson.setZip(updatePerson.getZip());
@@ -65,9 +52,10 @@ public class PersonRepository {
             existingPerson.setEmail(updatePerson.getEmail());
 
             save(existingPerson);
-            result = true;
+        } else {
+            updated = false;
         }
-        return result;
+        return updated;
     }
 
     //TODO: need to write into file again after deletion.
