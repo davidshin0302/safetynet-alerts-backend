@@ -85,14 +85,17 @@ public class PersonRepositoryTest {
 
     @Test
     public void testDelete() throws IOException {
-//        var expectedJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"1509 Culver St\", \"city\":\"Culver\", \"zip\":\"97451\", \"phone\":\"841-874-6512\", \"email\":\"jaboyd@email.com\" }";
-//        var expectedPerson = objectMapper.readValue(expectedJson, Person.class);
-//        var expectedSizePersonList = 22;
-//
-//        personRepository.delete(expectedPerson);
-//
-//        var actualSizePersonList = personRepository.findAll().size();
-//
-//        assertEquals(expectedSizePersonList, actualSizePersonList);
+        var expectedJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"1509 Culver St\", \"city\":\"Culver\", \"zip\":\"97451\", \"phone\":\"841-874-6512\", \"email\":\"jaboyd@email.com\" }";
+        var expectedPerson = objectMapper.readValue(expectedJson, Person.class);
+        var expectedSizePersonList = 22;
+
+        personRepository.delete(expectedPerson);
+
+        var actualSizePersonList = personRepository.findAll().size();
+
+        assertEquals(expectedSizePersonList, actualSizePersonList);
+        assertEquals(expectedSizePersonList, personRepository.findAll().size());
+
+        assertNull(personRepository.findByFirstAndLastName(expectedPerson));
     }
 }

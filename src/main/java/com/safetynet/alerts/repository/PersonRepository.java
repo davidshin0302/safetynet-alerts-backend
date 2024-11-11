@@ -23,7 +23,7 @@ public class PersonRepository {
     public PersonRepository() {
         try {
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            personList =  dataObject.getPersons();
+            personList = dataObject.getPersons();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -33,23 +33,25 @@ public class PersonRepository {
         return personList;
     }
 
-    public Person findByFirstAndLastName(Person findPerson) {
+    public Person findByFirstAndLastName(Person person) {
         return personList.stream()
-                .filter(existingPerson -> existingPerson.equals(findPerson))
+                .filter(existingPerson -> existingPerson.equals(person))
                 .findFirst()
                 .orElse(null);
     }
+
     //TODO:: Should updateExistingPerson checks all the fields to be update? or not.
-    public boolean updateExistingPerson(Person updatePerson) throws IOException {
-        Person existingPerson = findByFirstAndLastName(updatePerson);
+    public boolean updateExistingPerson(Person person) {
         boolean updated = true;
 
+        Person existingPerson = findByFirstAndLastName(person);
+
         if (existingPerson != null) {
-            existingPerson.setAddress(updatePerson.getAddress());
-            existingPerson.setCity(updatePerson.getCity());
-            existingPerson.setZip(updatePerson.getZip());
-            existingPerson.setPhone(updatePerson.getPhone());
-            existingPerson.setEmail(updatePerson.getEmail());
+            existingPerson.setAddress(person.getAddress());
+            existingPerson.setCity(person.getCity());
+            existingPerson.setZip(person.getZip());
+            existingPerson.setPhone(person.getPhone());
+            existingPerson.setEmail(person.getEmail());
 
             save(existingPerson);
         } else {
@@ -58,24 +60,16 @@ public class PersonRepository {
         return updated;
     }
 
-    //TODO: need to write into file again after deletion.
-    public void delete(Person deletePerson) {
-//        List<Person> people = new ArrayList<Person>();
-//
-//        findAll().forEach(person -> {
-//            if (!person.equals(deletePerson)) {
-//                people.add(person);
-//            }
-//        });
-//
-//        try {
-//            objectMapper.writeValue(new File(filePath), people);
-//            return true;
-//        } catch (IOException ex) {
-//            log.error(ex.getMessage());
-//            return false;
-//        }
+    public boolean delete(Person person) {
+        boolean deleted = false;
 
+        if (person != null) {
+            personList.remove(person);
+            deleted = true;
+        } else {
+            log.error("Unable to find the person");
+        }
+        return deleted;
     }
 
     public boolean save(Person person) {

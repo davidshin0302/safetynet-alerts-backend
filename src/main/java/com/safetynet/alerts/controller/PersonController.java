@@ -30,10 +30,8 @@ public class PersonController {
             return new ResponseEntity<>(personList, HttpStatus.OK);
         } catch (JsonProcessingException ex) {
             log.error("Error at serializing data, " + ex.getMessage());
-            return new ResponseEntity<>("[PersonController]: ",HttpStatus.INTERNAL_SERVER_ERROR);
-
+            return new ResponseEntity<>("[PersonController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
     @PostMapping
@@ -46,8 +44,8 @@ public class PersonController {
         return personRepository.updateExistingPerson(updatePerson) ? new ResponseEntity<>(HttpStatus.ACCEPTED) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-//    @DeleteMapping
-//    public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person removePerson){
-//        return personService.deleteExistingPerson(removePerson);
-//    }
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person removePerson) {
+        return personRepository.delete(removePerson) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
 }
