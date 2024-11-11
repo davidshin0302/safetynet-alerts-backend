@@ -29,7 +29,7 @@ public class PersonRepositoryTest {
 
     @Test
     public void testFindAll() throws IOException {
-        List<Person> persons = personRepository.findAll();
+        var persons = personRepository.findAll();
         assertNotNull(persons);
         assertEquals(23, persons.size());
 
@@ -37,6 +37,10 @@ public class PersonRepositoryTest {
         assertEquals("John", person.getFirstName());
         assertEquals("Boyd", person.getLastName());
         assertEquals("1509 Culver St", person.getAddress());
+        assertEquals("Culver", person.getCity());
+        assertEquals("97451", person.getZip());
+        assertEquals("841-874-6512", person.getPhone());
+        assertEquals("jaboyd@email.com", person.getEmail());
     }
 
     @Test
@@ -53,6 +57,30 @@ public class PersonRepositoryTest {
         assertEquals(expectedPerson.getCity(), actual.getCity());
         assertEquals(expectedPerson.getZip(), actual.getZip());
         assertEquals(expectedPerson.getEmail(), actual.getEmail());
+    }
+
+    @Test
+    public void testUpdateExistingPerson() throws IOException {
+        //Given
+        var expectedJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"123 Main St\", \"city\":\"Oakland\", \"zip\":\"11101\", \"phone\":\"123-456-7890\", \"email\":\"jaboyd@email.com\" }";
+        var nonExpectedJson = "{ \"firstName\":\"\", \"lastName\":\"\"}";
+        //When
+        var expectedPerson = objectMapper.readValue(expectedJson, Person.class);
+        var nonExpectedPerson = objectMapper.readValue(nonExpectedJson, Person.class);
+        //Then
+
+        assertTrue(personRepository.updateExistingPerson(expectedPerson));
+        assertFalse(personRepository.updateExistingPerson(nonExpectedPerson));
+
+        var findExpectedPerson = personRepository.findByFirstAndLastName(expectedPerson);
+
+        assertEquals("John", findExpectedPerson.getFirstName());
+        assertEquals("Boyd", findExpectedPerson.getLastName());
+        assertEquals("123 Main St", findExpectedPerson.getAddress());
+        assertEquals("Oakland", findExpectedPerson.getCity());
+        assertEquals("11101", findExpectedPerson.getZip());
+        assertEquals("123-456-7890", findExpectedPerson.getPhone());
+        assertEquals("jaboyd@email.com", findExpectedPerson.getEmail());
     }
 
     @Test
