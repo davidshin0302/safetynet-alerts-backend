@@ -104,7 +104,10 @@ class PersonControllerTest {
     }
 
     @Test
-    public void testDeleteExistingPerson() {
-
+    public void testDeleteExistingPerson() throws Exception {
+        mockMvc.perform(delete("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newPersonFile))
+                .andExpect(status().isNoContent());
     }
 }

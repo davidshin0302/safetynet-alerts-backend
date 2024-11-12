@@ -61,7 +61,11 @@ public class PersonController {
     }
 
     @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person removePerson) {
-        return personRepository.delete(removePerson) ? new ResponseEntity<>(HttpStatus.NO_CONTENT) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person person) {
+        if (personRepository.delete(person)) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }
