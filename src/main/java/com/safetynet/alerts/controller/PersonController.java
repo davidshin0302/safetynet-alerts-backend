@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,26 +18,35 @@ import java.io.IOException;
 @RequestMapping("/person")
 @Slf4j
 public class PersonController {
-    private ObjectMapper objectMapper = new ObjectMapper();
-
     @Autowired
-    PersonRepository personRepository;
+    private PersonRepository personRepository;
+
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping
     public ResponseEntity<String> getPeople() {
 
         try {
             String personList = objectMapper.writeValueAsString(personRepository.findAll());
-            return new ResponseEntity<>(personList, HttpStatus.OK);
+
+            return ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(personList);
         } catch (JsonProcessingException ex) {
-            log.error("Error at serializing data, " + ex.getMessage());
+            log.error("Error at serializing data: {}", ex.getMessage());
             return new ResponseEntity<>("[PersonController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping
-    public ResponseEntity<HttpStatus> addPerson(@Valid @RequestBody Person person) {
-        return personRepository.save(person) ? new ResponseEntity<>(HttpStatus.ACCEPTED) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
+        if( personRepository.save(person)){
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(person);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @PutMapping
