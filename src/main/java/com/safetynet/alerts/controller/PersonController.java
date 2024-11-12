@@ -40,18 +40,24 @@ public class PersonController {
 
     @PostMapping
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
-        if( personRepository.save(person)){
+        if (personRepository.save(person)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(person);
+                    .body(personRepository.findByFirstAndLastName(person));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping
-    public ResponseEntity<HttpStatus> updateExistingPerson(@RequestBody Person updatePerson) throws IOException {
-        return personRepository.updateExistingPerson(updatePerson) ? new ResponseEntity<>(HttpStatus.ACCEPTED) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<Person> updateExistingPerson(@RequestBody Person person) throws IOException {
+        if (personRepository.updateExistingPerson(person)) {
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(personRepository.findByFirstAndLastName(person));
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping
