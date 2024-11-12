@@ -12,14 +12,16 @@ import java.util.List;
 @RestController
 @RequestMapping("/medicalRecord")
 public class MedicalRecordController {
+//TODO:: one to one relationship between Person model.
 
-    @Autowired
-    MedicalRecordService medicalRecordService;
 
-    @GetMapping
-    public ResponseEntity<List<MedicalRecord>> getALlMedicalRecords(){
-        return medicalRecordService.getALlMedicalRecords();
-    }
+//    @Autowired
+//    MedicalRecordService medicalRecordService;
+//
+//    @GetMapping
+//    public ResponseEntity<List<MedicalRecord>> getALlMedicalRecords(){
+//        return medicalRecordService.getALlMedicalRecords();
+//    }
 
 //    @PostMapping
 //    public ResponseEntity<HttpStatus> createMedicalRecords(@Valid @RequestBody MedicalRecord medicalRecord){
