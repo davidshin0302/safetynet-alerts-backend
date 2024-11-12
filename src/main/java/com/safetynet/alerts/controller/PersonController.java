@@ -17,7 +17,7 @@ import java.io.IOException;
 @RequestMapping("/person")
 @Slf4j
 public class PersonController {
-    private ObjectMapper objectMapper;
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     PersonRepository personRepository;

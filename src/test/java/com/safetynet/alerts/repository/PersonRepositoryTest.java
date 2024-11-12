@@ -61,13 +61,10 @@ public class PersonRepositoryTest {
 
     @Test
     public void testUpdateExistingPerson() throws IOException {
-        //Given
         var expectedJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"123 Main St\", \"city\":\"Oakland\", \"zip\":\"11101\", \"phone\":\"123-456-7890\", \"email\":\"jaboyd@email.com\" }";
         var nonExpectedJson = "{ \"firstName\":\"\", \"lastName\":\"\"}";
-        //When
         var expectedPerson = objectMapper.readValue(expectedJson, Person.class);
         var nonExpectedPerson = objectMapper.readValue(nonExpectedJson, Person.class);
-        //Then
 
         assertTrue(personRepository.updateExistingPerson(expectedPerson));
         assertFalse(personRepository.updateExistingPerson(nonExpectedPerson));
