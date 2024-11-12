@@ -36,12 +36,16 @@ class PersonControllerTest {
     private String personJsonList;
 
     private String filePath = "src/test/resources";
-
+    private String newPersonFile;
+    private String editPersonFile;
 
     @BeforeEach
     public void setUp() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         List<Person> personList = objectMapper.readValue(new File(filePath + "/testData.json"), DataObject.class).getPersons();
+
+        newPersonFile = new String(Files.readAllBytes(Paths.get(filePath+ "/testNewPerson.json")));
+        editPersonFile  = new String(Files.readAllBytes(Paths.get(filePath+ "/testEditPerson.json")));
 
         Person testNewPerson = objectMapper.readValue(new File(filePath + "/testNewPerson.json"), Person.class);
         Person testEditPerson = objectMapper.readValue(new File(filePath + "/testEditPerson.json"), Person.class);
@@ -54,6 +58,7 @@ class PersonControllerTest {
         when(personRepository.findByFirstAndLastName(testEditPerson)).thenReturn(testEditPerson);
         when(personRepository.updateExistingPerson(testEditPerson)).thenReturn(true);
         when(personRepository.save(any(Person.class))).thenReturn(true);
+        when(personRepository.delete(any(Person.class))).thenReturn(true);
     }
 
     @Test
@@ -68,9 +73,6 @@ class PersonControllerTest {
 
     @Test
     public void testAddPerson() throws Exception {
-        String newPersonFile = new String(Files.readAllBytes(Paths.get(filePath+ "/testNewPerson.json")));
-
-
         mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newPersonFile))
@@ -87,8 +89,6 @@ class PersonControllerTest {
 
     @Test
     public void testUpdateExistingPerson() throws Exception {
-        String editPersonFile  = new String(Files.readAllBytes(Paths.get(filePath+ "/testEditPerson.json")));
-
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(editPersonFile))
@@ -105,8 +105,6 @@ class PersonControllerTest {
 
     @Test
     public void testDeleteExistingPerson() {
-        // Arrange
-        // Act
-        // Assert
+
     }
 }
