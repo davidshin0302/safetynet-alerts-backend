@@ -75,7 +75,6 @@ public class PersonRepository {
         boolean saved = false;
 
         try {
-            System.out.println(person);
             personList.add(person);
             objectMapper.writeValue(new File( "src/main/resources/tempData.json"), personList);
             saved = true;
