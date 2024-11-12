@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Repository
@@ -73,12 +72,12 @@ public class PersonRepository {
     }
 
     public boolean save(Person person) {
-        List<Person> personList = new ArrayList<>(findAll());
         boolean saved = false;
 
         try {
+            System.out.println(person);
             personList.add(person);
-            objectMapper.writeValue(new File(filePath + "tempData.json"), personList);
+            objectMapper.writeValue(new File( "src/main/resources/tempData.json"), personList);
             saved = true;
         } catch (IOException ex) {
             log.error(ex.getMessage());
