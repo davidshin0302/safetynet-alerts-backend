@@ -14,12 +14,12 @@ import java.util.List;
 @Repository
 @Slf4j
 public class FireStationRepository {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String filePath = "src/main/resources/data.json";
-    private List<FireStation> fireStationList;
+    private final List<FireStation> fireStationList;
 
     public FireStationRepository() {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String filePath = "src/main/resources/data.json";
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
             fireStationList = dataObject.getFireStations();
         } catch (IOException e) {
@@ -66,16 +66,6 @@ public class FireStationRepository {
     }
 
     public boolean save(FireStation fireStation) {
-        boolean saved = false;
-
-        try {
-            fireStationList.add(fireStation);
-            objectMapper.writeValue(new File("src/main/resources/tempData.json"), fireStationList);
-            saved = true;
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
-        }
-
-        return saved;
+        return fireStationList.add(fireStation);
     }
 }

@@ -15,12 +15,12 @@ import java.util.List;
 @Repository
 @Slf4j
 public class PersonRepository {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String filePath = "src/main/resources/data.json";
-    private List<Person> personList;
+    private final List<Person> personList;
 
     public PersonRepository() {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String filePath = "src/main/resources/data.json";
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
             personList = dataObject.getPersons();
         } catch (IOException e) {
