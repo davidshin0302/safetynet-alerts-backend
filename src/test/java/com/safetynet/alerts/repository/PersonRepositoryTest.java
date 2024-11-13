@@ -11,7 +11,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.IOException;
-import java.util.List;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,11 +25,20 @@ public class PersonRepositoryTest {
 
     private ObjectMapper objectMapper;
 
+    private Person expectedUpdatePerson;
+    private Person expectedFindPerson;
+    private Person expectedNewPerson;
+
+    private static final String TEST_FILE_PATH = "src/test/resources/personDir";
 
     @BeforeEach
     public void setUp() throws IOException {
         objectMapper = new ObjectMapper();
         personRepository = new PersonRepository();
+
+        expectedUpdatePerson = objectMapper.readValue(Paths.get(TEST_FILE_PATH + "/testUpdatePerson.json").toFile() , Person.class);
+        expectedFindPerson = objectMapper.readValue(Paths.get(TEST_FILE_PATH + "/testFindPerson.json").toFile() , Person.class);
+        expectedNewPerson = objectMapper.readValue(Paths.get(TEST_FILE_PATH + "/testNewPerson.json").toFile(), Person.class);
     }
 
     @Test
@@ -49,31 +59,26 @@ public class PersonRepositoryTest {
 
     @Test
     public void testFindByFirstAndLastName() throws JsonProcessingException {
-        var expectedJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"1509 Culver St\", \"city\":\"Culver\", \"zip\":\"97451\", \"phone\":\"841-874-6512\", \"email\":\"jaboyd@email.com\" }";
-
-        var expectedPerson = objectMapper.readValue(expectedJson, Person.class);
-        var actual = personRepository.findByFirstAndLastName(expectedPerson);
+        var actual = personRepository.findByFirstAndLastName(expectedFindPerson);
 
         assertNotNull(actual);
-        assertEquals(expectedPerson.getFirstName(), actual.getFirstName());
-        assertEquals(expectedPerson.getLastName(), actual.getLastName());
-        assertEquals(expectedPerson.getAddress(), actual.getAddress());
-        assertEquals(expectedPerson.getCity(), actual.getCity());
-        assertEquals(expectedPerson.getZip(), actual.getZip());
-        assertEquals(expectedPerson.getEmail(), actual.getEmail());
+        assertEquals(expectedFindPerson.getFirstName(), actual.getFirstName());
+        assertEquals(expectedFindPerson.getLastName(), actual.getLastName());
+        assertEquals(expectedFindPerson.getAddress(), actual.getAddress());
+        assertEquals(expectedFindPerson.getCity(), actual.getCity());
+        assertEquals(expectedFindPerson.getZip(), actual.getZip());
+        assertEquals(expectedFindPerson.getEmail(), actual.getEmail());
     }
 
     @Test
     public void testUpdateExistingPerson() throws IOException {
-        var expectedJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"123 Main St\", \"city\":\"Oakland\", \"zip\":\"11101\", \"phone\":\"123-456-7890\", \"email\":\"jaboyd@email.com\" }";
         var nonExpectedJson = "{ \"firstName\":\"\", \"lastName\":\"\"}";
-        var expectedPerson = objectMapper.readValue(expectedJson, Person.class);
         var nonExpectedPerson = objectMapper.readValue(nonExpectedJson, Person.class);
 
-        assertTrue(personRepository.updateExistingPerson(expectedPerson));
+        assertTrue(personRepository.updateExistingPerson(expectedUpdatePerson));
         assertFalse(personRepository.updateExistingPerson(nonExpectedPerson));
 
-        var findExpectedPerson = personRepository.findByFirstAndLastName(expectedPerson);
+        var findExpectedPerson = personRepository.findByFirstAndLastName(expectedUpdatePerson);
 
         assertEquals("John", findExpectedPerson.getFirstName());
         assertEquals("Boyd", findExpectedPerson.getLastName());
@@ -86,17 +91,30 @@ public class PersonRepositoryTest {
 
     @Test
     public void testDelete() throws IOException {
-        var expectedJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"1509 Culver St\", \"city\":\"Culver\", \"zip\":\"97451\", \"phone\":\"841-874-6512\", \"email\":\"jaboyd@email.com\" }";
-        var expectedPerson = objectMapper.readValue(expectedJson, Person.class);
         var expectedSizePersonList = 22;
 
-        personRepository.delete(expectedPerson);
+        personRepository.delete(expectedUpdatePerson);
 
         var actualSizePersonList = personRepository.findAll().size();
 
         assertEquals(expectedSizePersonList, actualSizePersonList);
         assertEquals(expectedSizePersonList, personRepository.findAll().size());
 
-        assertNull(personRepository.findByFirstAndLastName(expectedPerson));
+        assertNull(personRepository.findByFirstAndLastName(expectedUpdatePerson));
+    }
+
+    @Test
+    public void testSave() {
+        personRepository.save(expectedNewPerson);
+
+        var findExpectedPerson = personRepository.findByFirstAndLastName(expectedNewPerson);
+
+        assertEquals("big", findExpectedPerson.getFirstName());
+        assertEquals("head", findExpectedPerson.getLastName());
+        assertEquals("czz", findExpectedPerson.getAddress());
+        assertEquals("seoul", findExpectedPerson.getCity());
+        assertEquals("00000", findExpectedPerson.getZip());
+        assertEquals("000-000-0000", findExpectedPerson.getPhone());
+        assertEquals("bighead@email.com", findExpectedPerson.getEmail());
     }
 }

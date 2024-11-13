@@ -35,20 +35,20 @@ class PersonControllerTest {
 
     private String personJsonList;
 
-    private String filePath = "src/test/resources";
+    private static final String TEST_FILE_PATH = "src/test/resources";
     private String newPersonFile;
     private String editPersonFile;
 
     @BeforeEach
     public void setUp() throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
-        List<Person> personList = objectMapper.readValue(new File(filePath + "/testData.json"), DataObject.class).getPersons();
+        List<Person> personList = objectMapper.readValue(new File(TEST_FILE_PATH + "/testData.json"), DataObject.class).getPersons();
 
-        newPersonFile = new String(Files.readAllBytes(Paths.get(filePath+ "/testNewPerson.json")));
-        editPersonFile  = new String(Files.readAllBytes(Paths.get(filePath+ "/testEditPerson.json")));
+        newPersonFile = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH+ "/personDir/testNewPerson.json")));
+        editPersonFile  = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH+ "/personDir/testEditPerson.json")));
 
-        Person testNewPerson = objectMapper.readValue(new File(filePath + "/testNewPerson.json"), Person.class);
-        Person testEditPerson = objectMapper.readValue(new File(filePath + "/testEditPerson.json"), Person.class);
+        Person testNewPerson = objectMapper.readValue(new File(TEST_FILE_PATH + "/personDir/testNewPerson.json"), Person.class);
+        Person testEditPerson = objectMapper.readValue(new File(TEST_FILE_PATH + "/personDir/testEditPerson.json"), Person.class);
         personJsonList = objectMapper.writeValueAsString(personList);
 
 

@@ -72,16 +72,6 @@ public class PersonRepository {
     }
 
     public boolean save(Person person) {
-        boolean saved = false;
-
-        try {
-            personList.add(person);
-            objectMapper.writeValue(new File( "src/main/resources/tempData.json"), personList);
-            saved = true;
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
-        }
-
-        return saved;
+        return personList.add(person);
     }
 }
