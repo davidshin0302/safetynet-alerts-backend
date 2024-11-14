@@ -7,7 +7,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
@@ -19,7 +18,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {FireStationRepository.class})
 class FireStationRepositoryTest {
     @MockBean
     private FireStationRepository fireStationRepository;
@@ -109,7 +107,7 @@ class FireStationRepositoryTest {
 
 
         assertTrue(fireStationRepository.delete(fireStation));
-        //his tells Mockito to check if the fireStationRepository mock had its delete() method called exactly once (times(1))
+        //This tells Mockito to check if the fireStationRepository mock had its delete() method called exactly once (times(1))
         verify(fireStationRepository, times(1)).delete(fireStation);
     }
 
