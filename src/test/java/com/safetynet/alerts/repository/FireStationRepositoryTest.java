@@ -18,7 +18,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {FireStationRepository.class})
@@ -98,9 +98,31 @@ class FireStationRepositoryTest {
 
     @Test
     void testDelete() {
+        when(fireStationRepository.delete(any(FireStation.class))).thenReturn(true);
+
+        FireStation fireStation = new FireStation();
+        fireStation.setAddress("123 main st");
+        fireStation.setStation("99");
+
+        assertEquals(13, fireStationList.size());
+
+        fireStationList.add(fireStation);
+        assertEquals(14, fireStationList.size());
+
+
+        assertTrue(fireStationRepository.delete(fireStation));
+        //his tells Mockito to check if the fireStationRepository mock had its delete() method called exactly once (times(1))
+        verify(fireStationRepository, times(1)).delete(fireStation);
     }
 
     @Test
     void testSave() {
+        when(fireStationRepository.save(any(FireStation.class))).thenReturn(true);
+
+        FireStation fireStation = new FireStation();
+        fireStation.setAddress("123 main st");
+        fireStation.setStation("99");
+
+        assertTrue(fireStationRepository.save(fireStation));
     }
 }
