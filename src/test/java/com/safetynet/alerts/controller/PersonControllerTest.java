@@ -34,10 +34,10 @@ class PersonControllerTest {
     private PersonRepository personRepository;
 
     private String personJsonList;
-
-    private static final String TEST_FILE_PATH = "src/test/resources";
     private String newPersonFile;
     private String editPersonFile;
+
+    private static final String TEST_FILE_PATH = "src/test/resources";
 
     @BeforeEach
     public void setUp() throws IOException {
