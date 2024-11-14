@@ -38,14 +38,13 @@ public class FireStationRepository {
                 .orElse(null);
     }
 
-    public boolean updateExistingFireStation(FireStation fireStation) {
+    public boolean updateExistingFireStationAddress(FireStation fireStation) {
         boolean updated = true;
 
         FireStation existingFireStation = findByStation(fireStation);
 
         if (existingFireStation != null) {
             existingFireStation.setAddress(fireStation.getAddress());
-            existingFireStation.setStation(fireStation.getStation());
             save(existingFireStation);
         } else {
             updated = false;

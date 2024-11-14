@@ -53,7 +53,7 @@ public class FireStationController {
 
     @PutMapping
     public ResponseEntity<FireStation> updateExistingFireStation(@RequestBody FireStation fireStation) throws IOException {
-        if (fireStationRepository.updateExistingFireStation(fireStation)) {
+        if (fireStationRepository.updateExistingFireStationAddress(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(fireStationRepository.findByStation(fireStation));
