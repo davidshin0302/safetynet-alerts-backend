@@ -31,7 +31,7 @@ public class FireStationRepository {
         return fireStationList;
     }
 
-    public FireStation findByAddress(FireStation fireStation) {
+    public FireStation findByStation(FireStation fireStation) {
         return fireStationList.stream()
                 .filter(existingFireStation -> existingFireStation.equals(fireStation))
                 .findFirst()
@@ -41,7 +41,7 @@ public class FireStationRepository {
     public boolean updateExistingFireStation(FireStation fireStation) {
         boolean updated = true;
 
-        FireStation existingFireStation = findByAddress(fireStation);
+        FireStation existingFireStation = findByStation(fireStation);
 
         if (existingFireStation != null) {
             existingFireStation.setAddress(fireStation.getAddress());
