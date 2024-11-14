@@ -6,7 +6,8 @@ import com.safetynet.alerts.model.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -14,12 +15,13 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.springframework.test.annotation.DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD;
 
-
+@DirtiesContext(classMode = BEFORE_EACH_TEST_METHOD)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {PersonRepository.class})
 public class PersonRepositoryTest {
-    @MockBean
+    @Autowired
     private PersonRepository personRepository;
 
     private ObjectMapper objectMapper;
@@ -33,7 +35,6 @@ public class PersonRepositoryTest {
     @BeforeEach
     public void setUp() throws IOException {
         objectMapper = new ObjectMapper();
-        personRepository = new PersonRepository();
 
         expectedUpdatePerson = objectMapper.readValue(Paths.get(TEST_FILE_PATH + "/testUpdatePerson.json").toFile() , Person.class);
         expectedFindPerson = objectMapper.readValue(Paths.get(TEST_FILE_PATH + "/testFindPerson.json").toFile() , Person.class);
@@ -87,6 +88,7 @@ public class PersonRepositoryTest {
         assertEquals("123-456-7890", findExpectedPerson.getPhone());
         assertEquals("jaboyd@email.com", findExpectedPerson.getEmail());
     }
+
 
     @Test
     public void testDelete() throws IOException {
