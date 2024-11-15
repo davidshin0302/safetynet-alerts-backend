@@ -126,7 +126,7 @@ public class PersonRepositoryTest {
 
         when(personRepository.findAll()).thenReturn(personList);
         assertTrue(personRepository.save(newPerson));
-        assertEquals(personList.size(), personRepository.findAll().size());
         assertTrue(personRepository.findAll().contains(newPerson));
+        assertEquals(personList.size(), personRepository.findAll().size());
     }
 }
