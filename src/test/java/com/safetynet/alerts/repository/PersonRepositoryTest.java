@@ -1,15 +1,12 @@
 package com.safetynet.alerts.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
@@ -17,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,7 +21,6 @@ import static org.mockito.Mockito.when;
 
 
 @ExtendWith(SpringExtension.class)
-@ContextConfiguration(classes = {PersonRepository.class})
 public class PersonRepositoryTest {
     @MockBean
     private PersonRepository personRepository;
@@ -40,13 +35,13 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    public void testFindAll() throws IOException {
-        var persons = personRepository.findAll();
+    public void testFindAll() {
+        var personList = personRepository.findAll();
 
-        assertNotNull(persons);
-        assertEquals(23, persons.size());
+        assertNotNull(personList);
+        assertEquals(23, personList.size());
 
-        Person person = persons.get(0);
+        var person = personList.get(0);
         assertEquals("John", person.getFirstName());
         assertEquals("Boyd", person.getLastName());
         assertEquals("1509 Culver St", person.getAddress());
@@ -111,7 +106,6 @@ public class PersonRepositoryTest {
         var personToDelete = personList.get(0);
 
         when(personRepository.delete(personToDelete)).thenReturn(true);
-        ;
 
         personList.remove(personToDelete);
 
