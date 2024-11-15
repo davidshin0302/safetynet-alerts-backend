@@ -26,7 +26,7 @@ public class FireStationController {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping
-    public ResponseEntity<String> getPeople() {
+    public ResponseEntity<String> getFireStation() {
 
         try {
             String fireStationList = objectMapper.writeValueAsString(fireStationRepository.findAll());
@@ -34,7 +34,7 @@ public class FireStationController {
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(fireStationList);
-        } catch (JsonProcessingException ex) {
+        } catch (IOException | RuntimeException  ex) {
             log.error("Error at serializing data: {}", ex.getMessage());
             return new ResponseEntity<>("[FireStationController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }

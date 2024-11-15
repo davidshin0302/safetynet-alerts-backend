@@ -1,12 +1,16 @@
 package com.safetynet.alerts.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.repository.FireStationRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,39 +19,53 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 //@Disabled
 @WebMvcTest(FireStationController.class)
+@ExtendWith(MockitoExtension.class)
 class FireStationControllerTest {
+
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private FireStationRepository  fireStationRepository; // need to train the mock bean.
+    private FireStationRepository fireStationRepository;
 
-    private String fireStationJsonList;
-    private String newFireStationFile;
-    private String editFireStationFile;
+    @InjectMocks
+    private  FireStationController fireStationController;
+
+    private ObjectMapper objectMapper = new ObjectMapper();
 
     private static final String TEST_FILE_PATH = "src/test/resources";
 
-    @BeforeEach
-    void setUp() throws IOException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        List<FireStation> fireStationList = objectMapper.readValue(new File(TEST_FILE_PATH + "/testData.json"), DataObject.class).getFireStations();
+    @Test
+    void testGetFireStation() throws Exception {
+        // Return List of Fire Stations.
+        when(fireStationRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH + "/testData.json"), DataObject.class).getFireStations());
+
+        mockMvc.perform(get("/firestation")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(13)));
     }
 
     @Test
-    void testGetFireStation() throws Exception {
-        mockMvc.perform(get("/firestation")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+    public void testGetAllFireStationException() throws Exception {
+        when(fireStationRepository.findAll()).thenThrow(new RuntimeException("RuntimeException error"));
 
-        //aseert = number of fireStation size
+        mockMvc.perform(get("/firestation"))
+                .andExpect(status().isInternalServerError());  // Expecting HTTP status 500 Internal Server Error
+
     }
 
     @Test

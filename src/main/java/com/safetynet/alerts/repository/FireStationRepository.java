@@ -14,25 +14,21 @@ import java.util.List;
 @Repository
 @Slf4j
 public class FireStationRepository {
-    private final List<FireStation> fireStationList;
 
-    public FireStationRepository() {
+    public List<FireStation> findAll() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String filePath = "src/main/resources/data.json";
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            fireStationList = dataObject.getFireStations();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return dataObject.getFireStations();
+        } catch (IOException | RuntimeException ex) {
+            log.error(ex.getMessage());
+            throw new RuntimeException(ex);
         }
     }
 
-    public List<FireStation> findAll() {
-        return fireStationList;
-    }
-
     public FireStation findByStation(FireStation fireStation) {
-        return fireStationList.stream()
+        return findAll().stream()
                 .filter(existingFireStation -> existingFireStation.equals(fireStation))
                 .findFirst()
                 .orElse(null);
@@ -56,7 +52,7 @@ public class FireStationRepository {
         boolean deleted = false;
 
         if (fireStation != null) {
-            fireStationList.remove(fireStation);
+            findAll().remove(fireStation);
             deleted = true;
         } else {
             log.error("Unable to find the fireStation");
@@ -65,6 +61,6 @@ public class FireStationRepository {
     }
 
     public boolean save(FireStation fireStation) {
-        return fireStationList.add(fireStation);
+        return findAll().add(fireStation);
     }
 }
