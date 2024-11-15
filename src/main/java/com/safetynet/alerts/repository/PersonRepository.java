@@ -67,6 +67,13 @@ public class PersonRepository {
     }
 
     public boolean save(Person person) {
-        return findAll().add(person);
+        boolean result = false;
+
+        if (findByFirstAndLastName(person) == null) {
+            result = findAll().add(person);
+        } else {
+            log.error("Person already exist in the list");
+        }
+        return result;
     }
 }

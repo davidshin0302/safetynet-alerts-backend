@@ -61,6 +61,13 @@ public class FireStationRepository {
     }
 
     public boolean save(FireStation fireStation) {
-        return findAll().add(fireStation);
+        boolean result = false;
+
+        if (findByStation(fireStation) == null) {
+            result = findAll().add(fireStation);
+        } else {
+            log.info("Fire station is reserved for existing department ");
+        }
+        return result;
     }
 }

@@ -69,8 +69,8 @@ class PersonControllerTest {
         String newPersonFile = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testNewPerson.json")));
         Person testNewPerson = objectMapper.readValue(newPersonFile, Person.class);
 
-        when(personRepository.findByFirstAndLastName(any(Person.class))).thenReturn(testNewPerson);
-        when(personRepository.save(testNewPerson)).thenReturn(true);
+        when(personRepository.save(testNewPerson)).thenReturn(true); //save new Person first
+        when(personRepository.findByFirstAndLastName(any(Person.class))).thenReturn(testNewPerson); //Return newly saved person from personList.
 
         mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -84,6 +84,13 @@ class PersonControllerTest {
                 .andExpect(jsonPath("$.zip").value("00000"))
                 .andExpect(jsonPath("$.phone").value("000-000-0000"))
                 .andExpect(jsonPath("$.email").value("bighead@email.com"));
+    }
+
+    @Test
+    public void testAddPerson_NotFound() {
+        Person person = new Person();
+        person.setFirstName("David");
+        person.setLastName("Shin");
     }
 
     @Test

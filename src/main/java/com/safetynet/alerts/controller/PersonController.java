@@ -1,6 +1,5 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -45,7 +44,7 @@ public class PersonController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(personRepository.findByFirstAndLastName(person));
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 

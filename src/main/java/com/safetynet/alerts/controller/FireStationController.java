@@ -47,7 +47,7 @@ public class FireStationController {
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(fireStationRepository.findByStation(fireStation));
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 

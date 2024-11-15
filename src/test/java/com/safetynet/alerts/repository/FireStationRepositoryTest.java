@@ -115,7 +115,7 @@ class FireStationRepositoryTest {
     }
 
     @Test
-    void testSave() {
+    void testSave_newFireStation() {
         var fireStationList = new ArrayList<>(fireStationRepository.findAll());
 
 
@@ -124,11 +124,21 @@ class FireStationRepositoryTest {
         fireStation.setStation("99");
 
         when(fireStationRepository.save(fireStation)).thenReturn(true);
+        assertTrue(fireStationRepository.save(fireStation));
+
         fireStationList.add(fireStation);
 
         when(fireStationRepository.findAll()).thenReturn(fireStationList);
         assertTrue(fireStationRepository.save(fireStation));
         assertTrue(fireStationRepository.findAll().contains(fireStation));
         assertEquals(fireStationList.size(), fireStationRepository.findAll().size());
+    }
+
+    @Test
+    void testSave_ExistingFireStation(){
+        var existingFireStation = fireStationRepository.findAll().get(0);
+
+        when(fireStationRepository.save(existingFireStation)).thenReturn(false);
+        assertFalse(fireStationRepository.save(existingFireStation));
     }
 }

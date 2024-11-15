@@ -35,7 +35,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    public void testFindAll() {
+    void testFindAll() {
         var personList = personRepository.findAll();
 
         assertNotNull(personList);
@@ -52,7 +52,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    public void testFindByFirstAndLastName() throws IOException {
+    void testFindByFirstAndLastName() throws IOException {
         var filePath = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testEditPerson.json")));
         var actual = objectMapper.readValue(filePath, Person.class);
 
@@ -71,7 +71,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    public void testUpdateExistingPerson() throws IOException {
+    void testUpdateExistingPerson() throws IOException {
         var FindPersonFilePath = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testFindPerson.json")));
         var expectedFindPerson = objectMapper.readValue(FindPersonFilePath, Person.class);
 
@@ -101,7 +101,7 @@ public class PersonRepositoryTest {
 
 
     @Test
-    public void testDelete() throws IOException {
+    void testDelete() throws IOException {
         var personList = new ArrayList<>(personRepository.findAll());
         var personToDelete = personList.get(0);
 
@@ -116,17 +116,29 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    public void testSave() throws IOException {
+    void testSave_NewPerson() throws IOException {
         var personList = new ArrayList<>(personRepository.findAll());
         var filePath = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testNewPerson.json")));
         var newPerson = objectMapper.readValue(filePath, Person.class);
 
         when(personRepository.save(newPerson)).thenReturn(true);
+        assertTrue(personRepository.save(newPerson));
+
         personList.add(newPerson);
 
         when(personRepository.findAll()).thenReturn(personList);
         assertTrue(personRepository.save(newPerson));
         assertTrue(personRepository.findAll().contains(newPerson));
         assertEquals(personList.size(), personRepository.findAll().size());
+    }
+
+    @Test
+    void testSave_ExistingPerson() throws IOException {
+        var personList = new ArrayList<>(personRepository.findAll());
+        var filePath = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testEditPerson.json")));
+        var existingPerson = objectMapper.readValue(filePath, Person.class);
+
+        when(personRepository.save(existingPerson)).thenReturn(false);
+        assertFalse(personRepository.save(existingPerson));
     }
 }
