@@ -32,7 +32,7 @@ public class PersonController {
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(personList);
-        } catch (JsonProcessingException ex) {
+        } catch (IOException | RuntimeException ex) {
             log.error("Error at serializing data: {}", ex.getMessage());
             return new ResponseEntity<>("[PersonController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }

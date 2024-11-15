@@ -15,25 +15,20 @@ import java.util.List;
 @Repository
 @Slf4j
 public class PersonRepository {
-    private final List<Person> personList;
 
-    public PersonRepository() {
+    public List<Person> findAll() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String filePath = "src/main/resources/data.json";
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            personList = dataObject.getPersons();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return dataObject.getPersons();
+        } catch (IOException | RuntimeException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
-    public List<Person> findAll() {
-        return personList;
-    }
-
     public Person findByFirstAndLastName(Person person) {
-        return personList.stream()
+        return findAll().stream()
                 .filter(existingPerson -> existingPerson.equals(person))
                 .findFirst()
                 .orElse(null);
@@ -63,7 +58,7 @@ public class PersonRepository {
         boolean deleted = false;
 
         if (person != null) {
-            personList.remove(person);
+            findAll().remove(person);
             deleted = true;
         } else {
             log.error("Unable to find the person");
@@ -72,6 +67,6 @@ public class PersonRepository {
     }
 
     public boolean save(Person person) {
-        return personList.add(person);
+        return findAll().add(person);
     }
 }
