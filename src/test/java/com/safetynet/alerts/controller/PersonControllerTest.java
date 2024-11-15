@@ -68,7 +68,9 @@ class PersonControllerTest {
     public void testAddPerson() throws Exception {
         String newPersonFile = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testNewPerson.json")));
         Person testNewPerson = objectMapper.readValue(newPersonFile, Person.class);
+
         when(personRepository.findByFirstAndLastName(any(Person.class))).thenReturn(testNewPerson);
+        when(personRepository.save(testNewPerson)).thenReturn(true);
 
         mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
