@@ -87,10 +87,17 @@ class PersonControllerTest {
     }
 
     @Test
-    public void testAddPerson_NotFound() {
+    public void testAddPerson_conflict() throws Exception {
         Person person = new Person();
         person.setFirstName("David");
         person.setLastName("Shin");
+
+        when(personRepository.save(person)).thenReturn(false);
+
+        mockMvc.perform(post("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(person)))
+                .andExpect(status().isConflict());
     }
 
     @Test
@@ -98,8 +105,8 @@ class PersonControllerTest {
         String editPersonFile = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testEditPerson.json")));
         Person testEditPerson = objectMapper.readValue(editPersonFile, Person.class);
 
-        when(personRepository.findByFirstAndLastName(any(Person.class))).thenReturn(testEditPerson);
-        when(personRepository.updateExistingPerson(any(Person.class))).thenReturn(true);
+        when(personRepository.updateExistingPerson(any(Person.class))).thenReturn(true); // check if person exist in the list
+        when(personRepository.findByFirstAndLastName(any(Person.class))).thenReturn(testEditPerson); // After checked then add.
 
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -113,6 +120,19 @@ class PersonControllerTest {
                 .andExpect(jsonPath("$.zip").value("11304"))
                 .andExpect(jsonPath("$.phone").value("841-874-6512"))
                 .andExpect(jsonPath("$.email").value("tenz@email.com"));
+    }
+
+    @Test
+    public void testUpdateExistingPerson_NotFound() throws Exception {
+        String newPersonJson = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testNewPerson.json")));
+        Person person = objectMapper.readValue(newPersonJson, Person.class);
+
+        when(personRepository.updateExistingPerson(person)).thenReturn(false);
+
+        mockMvc.perform(put("/person")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(newPersonJson))
+                .andExpect(status().isNotFound());
     }
 
     @Test
