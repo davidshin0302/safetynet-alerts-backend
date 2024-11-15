@@ -34,7 +34,7 @@ public class FireStationController {
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(fireStationList);
-        } catch (IOException | RuntimeException  ex) {
+        } catch (IOException | RuntimeException ex) {
             log.error("Error at serializing data: {}", ex.getMessage());
             return new ResponseEntity<>("[FireStationController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
