@@ -29,7 +29,7 @@ public class PersonRepository {
 
     public Person findByFirstAndLastName(Person person) {
         return findAll().stream()
-                .filter(existingPerson -> existingPerson.equals(person))
+                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(person.getFirstName()) && existingPerson.getLastName().equalsIgnoreCase(person.getLastName()))
                 .findFirst()
                 .orElse(null);
     }
