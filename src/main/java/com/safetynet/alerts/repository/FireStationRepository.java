@@ -22,14 +22,13 @@ public class FireStationRepository {
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
             return dataObject.getFireStations();
         } catch (IOException | RuntimeException ex) {
-            log.error(ex.getMessage());
             throw new RuntimeException(ex);
         }
     }
 
     public FireStation findByStation(FireStation fireStation) {
         return findAll().stream()
-                .filter(existingFireStation -> existingFireStation.equals(fireStation))
+                .filter(existingFireStation -> existingFireStation.getStation().equals(fireStation.getStation()))
                 .findFirst()
                 .orElse(null);
     }
