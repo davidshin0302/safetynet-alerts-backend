@@ -62,7 +62,7 @@ public class PersonRepositoryTest {
     }
 
     @Test
-    void testUpdateExistingPerson_true_or_false() throws IOException {
+    void testUpdateExistingPerson() throws IOException {
         var findPersonFilePath = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"address\":\"1509 Culver St\", \"city\":\"Culver\", \"zip\":\"97451\", \"phone\":\"841-874-6512\", \"email\":\"jaboyd@email.com\" }";
         var nonExpectedJson = "{ \"firstName\":\"\", \"lastName\":\"\"}";
 
@@ -96,8 +96,8 @@ public class PersonRepositoryTest {
 
     @Test
     void testDelete() throws IOException {
-    var newPersonJson = "{ \"firstName\":\"big\", \"lastName\":\"head\", \"address\":\"czz\", \"city\":\"seoul\", \"zip\":\"00000\", \"phone\":\"000-000-0000\", \"email\":\"bighead@email.com\" }";
-     var person = objectMapper.readValue(newPersonJson, Person.class);
+        var newPersonJson = "{ \"firstName\":\"big\", \"lastName\":\"head\", \"address\":\"czz\", \"city\":\"seoul\", \"zip\":\"00000\", \"phone\":\"000-000-0000\", \"email\":\"bighead@email.com\" }";
+        var person = objectMapper.readValue(newPersonJson, Person.class);
 
         personRepository.save(person);
 
@@ -107,7 +107,6 @@ public class PersonRepositoryTest {
 
     @Test
     void testDeletePersonWhenPersonIsNull() {
-        var personRepository = new PersonRepository();
         var result = personRepository.delete(null);
 
         assertFalse(result, "Unable to find the person");
