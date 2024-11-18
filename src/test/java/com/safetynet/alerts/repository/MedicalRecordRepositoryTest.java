@@ -33,6 +33,9 @@ class MedicalRecordRepositoryTest {
 
     @Test
     void findAll() {
+        MedicalRecordRepository tempMedicalRecordRepository = new  MedicalRecordRepository();
+        medicalRecordList = tempMedicalRecordRepository.findAll();
+
         assertNotNull(medicalRecordList);
         assertEquals(23, medicalRecordList.size());
 
