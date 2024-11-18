@@ -11,15 +11,14 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 @ExtendWith(SpringExtension.class)
 class FireStationRepositoryTest {
+
     private FireStationRepository fireStationRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
     private List<FireStation> fireStationList;
@@ -47,8 +46,7 @@ class FireStationRepositoryTest {
         var findFireStationJson = "{ \"address\":\"1509 Culver St\", \"station\":\"3\" }";
         var fireStation = objectMapper.readValue(findFireStationJson, FireStation.class);
 
-        var expectedFireStation = fireStationRepository.findByStation(fireStation);
-
+        var expectedFireStation = fireStationRepository.findByStation(fireStation.getStation());
         assertNotNull(expectedFireStation);
         assertEquals(fireStation, expectedFireStation);
         assertEquals(fireStation.getAddress(), expectedFireStation.getAddress());
@@ -80,12 +78,12 @@ class FireStationRepositoryTest {
 
     @Test
     void testDelete() throws JsonProcessingException {
-        var newFireStation ="{ \"address\":\"505 groove St\", \"station\":\"88\" }";
+        var newFireStation = "{ \"address\":\"505 groove St\", \"station\":\"88\" }";
         var fireStation = objectMapper.readValue(newFireStation, FireStation.class);
 
         fireStationRepository.save(fireStation);
 
-        assertTrue(fireStationRepository.delete(fireStation));
+        assertTrue(fireStationRepository.delete(fireStation.getStation()));
         assertEquals(fireStationList.size(), fireStationRepository.findAll().size());
     }
 
@@ -94,5 +92,23 @@ class FireStationRepositoryTest {
         var result = fireStationRepository.delete(null);
 
         assertFalse(result, "Unable to find the person");
+    }
+
+    @Test
+    void testSave() throws IOException {
+        // Create test data
+        var newFireStation = "{ \"address\":\"505 groove St\", \"station\":\"88\" }";
+        var fireStation = objectMapper.readValue(newFireStation, FireStation.class);
+
+        assertTrue(fireStationRepository.save(fireStation));
+
+        //Verify the person is added to the repository
+        var savedStation = fireStationRepository.findByStation(fireStation.getStation());
+        assertNotNull(fireStationRepository.findByStation(fireStation.getStation()));
+        assertEquals("505 groove St", savedStation.getAddress());
+        assertEquals("88", savedStation.getStation());
+
+        //Attempt to save a duplicate person
+        assertFalse(fireStationRepository.save(fireStation));
     }
 }
