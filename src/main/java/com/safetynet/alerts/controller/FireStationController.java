@@ -20,6 +20,7 @@ import java.io.IOException;
 @RequestMapping("/firestation")
 @Slf4j
 public class FireStationController {
+    
     @Autowired
     private FireStationRepository fireStationRepository;
 
@@ -45,7 +46,7 @@ public class FireStationController {
         if (fireStationRepository.save(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findByStation(fireStation));
+                    .body(fireStationRepository.findByStation(fireStation.getStation()));
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -56,7 +57,7 @@ public class FireStationController {
         if (fireStationRepository.updateExistingFireStationAddress(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findByStation(fireStation));
+                    .body(fireStationRepository.findByStation(fireStation.getStation()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -64,7 +65,7 @@ public class FireStationController {
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteExistingFireStation(@RequestBody FireStation fireStation) {
-        if (fireStationRepository.delete(fireStation)) {
+        if (fireStationRepository.delete(fireStation.getStation())) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();

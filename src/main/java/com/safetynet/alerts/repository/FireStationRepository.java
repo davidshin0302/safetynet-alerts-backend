@@ -9,26 +9,37 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @Slf4j
 public class FireStationRepository {
 
-    public List<FireStation> findAll() {
+    private final List<FireStation> fireStationList = new ArrayList<>();
+
+    public FireStationRepository() {
+        loadFireStationData();
+    }
+
+    private void loadFireStationData() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String filePath = "src/main/resources/data.json";
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            return dataObject.getFireStations();
+            fireStationList.addAll(dataObject.getFireStations());
         } catch (IOException | RuntimeException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public FireStation findByStation(FireStation fireStation) {
+    public List<FireStation> findAll() {
+        return fireStationList;
+    }
+
+    public FireStation findByStation(String station) {
         return findAll().stream()
-                .filter(existingFireStation -> existingFireStation.getStation().equals(fireStation.getStation()))
+                .filter(existingFireStation -> existingFireStation.getStation().equals(station))
                 .findFirst()
                 .orElse(null);
     }
@@ -36,7 +47,7 @@ public class FireStationRepository {
     public boolean updateExistingFireStationAddress(FireStation fireStation) {
         boolean updated = true;
 
-        FireStation existingFireStation = findByStation(fireStation);
+        FireStation existingFireStation = findByStation(fireStation.getStation());
 
         if (existingFireStation != null) {
             existingFireStation.setAddress(fireStation.getAddress());
@@ -47,11 +58,12 @@ public class FireStationRepository {
         return updated;
     }
 
-    public boolean delete(FireStation fireStation) {
+    public boolean delete(String station) {
         boolean deleted = false;
+        FireStation fireStationToDelete = findByStation(station);
 
-        if (fireStation != null) {
-            findAll().remove(fireStation);
+        if (fireStationToDelete != null) {
+            findAll().remove(fireStationToDelete);
             deleted = true;
         } else {
             log.error("Unable to find the fireStation");
@@ -62,7 +74,7 @@ public class FireStationRepository {
     public boolean save(FireStation fireStation) {
         boolean result = false;
 
-        if (findByStation(fireStation) == null) {
+        if (findByStation(fireStation.getStation()) == null) {
             result = findAll().add(fireStation);
         } else {
             log.info("Fire station is reserved for existing department ");
