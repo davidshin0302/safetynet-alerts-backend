@@ -37,20 +37,20 @@ public class FireStationRepository {
         return fireStationList;
     }
 
-    public FireStation findByStation(String station) {
-        return findAll().stream()
-                .filter(existingFireStation -> existingFireStation.getStation().equals(station))
+    public FireStation findByAddress(String address) {
+        return fireStationList.stream()
+                .filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim()))
                 .findFirst()
                 .orElse(null);
     }
 
-    public boolean updateExistingFireStationAddress(FireStation fireStation) {
+    public boolean updateExistingFireStationNumber(FireStation fireStation) {
         boolean updated = true;
 
-        FireStation existingFireStation = findByStation(fireStation.getStation());
+        FireStation existingFireStation = findByAddress(fireStation.getAddress());
 
         if (existingFireStation != null) {
-            existingFireStation.setAddress(fireStation.getAddress());
+            existingFireStation.setStation(fireStation.getStation());
             save(existingFireStation);
         } else {
             updated = false;
@@ -58,15 +58,15 @@ public class FireStationRepository {
         return updated;
     }
 
-    public boolean delete(String station) {
+    public boolean delete(String address) {
         boolean deleted = false;
-        FireStation fireStationToDelete = findByStation(station);
+        FireStation fireStationToDelete = findByAddress(address);
 
         if (fireStationToDelete != null) {
-            findAll().remove(fireStationToDelete);
+            fireStationList.remove(fireStationToDelete);
             deleted = true;
         } else {
-            log.error("Unable to find the fireStation");
+            log.error("Unable to find the fireStation from the address: {}", address);
         }
         return deleted;
     }
@@ -74,8 +74,8 @@ public class FireStationRepository {
     public boolean save(FireStation fireStation) {
         boolean result = false;
 
-        if (findByStation(fireStation.getStation()) == null) {
-            result = findAll().add(fireStation);
+        if (findByAddress(fireStation.getAddress()) == null) {
+            result = fireStationList.add(fireStation);
         } else {
             log.info("Fire station is reserved for existing department ");
         }

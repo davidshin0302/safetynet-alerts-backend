@@ -1,6 +1,5 @@
 package com.safetynet.alerts.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.FireStation;
@@ -42,11 +41,11 @@ class FireStationRepositoryTest {
     }
 
     @Test
-    void testFindByStation() throws JsonProcessingException {
+    void testFindByAddress() throws IOException {
         var findFireStationJson = "{ \"address\":\"1509 Culver St\", \"station\":\"3\" }";
         var fireStation = objectMapper.readValue(findFireStationJson, FireStation.class);
 
-        var expectedFireStation = fireStationRepository.findByStation(fireStation.getStation());
+        var expectedFireStation = fireStationRepository.findByAddress(fireStation.getAddress());
         assertNotNull(expectedFireStation);
         assertEquals(fireStation, expectedFireStation);
         assertEquals(fireStation.getAddress(), expectedFireStation.getAddress());
@@ -54,15 +53,21 @@ class FireStationRepositoryTest {
     }
 
     @Test
-    void testUpdateExistingFireStationAddress() throws JsonProcessingException {
-        var findFireStation = "{ \"address\":\"123 main st\", \"station\":\"3\" }";
-        var nonExpectedJson = "{ \"address\":\"\", \"station\":\"\" }";
+    void testUpdateExistingFireStationAddress() throws IOException {
+        //Verify update fire station number
+        var findFireStation = "{ \"address\":\"1509 Culver St\", \"station\":\"99\" }";
+        var expectedFireStation1 = objectMapper.readValue(findFireStation, FireStation.class);
+        assertTrue(fireStationRepository.updateExistingFireStationNumber(expectedFireStation1));
 
-        var expectedFindFireStation = objectMapper.readValue(findFireStation, FireStation.class);
+        var expectedFireStation2 = fireStationRepository.findByAddress(expectedFireStation1.getAddress());
+        assertEquals("1509 Culver St", expectedFireStation2.getAddress());
+        assertEquals("99", expectedFireStation2.getStation());
+
+        //Attempt to update from invalid data.
+        var nonExpectedJson = "{ \"address\":\"\", \"station\":\"\" }";
         var nonExpectedFireStation = objectMapper.readValue(nonExpectedJson, FireStation.class);
 
-        assertTrue(fireStationRepository.updateExistingFireStationAddress(expectedFindFireStation));
-        assertFalse(fireStationRepository.updateExistingFireStationAddress(nonExpectedFireStation));
+        assertFalse(fireStationRepository.updateExistingFireStationNumber(nonExpectedFireStation));
     }
 
     @Test
@@ -77,21 +82,22 @@ class FireStationRepositoryTest {
     }
 
     @Test
-    void testDelete() throws JsonProcessingException {
+    void testDelete() throws IOException {
         var newFireStation = "{ \"address\":\"505 groove St\", \"station\":\"88\" }";
         var fireStation = objectMapper.readValue(newFireStation, FireStation.class);
 
         fireStationRepository.save(fireStation);
 
-        assertTrue(fireStationRepository.delete(fireStation.getStation()));
+        assertTrue(fireStationRepository.delete(fireStation.getAddress()));
         assertEquals(fireStationList.size(), fireStationRepository.findAll().size());
     }
 
     @Test
-    void testDeleteFireStationWhenIsNull() {
-        var result = fireStationRepository.delete(null);
+    void testDelete_invalid_address() throws IOException {
+        var invalidFireStation = "{ \"address\":\"no address\"}";
+        var fireStation = objectMapper.readValue(invalidFireStation, FireStation.class);
 
-        assertFalse(result, "Unable to find the person");
+        assertFalse(fireStationRepository.delete(fireStation.getAddress()));
     }
 
     @Test
@@ -103,8 +109,8 @@ class FireStationRepositoryTest {
         assertTrue(fireStationRepository.save(fireStation));
 
         //Verify the person is added to the repository
-        var savedStation = fireStationRepository.findByStation(fireStation.getStation());
-        assertNotNull(fireStationRepository.findByStation(fireStation.getStation()));
+        var savedStation = fireStationRepository.findByAddress(fireStation.getAddress());
+        assertNotNull(fireStationRepository.findByAddress(fireStation.getAddress()));
         assertEquals("505 groove St", savedStation.getAddress());
         assertEquals("88", savedStation.getStation());
 

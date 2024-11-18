@@ -39,7 +39,7 @@ public class PersonRepository {
     }
 
     public Person findByFirstAndLastName(String firstName, String lastName) {
-        return findAll().stream()
+        return personList.stream()
                 .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName))
                 .findFirst()
                 .orElse(null);
@@ -81,7 +81,7 @@ public class PersonRepository {
         boolean result = false;
 
         if (findByFirstAndLastName(person.getFirstName(), person.getLastName()) == null) {
-            result = findAll().add(person);
+            result = personList.add(person);
         } else {
             log.error("Person already exist in the list");
         }

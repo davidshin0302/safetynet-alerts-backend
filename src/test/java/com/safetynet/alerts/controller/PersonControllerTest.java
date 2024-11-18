@@ -57,7 +57,7 @@ class PersonControllerTest {
     }
 
     @Test
-    public void testGetAllPersonException() throws Exception {
+    public void testGetAll_exception() throws Exception {
         when(personRepository.findAll()).thenThrow(new RuntimeException("RuntimeException error"));
 
         mockMvc.perform(get("/person"))
@@ -124,7 +124,7 @@ class PersonControllerTest {
     }
 
     @Test
-    public void testUpdateExistingPerson_NotFound() throws Exception {
+    public void testUpdateExistingPerson_notFound() throws Exception {
         String newPersonJson = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testNewPerson.json")));
         Person person = objectMapper.readValue(newPersonJson, Person.class);
 
@@ -140,11 +140,12 @@ class PersonControllerTest {
     public void testDeleteExistingPerson() throws Exception {
         String newPersonFile = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testNewPerson.json")));
         Person deletePerson = objectMapper.readValue(newPersonFile, Person.class);
+
         when(personRepository.delete(any(String.class), any(String.class))).thenReturn(true); // Simulating successful deletion
 
         mockMvc.perform(delete("/person")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newPersonFile))
+                        .content(objectMapper.writeValueAsString(deletePerson)))
                 .andExpect(status().isNoContent());
 
 
@@ -152,7 +153,7 @@ class PersonControllerTest {
 
         mockMvc.perform(delete("/person")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(newPersonFile))
+                        .content(objectMapper.writeValueAsString(deletePerson)))
                 .andExpect(status().isNotFound());
 
     }
