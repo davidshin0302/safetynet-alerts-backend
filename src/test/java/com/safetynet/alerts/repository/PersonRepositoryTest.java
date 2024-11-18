@@ -1,5 +1,6 @@
 package com.safetynet.alerts.repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
@@ -17,6 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class)
 public class PersonRepositoryTest {
+
     private PersonRepository personRepository;
     private ObjectMapper objectMapper = new ObjectMapper();
     private List<Person> personList;
@@ -49,9 +51,8 @@ public class PersonRepositoryTest {
         var actualJson = "{ \"firstName\":\"Tessa\", \"lastName\":\"Carman\", \"address\":\"834 Binoc Ave\", \"city\":\"Culver\", \"zip\":\"97451\", \"phone\":\"841-874-6512\", \"email\":\"tenz@email.com\" }";
         var actual = objectMapper.readValue(actualJson, Person.class);
 
-        var expectedFindPerson = personRepository.findByFirstAndLastName(actual);
-
-
+        //Both conditions are true
+        var expectedFindPerson = personRepository.findByFirstAndLastName(actual.getFirstName(), actual.getLastName());
         assertNotNull(actual);
         assertEquals(expectedFindPerson.getFirstName(), actual.getFirstName());
         assertEquals(expectedFindPerson.getLastName(), actual.getLastName());
@@ -59,6 +60,13 @@ public class PersonRepositoryTest {
         assertEquals(expectedFindPerson.getCity(), actual.getCity());
         assertEquals(expectedFindPerson.getZip(), actual.getZip());
         assertEquals(expectedFindPerson.getEmail(), actual.getEmail());
+
+        //First condition is false
+        assertNull(personRepository.findByFirstAndLastName("noFirstName", actual.getLastName()));
+        //First condition is true, second is false
+        assertNull(personRepository.findByFirstAndLastName(actual.getFirstName(), "noLastName"));
+        //Both conditions are false
+        assertNull(personRepository.findByFirstAndLastName("noFirstName", "noLastName"));
     }
 
     @Test
@@ -101,14 +109,32 @@ public class PersonRepositoryTest {
 
         personRepository.save(person);
 
-        assertTrue(personRepository.delete(person));
+        assertTrue(personRepository.delete(person.getFirstName(), person.getLastName()));
         assertEquals(personList.size(), personRepository.findAll().size());
     }
 
     @Test
     void testDeletePersonWhenPersonIsNull() {
-        var result = personRepository.delete(null);
+        var result = personRepository.delete("no", "data");
 
         assertFalse(result, "Unable to find the person");
+    }
+
+    @Test
+    void testSave() throws IOException {
+        // Create test data
+        var newPersonJson = "{ \"firstName\":\"big\", \"lastName\":\"head\", \"address\":\"czz\", \"city\":\"seoul\", \"zip\":\"00000\", \"phone\":\"000-000-0000\", \"email\":\"bighead@email.com\" }";
+        var person = objectMapper.readValue(newPersonJson, Person.class);
+
+        assertTrue(personRepository.save(person));
+
+        //Verify the person is added to the repository
+        var savedPerson = personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName());
+        assertNotNull(personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()));
+        assertEquals("big", savedPerson.getFirstName());
+        assertEquals("head", savedPerson.getLastName());
+
+        //Attempt to save a duplicate person
+        assertFalse(personRepository.save(person));
     }
 }

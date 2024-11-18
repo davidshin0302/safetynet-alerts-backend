@@ -10,35 +10,45 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @Slf4j
 public class PersonRepository {
 
-    public List<Person> findAll() {
+    private final List<Person> personList = new ArrayList<>();
+
+    public PersonRepository() {
+        loadPersonData();
+    }
+
+    private void loadPersonData() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String filePath = "src/main/resources/data.json";
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            return dataObject.getPersons();
+            personList.addAll(dataObject.getPersons());
         } catch (IOException | RuntimeException ex) {
             throw new RuntimeException(ex);
         }
     }
 
-    public Person findByFirstAndLastName(Person person) {
+    public List<Person> findAll() {
+        return personList;
+    }
+
+    public Person findByFirstAndLastName(String firstName, String lastName) {
         return findAll().stream()
-                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(person.getFirstName()) && existingPerson.getLastName().equalsIgnoreCase(person.getLastName()))
+                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName))
                 .findFirst()
                 .orElse(null);
     }
 
-    //TODO:: Should updateExistingPerson checks all the fields to be update? or not.
     public boolean updateExistingPerson(Person person) {
         boolean updated = true;
 
-        Person existingPerson = findByFirstAndLastName(person);
+        Person existingPerson = findByFirstAndLastName(person.getFirstName(), person.getLastName());
 
         if (existingPerson != null) {
             existingPerson.setAddress(person.getAddress());
@@ -54,14 +64,15 @@ public class PersonRepository {
         return updated;
     }
 
-    public boolean delete(Person person) {
+    public boolean delete(String firstName, String lastName) {
         boolean deleted = false;
+        Person personToDelete = findByFirstAndLastName(firstName, lastName);
 
-        if (person != null) {
-            findAll().remove(person);
+        if (personToDelete != null) {
+            personList.remove(personToDelete);
             deleted = true;
         } else {
-            log.error("Unable to find the person");
+            log.error("Unable to find the person: {} {}", firstName, lastName);
         }
         return deleted;
     }
@@ -69,7 +80,7 @@ public class PersonRepository {
     public boolean save(Person person) {
         boolean result = false;
 
-        if (findByFirstAndLastName(person) == null) {
+        if (findByFirstAndLastName(person.getFirstName(), person.getLastName()) == null) {
             result = findAll().add(person);
         } else {
             log.error("Person already exist in the list");
