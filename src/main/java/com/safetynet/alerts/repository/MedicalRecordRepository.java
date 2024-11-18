@@ -18,10 +18,6 @@ public class MedicalRecordRepository {
     private final List<MedicalRecord> medicalRecordList = new ArrayList<>();
 
     public MedicalRecordRepository(){
-        loadMedicalRecords();
-    }
-
-    public void loadMedicalRecords() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String filePath = "src/main/resources/data.json";
