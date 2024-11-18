@@ -1,6 +1,5 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.FireStation;
 import com.safetynet.alerts.repository.FireStationRepository;
@@ -20,7 +19,7 @@ import java.io.IOException;
 @RequestMapping("/firestation")
 @Slf4j
 public class FireStationController {
-    
+
     @Autowired
     private FireStationRepository fireStationRepository;
 
@@ -46,7 +45,7 @@ public class FireStationController {
         if (fireStationRepository.save(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findByStation(fireStation.getStation()));
+                    .body(fireStationRepository.findByAddress(fireStation.getStation()));
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -54,18 +53,19 @@ public class FireStationController {
 
     @PutMapping
     public ResponseEntity<FireStation> updateExistingFireStation(@RequestBody FireStation fireStation) throws IOException {
-        if (fireStationRepository.updateExistingFireStationAddress(fireStation)) {
+        if (fireStationRepository.updateExistingFireStationNumber(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findByStation(fireStation.getStation()));
+                    .body(fireStationRepository.findByAddress(fireStation.getAddress()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteExistingFireStation(@RequestBody FireStation fireStation) {
-        if (fireStationRepository.delete(fireStation.getStation())) {
+    public ResponseEntity<HttpStatus> deleteExistingFireStation(@RequestBody String address) throws IOException {
+        FireStation fireStation = objectMapper.readValue(address, FireStation.class);
+        if (fireStationRepository.delete(fireStation.getAddress())) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
