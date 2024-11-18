@@ -10,21 +10,27 @@ import org.springframework.stereotype.Repository;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Repository
 @Slf4j
 public class PersonRepository {
-    private final ObjectMapper objectMapper = new ObjectMapper();
-    private final String filePath = "src/main/resources/data.json";
-    private List<Person> personList;
+
+    private final List<Person> personList = new ArrayList<>();
 
     public PersonRepository() {
+        loadPersonData();
+    }
+
+    private void loadPersonData() {
         try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String filePath = "src/main/resources/data.json";
             DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            personList = dataObject.getPersons();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            personList.addAll(dataObject.getPersons());
+        } catch (IOException | RuntimeException ex) {
+            throw new RuntimeException(ex);
         }
     }
 
@@ -32,18 +38,17 @@ public class PersonRepository {
         return personList;
     }
 
-    public Person findByFirstAndLastName(Person person) {
+    public Person findByFirstAndLastName(String firstName, String lastName) {
         return personList.stream()
-                .filter(existingPerson -> existingPerson.equals(person))
+                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName))
                 .findFirst()
                 .orElse(null);
     }
 
-    //TODO:: Should updateExistingPerson checks all the fields to be update? or not.
     public boolean updateExistingPerson(Person person) {
         boolean updated = true;
 
-        Person existingPerson = findByFirstAndLastName(person);
+        Person existingPerson = findByFirstAndLastName(person.getFirstName(), person.getLastName());
 
         if (existingPerson != null) {
             existingPerson.setAddress(person.getAddress());
@@ -59,29 +64,27 @@ public class PersonRepository {
         return updated;
     }
 
-    public boolean delete(Person person) {
+    public boolean delete(String firstName, String lastName) {
         boolean deleted = false;
+        Person personToDelete = findByFirstAndLastName(firstName, lastName);
 
-        if (person != null) {
-            personList.remove(person);
+        if (personToDelete != null) {
+            personList.remove(personToDelete);
             deleted = true;
         } else {
-            log.error("Unable to find the person");
+            log.error("Unable to find the person: {} {}", firstName, lastName);
         }
         return deleted;
     }
 
     public boolean save(Person person) {
-        boolean saved = false;
+        boolean result = false;
 
-        try {
-            personList.add(person);
-            objectMapper.writeValue(new File( "src/main/resources/tempData.json"), personList);
-            saved = true;
-        } catch (IOException ex) {
-            log.error(ex.getMessage());
+        if (findByFirstAndLastName(person.getFirstName(), person.getLastName()) == null) {
+            result = personList.add(person);
+        } else {
+            log.error("Person already exist in the list");
         }
-
-        return saved;
+        return result;
     }
 }
