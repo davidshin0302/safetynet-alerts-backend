@@ -1,6 +1,5 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
@@ -18,6 +17,7 @@ import java.io.IOException;
 @RequestMapping("/person")
 @Slf4j
 public class PersonController {
+
     @Autowired
     private PersonRepository personRepository;
 
@@ -32,7 +32,7 @@ public class PersonController {
             return ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(personList);
-        } catch (JsonProcessingException ex) {
+        } catch (IOException | RuntimeException ex) {
             log.error("Error at serializing data: {}", ex.getMessage());
             return new ResponseEntity<>("[PersonController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -43,9 +43,9 @@ public class PersonController {
         if (personRepository.save(person)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(personRepository.findByFirstAndLastName(person));
+                    .body(personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()));
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
 
@@ -54,7 +54,7 @@ public class PersonController {
         if (personRepository.updateExistingPerson(person)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(personRepository.findByFirstAndLastName(person));
+                    .body(personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -62,7 +62,7 @@ public class PersonController {
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person person) {
-        if (personRepository.delete(person)) {
+        if (personRepository.delete(person.getFirstName(), person.getLastName())) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
