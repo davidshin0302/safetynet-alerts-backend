@@ -7,5 +7,8 @@ id = '7f997193-087c-4bf3-89a0-6fdaaf303265'
 
 [body]
 type = 'JSON'
-raw = '{ address:"123 Main st", "station": "88" }'
+raw = '''
+{
+  "address": "123 Main st"
+}'''
 ```
