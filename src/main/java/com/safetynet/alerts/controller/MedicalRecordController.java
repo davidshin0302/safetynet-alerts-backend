@@ -12,6 +12,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+/**
+ * Handle request for medical record.
+ */
 @RestController
 @RequestMapping("/medicalrecords")
 @Slf4j
@@ -35,14 +38,22 @@ public class MedicalRecordController {
         }
     }
 
-
+    /**
+     * Handle a new record to be add it.
+     *
+     * @param medicalRecord Medical Record to add.
+     * @return Http status result
+     */
     @PostMapping
     public ResponseEntity<HttpStatus> addMedicalRecords(@RequestBody MedicalRecord medicalRecord) {
+        ResponseEntity<HttpStatus> response;
+
         if (medicalRecordRepository.save(medicalRecord)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            response = new ResponseEntity<>(HttpStatus.CREATED);
         } else {
-            return new ResponseEntity<>(HttpStatus.CREATED);
+            response = new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+        return response;
     }
 
 }
