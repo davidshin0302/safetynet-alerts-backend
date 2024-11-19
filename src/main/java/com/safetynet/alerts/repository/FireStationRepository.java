@@ -48,10 +48,13 @@ public class FireStationRepository {
         boolean updated = true;
 
         FireStation existingFireStation = findByAddress(fireStation.getAddress());
-
+        /*
+        *Retrieving an object from fireStationList via findByAddress returns a reference,
+        *not a copy. Modifying the object through this reference updates the original in the list,
+        *as both share the same memory location."
+         */
         if (existingFireStation != null) {
             existingFireStation.setStation(fireStation.getStation());
-            save(existingFireStation);
         } else {
             updated = false;
         }
