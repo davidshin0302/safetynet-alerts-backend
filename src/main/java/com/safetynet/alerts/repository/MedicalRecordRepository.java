@@ -17,7 +17,7 @@ public class MedicalRecordRepository {
 
     private final List<MedicalRecord> medicalRecordList = new ArrayList<>();
 
-    public MedicalRecordRepository(){
+    public MedicalRecordRepository() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             String filePath = "src/main/resources/data.json";
@@ -32,12 +32,35 @@ public class MedicalRecordRepository {
         return medicalRecordList;
     }
 
-    public boolean addMedicalRecord(MedicalRecord medicalRecord) {
-        save(medicalRecord);
-        return true;
+    public MedicalRecord findMedicalRecordByFirstLastName(String firstName, String lastName) {
+        return medicalRecordList.stream()
+                .filter(medicalRecord -> medicalRecord.getFirstName().equalsIgnoreCase(firstName) && medicalRecord.getLastName().equalsIgnoreCase(lastName))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void save(MedicalRecord medicalRecord) {
-        medicalRecordList.add(medicalRecord);
+    public boolean updateExistingMedicalRecord(MedicalRecord medicalRecord) {
+        boolean result = false;
+
+        MedicalRecord existingMedicalRecord = findMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName());
+
+        if(existingMedicalRecord != null){
+            existingMedicalRecord.setBirthdate(medicalRecord.getBirthdate());
+            existingMedicalRecord.setMedications(medicalRecord.getMedications());
+            existingMedicalRecord.setAllergies(medicalRecord.getAllergies());
+        }
+
+        return result;
+    }
+
+    public boolean save(MedicalRecord medicalRecord) {
+        boolean result = false;
+
+        if (findMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName()) == null) {
+            result = medicalRecordList.add(medicalRecord);
+        } else {
+            log.info("The medicalRecord already exist from the data.");
+        }
+        return result;
     }
 }
