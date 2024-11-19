@@ -38,7 +38,7 @@ public class MedicalRecordController {
 
     @PostMapping
     public ResponseEntity<HttpStatus> addMedicalRecords(@RequestBody MedicalRecord medicalRecord) {
-        if (medicalRecordRepository.addMedicalRecord(medicalRecord)) {
+        if (medicalRecordRepository.save(medicalRecord)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } else {
             return new ResponseEntity<>(HttpStatus.CREATED);
