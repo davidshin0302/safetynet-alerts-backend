@@ -10,11 +10,9 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 class MedicalRecordRepositoryTest {
@@ -84,6 +82,27 @@ class MedicalRecordRepositoryTest {
         assertNull(medicalRecordRepository.findMedicalRecordByFirstLastName(medicalRecord.getFirstName(), "wrong last name"));
         //Both condition is false
         assertNull(medicalRecordRepository.findMedicalRecordByFirstLastName("wrong first name", "wrong last name"));
+    }
+
+    @Test
+    void updateExistingMedicalRecord() throws IOException{
+        var medicalRecordJson = "{ \"firstName\":\"John\", \"lastName\":\"Boyd\", \"birthdate\":\"03/06/1984\", \"medications\":[\"Aspirin:500mg\"], \"allergies\":[\"nillacilan\"]};";
+        var medicalReocrd = objectMapper.readValue(medicalRecordJson, MedicalRecord.class);
+
+        assertTrue(medicalRecordRepository.updateExistingMedicalRecord(medicalReocrd));
+
+        var exepctedMedicalRecord = medicalRecordRepository.findMedicalRecordByFirstLastName(medicalReocrd.getFirstName(), medicalReocrd.getLastName());
+        var getMedication = exepctedMedicalRecord.getMedications().get(0);
+        var expectedMedication = getMedication.split(":");
+        assertNotNull(exepctedMedicalRecord);
+        assertEquals("Aspirin", expectedMedication[0]);
+        assertEquals("500mg", expectedMedication[1]);
+
+        //Attempt to update from invalid data.
+        var nonExpectedMedicalRecordJson = "{ \"firstName\":\"NonExist\", \"lastName\":\"MedicalRecord\", \"birthdate\":\"03/06/1984\", \"medications\":[\"Aspirin:500mg\"], \"allergies\":[\"nillacilan\"]};";
+        var nonExpectedMedicalRecord = objectMapper.readValue(nonExpectedMedicalRecordJson, MedicalRecord.class);
+
+        assertFalse(medicalRecordRepository.updateExistingMedicalRecord(nonExpectedMedicalRecord));
     }
 
     @Test
