@@ -48,6 +48,10 @@ public class MedicalRecordRepository {
             existingMedicalRecord.setBirthdate(medicalRecord.getBirthdate());
             existingMedicalRecord.setMedications(medicalRecord.getMedications());
             existingMedicalRecord.setAllergies(medicalRecord.getAllergies());
+
+            result = true;
+        } else {
+            log.info("Unable to find the matching medical record: {}", medicalRecord);
         }
 
         return result;
