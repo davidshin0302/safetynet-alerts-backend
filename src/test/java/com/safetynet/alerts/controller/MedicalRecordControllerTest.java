@@ -36,7 +36,7 @@ class MedicalRecordControllerTest {
     void getAllMedicalRecords() throws Exception {
         when(medicalRecordRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH + "/testData.json"), DataObject.class).getMedicalRecords());
 
-        mockMvc.perform(get("/medicalrecords").contentType(MediaType.APPLICATION_JSON))
+        mockMvc.perform(get("/medicalRecord").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$", hasSize(23)));

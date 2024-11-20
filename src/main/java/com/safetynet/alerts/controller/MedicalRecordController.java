@@ -16,7 +16,7 @@ import java.io.IOException;
  * Handle request for medical record.
  */
 @RestController
-@RequestMapping("/medicalrecords")
+@RequestMapping("/medicalRecord")
 @Slf4j
 public class MedicalRecordController {
 
