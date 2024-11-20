@@ -27,15 +27,18 @@ public class MedicalRecordController {
 
     @GetMapping
     public ResponseEntity<String> getAllMedicalRecords() {
+        ResponseEntity<String> response;
+
         try {
             String medicalRecordList = objectMapper.writeValueAsString(medicalRecordRepository.findAll());
-            return ResponseEntity.status(HttpStatus.OK)
+            response = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(medicalRecordList);
         } catch (IOException | RuntimeException ex) {
             log.error("Error at find all medical records: {}", ex.getMessage());
-            return new ResponseEntity<>("[MedicalRecordController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
+            response = new ResponseEntity<>("[MedicalRecordController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return response;
     }
 
     /**
@@ -45,7 +48,7 @@ public class MedicalRecordController {
      * @return Http status result
      */
     @PostMapping
-    public ResponseEntity<HttpStatus> addMedicalRecords(@RequestBody MedicalRecord medicalRecord) {
+    public ResponseEntity<HttpStatus> addMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         ResponseEntity<HttpStatus> response;
 
         if (medicalRecordRepository.save(medicalRecord)) {
@@ -56,4 +59,27 @@ public class MedicalRecordController {
         return response;
     }
 
+    @PutMapping
+    public ResponseEntity<HttpStatus> updateMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+        ResponseEntity<HttpStatus> response;
+
+        if (medicalRecordRepository.updateExistingMedicalRecord(medicalRecord)) {
+            response = new ResponseEntity<>(HttpStatus.CREATED);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
+
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+        ResponseEntity<HttpStatus> response;
+
+        if (medicalRecordRepository.delete(medicalRecord)) {
+            response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return response;
+    }
 }
