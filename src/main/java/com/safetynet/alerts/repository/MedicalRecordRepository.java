@@ -34,7 +34,7 @@ public class MedicalRecordRepository {
 
     //Helper method, Not access to outside
     private MedicalRecord findMedicalRecordByFirstLastName(String firstName, String lastName) {
-        //Returning the reference the object that found. **Hashcode(object Id) try to use debugg mode.
+        //Returning the reference the object that found. **Hashcode(object Id) try to use debug mode.
         //Primitives are return original but other return by reference.
         return medicalRecordList.stream()
                 .filter(medicalRecord -> medicalRecord.getFirstName().equalsIgnoreCase(firstName) && medicalRecord.getLastName().equalsIgnoreCase(lastName))
@@ -42,10 +42,14 @@ public class MedicalRecordRepository {
                 .orElse(null);
     }
 
+    //Expose private method through a public wrapper
+    public MedicalRecord findRecord(String firstname, String lastName){
+        return findMedicalRecordByFirstLastName(firstname, lastName);
+    }
+
     public boolean updateExistingMedicalRecord(MedicalRecord medicalRecord) {
         boolean result = false;
 
-        //TODO:: create a new medical record and then replace with original one.
         MedicalRecord existingMedicalRecord = findMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName());
 
         if(existingMedicalRecord != null){

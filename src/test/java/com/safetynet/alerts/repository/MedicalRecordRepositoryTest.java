@@ -69,7 +69,7 @@ class MedicalRecordRepositoryTest {
         var medicalRecord = objectMapper.readValue(medicalRecordJson, MedicalRecord.class);
 
         //Both conditions are true.
-        var expectedMedicalRecord = medicalRecordRepository.findMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName());
+        var expectedMedicalRecord = medicalRecordRepository.findRecord(medicalRecord.getFirstName(), medicalRecord.getLastName());
         assertNotNull(medicalRecord);
         assertEquals(medicalRecord.getFirstName(), expectedMedicalRecord.getFirstName());
         assertEquals(medicalRecord.getLastName(), expectedMedicalRecord.getLastName());
@@ -77,11 +77,11 @@ class MedicalRecordRepositoryTest {
         assertEquals(1, medicalRecord.getAllergies().size());
 
         //First condition is false
-        assertNull(medicalRecordRepository.findMedicalRecordByFirstLastName("wrong first name", medicalRecord.getLastName()));
+        assertNull(medicalRecordRepository.findRecord("wrong first name", medicalRecord.getLastName()));
         //First condition is true, second is false
-        assertNull(medicalRecordRepository.findMedicalRecordByFirstLastName(medicalRecord.getFirstName(), "wrong last name"));
+        assertNull(medicalRecordRepository.findRecord(medicalRecord.getFirstName(), "wrong last name"));
         //Both condition is false
-        assertNull(medicalRecordRepository.findMedicalRecordByFirstLastName("wrong first name", "wrong last name"));
+        assertNull(medicalRecordRepository.findRecord("wrong first name", "wrong last name"));
     }
 
     @Test
@@ -91,7 +91,7 @@ class MedicalRecordRepositoryTest {
 
         assertTrue(medicalRecordRepository.updateExistingMedicalRecord(medicalReocrd));
 
-        var exepctedMedicalRecord = medicalRecordRepository.findMedicalRecordByFirstLastName(medicalReocrd.getFirstName(), medicalReocrd.getLastName());
+        var exepctedMedicalRecord = medicalRecordRepository.findRecord(medicalReocrd.getFirstName(), medicalReocrd.getLastName());
         var getMedication = exepctedMedicalRecord.getMedications().get(0);
         var expectedMedication = getMedication.split(":");
         assertNotNull(exepctedMedicalRecord);
