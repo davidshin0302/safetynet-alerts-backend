@@ -115,4 +115,21 @@ class MedicalRecordRepositoryTest {
         //Attempt to save same medicalRecord.
         assertFalse(medicalRecordRepository.save(medicalRecord));
     }
+
+    @Test
+    void delete() throws IOException {
+        var medicalRecordJson = "{ \"firstName\":\"David\", \"lastName\":\"Shin\", \"birthdate\":\"03/02/1987\", \"medications\":[\"Tylenol:1000mg\", \"Migraine:2000mg\"], \"allergies\":[\"Crab\", \"shellfish\", \"apple\"] }";
+        var medicalRecord = objectMapper.readValue(medicalRecordJson, MedicalRecord.class);
+
+        medicalRecordRepository.save(medicalRecord);
+        assertEquals("David", medicalRecordRepository.findRecord(medicalRecord.getFirstName(), medicalRecord.getLastName()).getFirstName());
+        assertEquals("Shin", medicalRecordRepository.findRecord(medicalRecord.getFirstName(), medicalRecord.getLastName()).getLastName());
+
+        assertTrue(medicalRecordRepository.delete(medicalRecord));
+        assertNull(medicalRecordRepository.findRecord(medicalRecord.getFirstName(), medicalRecord.getLastName()));
+
+        //Attempt to delete invalid data
+        var invalidMedicalRecord = new MedicalRecord();
+        assertFalse(medicalRecordRepository.delete(invalidMedicalRecord));
+    }
 }
