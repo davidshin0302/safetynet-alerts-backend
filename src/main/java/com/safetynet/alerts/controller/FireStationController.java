@@ -45,7 +45,7 @@ public class FireStationController {
         if (fireStationRepository.save(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findByAddress(fireStation.getStation()));
+                    .body(fireStationRepository.findFireStation(fireStation.getStation()));
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -56,7 +56,7 @@ public class FireStationController {
         if (fireStationRepository.updateExistingFireStationNumber(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findByAddress(fireStation.getAddress()));
+                    .body(fireStationRepository.findFireStation(fireStation.getAddress()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

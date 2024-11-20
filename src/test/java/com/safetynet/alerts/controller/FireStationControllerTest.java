@@ -73,7 +73,7 @@ class FireStationControllerTest {
         String newFireStation = objectMapper.writeValueAsString(fireStation);
 
         when(fireStationRepository.save(fireStation)).thenReturn(true);
-        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(fireStation);
+        when(fireStationRepository.findFireStation(fireStation.getAddress())).thenReturn(fireStation);
 
         //Verify new firestation is saved and return with 201 code.
         mockMvc.perform(post("/firestation")
@@ -104,7 +104,7 @@ class FireStationControllerTest {
         FireStation fireStation = objectMapper.readValue(fireStationJson, FireStation.class);
 
         when(fireStationRepository.updateExistingFireStationNumber(fireStation)).thenReturn(true);
-        when(fireStationRepository.findByAddress(fireStation.getAddress())).thenReturn(fireStation);
+        when(fireStationRepository.findFireStation(fireStation.getAddress())).thenReturn(fireStation);
 
         mockMvc.perform(put("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -135,7 +135,7 @@ class FireStationControllerTest {
         String fireStationJson = "{ \"address\":\"44 groovy st\"}";
 
         when(fireStationRepository.delete(any(String.class))).thenReturn(true);
-        when(fireStationRepository.findByAddress(any(String.class))).thenReturn(any(FireStation.class));
+        when(fireStationRepository.findFireStation(any(String.class))).thenReturn(any(FireStation.class));
 
         mockMvc.perform(delete("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -149,7 +149,7 @@ class FireStationControllerTest {
 
 
         when(fireStationRepository.delete(any(String.class))).thenReturn(false);
-        when(fireStationRepository.findByAddress(any(String.class))).thenReturn(null);
+        when(fireStationRepository.findFireStation(any(String.class))).thenReturn(null);
 
         mockMvc.perform(delete("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)

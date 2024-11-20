@@ -45,7 +45,7 @@ class FireStationRepositoryTest {
         var findFireStationJson = "{ \"address\":\"1509 Culver St\", \"station\":\"3\" }";
         var fireStation = objectMapper.readValue(findFireStationJson, FireStation.class);
 
-        var expectedFireStation = fireStationRepository.findByAddress(fireStation.getAddress());
+        var expectedFireStation = fireStationRepository.findFireStation(fireStation.getAddress());
         assertNotNull(expectedFireStation);
         assertEquals(fireStation, expectedFireStation);
         assertEquals(fireStation.getAddress(), expectedFireStation.getAddress());
@@ -59,7 +59,7 @@ class FireStationRepositoryTest {
         var expectedFireStation1 = objectMapper.readValue(findFireStation, FireStation.class);
         assertTrue(fireStationRepository.updateExistingFireStationNumber(expectedFireStation1));
 
-        var expectedFireStation2 = fireStationRepository.findByAddress(expectedFireStation1.getAddress());
+        var expectedFireStation2 = fireStationRepository.findFireStation(expectedFireStation1.getAddress());
         assertEquals("1509 Culver St", expectedFireStation2.getAddress());
         assertEquals("99", expectedFireStation2.getStation());
 
@@ -109,8 +109,8 @@ class FireStationRepositoryTest {
         assertTrue(fireStationRepository.save(fireStation));
 
         //Verify the person is added to the repository
-        var savedStation = fireStationRepository.findByAddress(fireStation.getAddress());
-        assertNotNull(fireStationRepository.findByAddress(fireStation.getAddress()));
+        var savedStation = fireStationRepository.findFireStation(fireStation.getAddress());
+        assertNotNull(fireStationRepository.findFireStation(fireStation.getAddress()));
         assertEquals("505 groove St", savedStation.getAddress());
         assertEquals("88", savedStation.getStation());
 

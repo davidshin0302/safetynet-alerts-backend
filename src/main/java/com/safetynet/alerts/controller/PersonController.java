@@ -43,7 +43,7 @@ public class PersonController {
         if (personRepository.save(person)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()));
+                    .body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -54,7 +54,7 @@ public class PersonController {
         if (personRepository.updateExistingPerson(person)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()));
+                    .body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

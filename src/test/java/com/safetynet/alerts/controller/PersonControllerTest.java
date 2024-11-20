@@ -71,7 +71,7 @@ class PersonControllerTest {
         Person testNewPerson = objectMapper.readValue(newPersonFile, Person.class);
 
         when(personRepository.save(testNewPerson)).thenReturn(true); //save new Person first
-        when(personRepository.findByFirstAndLastName(any(String.class), any(String.class))).thenReturn(testNewPerson); //Return newly saved person from personList.
+        when(personRepository.findPerson(any(String.class), any(String.class))).thenReturn(testNewPerson); //Return newly saved person from personList.
 
         mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -107,7 +107,7 @@ class PersonControllerTest {
         Person testEditPerson = objectMapper.readValue(editPersonFile, Person.class);
 
         when(personRepository.updateExistingPerson(any(Person.class))).thenReturn(true); // check if person exist in the list
-        when(personRepository.findByFirstAndLastName(any(String.class), any(String.class))).thenReturn(testEditPerson); // After checked then add.
+        when(personRepository.findPerson(any(String.class), any(String.class))).thenReturn(testEditPerson); // After checked then add.
 
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
