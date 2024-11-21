@@ -51,7 +51,7 @@ public class PersonRepositoryTest {
         var actual = objectMapper.readValue(actualJson, Person.class);
 
         //Both conditions are true
-        var expectedFindPerson = personRepository.findByFirstAndLastName(actual.getFirstName(), actual.getLastName());
+        var expectedFindPerson = personRepository.findPerson(actual.getFirstName(), actual.getLastName());
         assertNotNull(actual);
         assertEquals(expectedFindPerson.getFirstName(), actual.getFirstName());
         assertEquals(expectedFindPerson.getLastName(), actual.getLastName());
@@ -61,11 +61,11 @@ public class PersonRepositoryTest {
         assertEquals(expectedFindPerson.getEmail(), actual.getEmail());
 
         //First condition is false
-        assertNull(personRepository.findByFirstAndLastName("noFirstName", actual.getLastName()));
+        assertNull(personRepository.findPerson("noFirstName", actual.getLastName()));
         //First condition is true, second is false
-        assertNull(personRepository.findByFirstAndLastName(actual.getFirstName(), "noLastName"));
+        assertNull(personRepository.findPerson(actual.getFirstName(), "noLastName"));
         //Both conditions are false
-        assertNull(personRepository.findByFirstAndLastName("noFirstName", "noLastName"));
+        assertNull(personRepository.findPerson("noFirstName", "noLastName"));
     }
 
     @Test
@@ -128,8 +128,8 @@ public class PersonRepositoryTest {
         assertTrue(personRepository.save(person));
 
         //Verify the person is added to the repository
-        var savedPerson = personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName());
-        assertNotNull(personRepository.findByFirstAndLastName(person.getFirstName(), person.getLastName()));
+        var savedPerson = personRepository.findPerson(person.getFirstName(), person.getLastName());
+        assertNotNull(personRepository.findPerson(person.getFirstName(), person.getLastName()));
         assertEquals("big", savedPerson.getFirstName());
         assertEquals("head", savedPerson.getLastName());
 

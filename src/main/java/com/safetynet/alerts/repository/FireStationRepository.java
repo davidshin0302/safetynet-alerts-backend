@@ -37,21 +37,28 @@ public class FireStationRepository {
         return fireStationList;
     }
 
-    public FireStation findByAddress(String address) {
+    private FireStation findByAddress(String address) {
         return fireStationList.stream()
                 .filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim()))
                 .findFirst()
                 .orElse(null);
     }
 
+    public FireStation findFireStation(String address) {
+        return findByAddress(address);
+    }
+
     public boolean updateExistingFireStationNumber(FireStation fireStation) {
         boolean updated = true;
 
         FireStation existingFireStation = findByAddress(fireStation.getAddress());
-
+        /*
+        *Retrieving an object from fireStationList via findByAddress returns a reference,
+        *not a copy. Modifying the object through this reference updates the original in the list,
+        *as both share the same memory location.
+         */
         if (existingFireStation != null) {
             existingFireStation.setStation(fireStation.getStation());
-            save(existingFireStation);
         } else {
             updated = false;
         }

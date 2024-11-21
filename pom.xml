@@ -124,6 +124,7 @@
                         <exclude>com/safetynet/alerts/exception/**</exclude>
                         <exclude>com/safetynet/alerts/property/**</exclude>
                         <exclude>com/safetynet/alerts/model/**</exclude>
+                        <exclude>com/safetynet/alerts/SafetyNetAlertsBackendApplication*</exclude>
                     </excludes>
                 </configuration>
             </plugin>
