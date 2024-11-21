@@ -38,11 +38,15 @@ public class PersonRepository {
         return personList;
     }
 
-    public Person findByFirstAndLastName(String firstName, String lastName) {
+    private Person findByFirstAndLastName(String firstName, String lastName) {
         return personList.stream()
                 .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public Person findPerson(String firstName, String lastName) {
+        return findByFirstAndLastName(firstName, lastName);
     }
 
     public boolean updateExistingPerson(Person person) {
