@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="SafetyNetAlertsBackendApplication" type="Application" factoryName="Application">
+    <option name="MAIN_CLASS_NAME" value="com.safetynet.alerts.SafetyNetAlertsBackendApplication" />
+    <module name="safetynet-alerts-backend" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
