@@ -16,8 +16,10 @@ import java.io.File;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MedicalRecordController.class)
@@ -64,5 +66,25 @@ class MedicalRecordControllerTest {
         mockMvc.perform(post("/medicalRecord").contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(medicalRecord)))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void updateMedicalRecord() throws Exception {
+        MedicalRecord medicalRecord = objectMapper.readValue(new File(TEST_FILE_PATH + "/medicalRecordDir/testUpdateMedicalRecrod.json"), MedicalRecord.class);
+        when(medicalRecordRepository.updateExistingMedicalRecord(any(MedicalRecord.class))).thenReturn(true);
+
+        mockMvc.perform(put("/medicalRecord").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(medicalRecord)))
+                .andExpect(status().isCreated());
+    }
+
+    @Test
+    void updateMedicalRecord_conflict() throws Exception {
+        MedicalRecord medicalRecord = new MedicalRecord();
+        when(medicalRecordRepository.updateExistingMedicalRecord(any(MedicalRecord.class))).thenReturn(false);
+
+        mockMvc.perform(put("/medicalRecord").contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(medicalRecord)))
+                .andExpect(status().isNotFound());
     }
 }
