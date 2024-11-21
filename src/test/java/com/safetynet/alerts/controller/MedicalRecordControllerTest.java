@@ -20,22 +20,19 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MedicalRecordController.class)
 class MedicalRecordControllerTest {
 
+    private static final String TEST_FILE_PATH = "src/test/resources";
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private MedicalRecordRepository medicalRecordRepository;
-
     private MedicalRecordController medicalRecordController;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private static final String TEST_FILE_PATH = "src/test/resources";
 
     @Test
     void getAllMedicalRecords() throws Exception {
@@ -49,12 +46,21 @@ class MedicalRecordControllerTest {
     }
 
     @Test
+    void getAllMedicalRecords_test_runtimeException() throws Exception {
+        when(medicalRecordRepository.findAll()).thenThrow(new RuntimeException("RuntimeException error"));
+
+        mockMvc.perform(get("/medicalRecord"))
+                .andExpect(status().isInternalServerError());  // Expecting HTTP status 500 Internal Server Error
+    }
+
+
+    @Test
     void addMedicalRecord() throws Exception {
         MedicalRecord medicalRecord = objectMapper.readValue(new File(TEST_FILE_PATH + "/medicalRecordDir/testNewMedicalRecord.json"), MedicalRecord.class);
         when(medicalRecordRepository.save(any(MedicalRecord.class))).thenReturn(true);
 
         mockMvc.perform(post("/medicalRecord").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(medicalRecord)))
+                        .content(objectMapper.writeValueAsString(medicalRecord)))
                 .andExpect(status().isCreated());
     }
 
@@ -64,7 +70,7 @@ class MedicalRecordControllerTest {
         when(medicalRecordRepository.save(any(MedicalRecord.class))).thenReturn(false);
 
         mockMvc.perform(post("/medicalRecord").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(medicalRecord)))
+                        .content(objectMapper.writeValueAsString(medicalRecord)))
                 .andExpect(status().isConflict());
     }
 
@@ -74,17 +80,39 @@ class MedicalRecordControllerTest {
         when(medicalRecordRepository.updateExistingMedicalRecord(any(MedicalRecord.class))).thenReturn(true);
 
         mockMvc.perform(put("/medicalRecord").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(medicalRecord)))
+                        .content(objectMapper.writeValueAsString(medicalRecord)))
                 .andExpect(status().isCreated());
     }
 
     @Test
-    void updateMedicalRecord_conflict() throws Exception {
+    void updateMedicalRecord_not_found() throws Exception {
         MedicalRecord medicalRecord = new MedicalRecord();
         when(medicalRecordRepository.updateExistingMedicalRecord(any(MedicalRecord.class))).thenReturn(false);
 
         mockMvc.perform(put("/medicalRecord").contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(medicalRecord)))
+                        .content(objectMapper.writeValueAsString(medicalRecord)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void deleteMedicalRecord() throws Exception {
+        MedicalRecord medicalRecord = objectMapper.readValue(new File(TEST_FILE_PATH + "/medicalRecordDir/testNewMedicalRecord.json"), MedicalRecord.class);
+        when(medicalRecordRepository.delete(any(MedicalRecord.class))).thenReturn(true);
+
+        mockMvc.perform(delete("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(medicalRecord)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteMedicalRecord_not_found() throws Exception {
+        MedicalRecord medicalRecord = new MedicalRecord();
+        when(medicalRecordRepository.delete(any(MedicalRecord.class))).thenReturn(false);
+
+        mockMvc.perform(delete("/medicalRecord")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(medicalRecord)))
                 .andExpect(status().isNotFound());
     }
 }
