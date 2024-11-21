@@ -78,7 +78,7 @@ public class MedicalRecordRepository {
         MedicalRecord deleteMedicalRecord = findMedicalRecordByFirstLastName(medicalRecord.getFirstName(), medicalRecord.getLastName());
 
         if (deleteMedicalRecord != null) {
-            result = medicalRecordList.remove(medicalRecord);
+            result = medicalRecordList.remove(deleteMedicalRecord);
         }
         return result;
     }
