@@ -13,6 +13,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+/**
+ * TODO:: Implement below handler request.
+ * /personInfo?firstName=<firstName>&lastName=<lastName> (GET): Retrieve detailed information about a person.
+ * /communityEmail?city=<city> (GET): Get emails of people in a city.
+ */
 @RestController
 @RequestMapping("/person")
 @Slf4j
