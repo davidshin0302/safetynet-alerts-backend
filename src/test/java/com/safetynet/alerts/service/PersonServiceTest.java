@@ -18,11 +18,17 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
 public class PersonServiceTest {
-    @Autowired
+
+    private static final String TEST_FILE_PATH = "src/test/resources/testData.json";
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     PersonService personService;
 
     @MockBean
@@ -31,17 +37,30 @@ public class PersonServiceTest {
     @MockBean
     MedicalRecordRepository medicalRecordRepository;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private static final String TEST_FILE_PATH = "src/test/resources/testData.json";
+    private List<Person> personList;
+    private List<MedicalRecord> medicalRecordList;
 
     @BeforeEach
     void setUp() throws IOException {
+        personService = new PersonService();
+
         when(personRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH), DataObject.class).getPersons());
         when(medicalRecordRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH), DataObject.class).getMedicalRecords());
-    }
-    @Test
-    public void findPersonInfo(){
 
+        personList = personRepository.findAll();
+        medicalRecordList = medicalRecordRepository.findAll();
+    }
+
+    @Test
+    public void findPersonInfo() {
+        when(personRepository.findPerson(any(String.class), any(String.class))).thenReturn(personList.get(0));
+        when(medicalRecordRepository.findRecord(any(String.class), any(String.class))).thenReturn(medicalRecordList.get(0));
+
+        Person person = personRepository.findPerson("John", "Boyd");
+        MedicalRecord medicalRecord = medicalRecordRepository.findRecord("John", "Boyd");
+
+        List<PersonInfoView> personInfoViewList = personService.findPersonInfo("John", "Boyd");
+
+        assertFalse(personInfoViewList.isEmpty());
     }
 }

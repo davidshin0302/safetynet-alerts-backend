@@ -25,6 +25,11 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
+    public PersonService(){
+        personRepository = new PersonRepository();
+        medicalRecordRepository = new MedicalRecordRepository();
+    }
+
     /**
      * Finds person information based on the given first and last names.
      *
@@ -34,7 +39,6 @@ public class PersonService {
      */
     public List<PersonInfoView> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
         List<Person> personList = personRepository.findAll();
-        List<MedicalRecord> medicalRecordList = medicalRecordRepository.findAll();
         List<PersonInfoView> personInfoViewList = new ArrayList<>();
 
         for (Person person : personList) {
@@ -44,7 +48,7 @@ public class PersonService {
                     String name = person.getFirstName() + " " + person.getLastName();
                     String address = person.getAddress() + " " + person.getCity() + ", " + person.getZip();
                     String email = person.getEmail();
-                    int age = findAge(person);
+                    int age = findAge(medicalRecord);
 
                     PersonInfoView personInfoView = new PersonInfoView(name, address, email, age, medicalRecord.getMedications(), medicalRecord.getAllergies());
                     personInfoViewList.add(personInfoView);
@@ -55,13 +59,18 @@ public class PersonService {
         return personInfoViewList;
     }
 
-    private int findAge(Person person) {
-        MedicalRecord medicalRecord = medicalRecordRepository.findRecord(person.getFirstName(), person.getLastName());
+    /**
+     * Find brith date from format MM/DD/YYYY
+     * @param medicalRecord
+     * @return int value if age. ex) 25.
+     */
+    private int findAge(MedicalRecord medicalRecord) {
         String birthDate = medicalRecord.getBirthdate();
 
         int year = LocalDate.now().getYear();
-        int getPersonBirthYear = Integer.parseInt(birthDate.split(":")[2]);
+        String[] birthDateSplit = birthDate.split("/"); // ex) String [03, 25, 1988]
+        int getPersonBirthYear = Integer.parseInt(birthDateSplit[0]); // 1988
 
-        return Integer.min(year, getPersonBirthYear);
+        return Integer.min(year, getPersonBirthYear); // 2024 - 1988
     }
 }
