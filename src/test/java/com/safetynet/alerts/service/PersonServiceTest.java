@@ -11,16 +11,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.slf4j.Logger;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
+
 
 @ExtendWith(SpringExtension.class)
 public class PersonServiceTest {
@@ -32,25 +34,32 @@ public class PersonServiceTest {
     @InjectMocks
     PersonService personService;
 
-    @MockBean
+    @Mock
     PersonRepository personRepository;
 
-    @MockBean
+    @Mock
     MedicalRecordRepository medicalRecordRepository;
 
+    @Mock
+    Logger log;
+
     private List<Person> personList;
+    private List<MedicalRecord> medicalRecordList;
     private List<PersonInfoView> personInfoViewList;
 
     @BeforeEach
     void setUp() throws IOException {
+
         when(personRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH), DataObject.class).getPersons());
         when(medicalRecordRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH), DataObject.class).getMedicalRecords());
 
         personList = personRepository.findAll();
+        medicalRecordList = medicalRecordRepository.findAll();
     }
 
     @Test
     public void findPersonInfo() throws IOException {
+        when(medicalRecordRepository.findRecord("John", "Boyd")).thenReturn(medicalRecordList.get(0));
         personInfoViewList = personService.findPersonInfo("John", "Boyd");
 
         assertFalse(personInfoViewList.isEmpty());
@@ -73,26 +82,13 @@ public class PersonServiceTest {
     void findPersonInfo_when_medicalRecord_is_null() throws IOException {
         // Prepare the updated person list from test file
         List<Person> updatedPersonList = objectMapper.readValue(new File(TEST_PERSON_SERVICE_FILE_PATH), DataObject.class).getPersons();
+        assertEquals(24, updatedPersonList.size());
+
+        // Simulate a null medical record for a specific person
         when(personRepository.findAll()).thenReturn(updatedPersonList);
+        when(medicalRecordRepository.findRecord(anyString(), anyString())).thenReturn(null);
 
-        // Create a mock MedicalRecord and configure it
-        MedicalRecord mockMedicalRecord = new MedicalRecord();
-        mockMedicalRecord.setMedications(Arrays.asList("Med1", "Med2"));
-        mockMedicalRecord.setAllergies(Arrays.asList("Allergy1", "Allergy2"));
-
-        // Simulate a non-null medical record for a specific person
-        when(medicalRecordRepository.findRecord("big", "head")).thenReturn(mockMedicalRecord);
-
-        // Call the method under test
         personInfoViewList = personService.findPersonInfo("big", "head");
-
-        // Assert that the result is not empty and matches expected values
         assertTrue(personInfoViewList.isEmpty());
-        assertEquals(0, personInfoViewList.size());
-
-//        PersonInfoView personInfo = personInfoViewList.get(0);
-//        assertEquals("big head", personInfo.getName());
-//        assertEquals(Arrays.asList("Med1", "Med2"), personInfo.getMedications());
-//        assertEquals(Arrays.asList("Allergy1", "Allergy2"), personInfo.getAllergies());
     }
 }

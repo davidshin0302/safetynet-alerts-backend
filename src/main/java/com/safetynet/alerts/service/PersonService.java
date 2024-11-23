@@ -6,6 +6,7 @@ import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.PersonInfoView;
 import jakarta.validation.constraints.NotBlank;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.List;
  * Retrieve person details (/personInfo?firstName=<firstName>&lastName=<lastName>).
  * Retrieve community emails (/communityEmail?city=<city>).
  */
+@Slf4j
 @Service
 public class PersonService {
     @Autowired
@@ -25,10 +27,10 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
-    public PersonService(){
-        personRepository = new PersonRepository();
-        medicalRecordRepository = new MedicalRecordRepository();
-    }
+//    public PersonService(){
+//        personRepository = new PersonRepository();
+//        medicalRecordRepository = new MedicalRecordRepository();
+//    }
 
     /**
      * Finds person information based on the given first and last names.
@@ -52,9 +54,11 @@ public class PersonService {
 
                     PersonInfoView personInfoView = new PersonInfoView(name, address, email, age, medicalRecord.getMedications(), medicalRecord.getAllergies());
                     personInfoViewList.add(personInfoView);
+                } else {
+                    log.info("Medical record is not found from the Person info: {}", person);
                 }
             }
-
+            log.info("[PersonService] Unable to find the person with name, {}", firstName + " " + lastName);
         }
         return personInfoViewList;
     }
