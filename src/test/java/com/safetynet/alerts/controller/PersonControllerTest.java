@@ -1,9 +1,12 @@
 package com.safetynet.alerts.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.view.PersonInfoView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,9 +20,12 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -33,6 +39,9 @@ class PersonControllerTest {
 
     @MockBean
     private PersonRepository personRepository;
+
+    @MockBean
+    private PersonService personService;
 
     @InjectMocks
     private PersonController personController;
@@ -63,6 +72,32 @@ class PersonControllerTest {
         mockMvc.perform(get("/person"))
                 .andExpect(status().isInternalServerError());
 
+    }
+
+    @Test
+    public void testGetPersonInfo() throws Exception {
+        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personDir/testPersonInfo.json"), new TypeReference<List<PersonInfoView>>(){});
+        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+
+        mockMvc.perform(get("/personInfo?firstName=John&lastName=Boyd"))
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.[0].name").value("John Boyd"))
+                .andExpect(jsonPath("$.[0].address").value("1509 Culver St Culver, 97451"))
+                .andExpect(jsonPath("$.[0].email").value("jaboyd@email.com"))
+                .andExpect(jsonPath("$.[0].age").value(40))
+                .andExpect(jsonPath("$.[0].medications",hasSize(2)))
+                .andExpect(jsonPath("$.[0].allergies", hasSize(1)));
+    }
+
+    @Test
+    public void testGetPersonInfo_when_is_empty() throws Exception {
+        List<PersonInfoView> personInfoViewList = new ArrayList<>();
+
+        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+
+        mockMvc.perform(get("/personInfo?firstName=NoExist&lastName=NoExist"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
