@@ -6,6 +6,8 @@ import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.PersonInfoView;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ import java.util.List;
  */
 @Slf4j
 @Service
+@AllArgsConstructor
+@NoArgsConstructor
 public class PersonService {
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
@@ -27,16 +31,11 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
-//    public PersonService(){
-//        personRepository = new PersonRepository();
-//        medicalRecordRepository = new MedicalRecordRepository();
-//    }
-
     /**
      * Finds person information based on the given first and last names.
      *
      * @param firstName the first name of the person to find
-     * @param lastName the last name of the person to find
+     * @param lastName  the last name of the person to find
      * @return a list of person information views, each containing the person's name, address, email, age, medications, and allergies
      */
     public List<PersonInfoView> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
@@ -65,6 +64,7 @@ public class PersonService {
 
     /**
      * Find brith date from format MM/DD/YYYY
+     *
      * @param medicalRecord
      * @return int value if age. ex) 25.
      */
