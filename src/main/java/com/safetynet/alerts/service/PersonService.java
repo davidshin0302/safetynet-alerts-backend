@@ -57,7 +57,6 @@ public class PersonService {
                     log.info("Medical record is not found from the Person info: {}", person);
                 }
             }
-            log.info("[PersonService] Unable to find the person with name, {}", firstName + " " + lastName);
         }
         return personInfoViewList;
     }
@@ -71,10 +70,12 @@ public class PersonService {
     private int findAge(MedicalRecord medicalRecord) {
         String birthDate = medicalRecord.getBirthdate();
 
-        int year = LocalDate.now().getYear();
-        String[] birthDateSplit = birthDate.split("/"); // ex) String [03, 25, 1988]
-        int getPersonBirthYear = Integer.parseInt(birthDateSplit[0]); // 1988
+        int currentYear = LocalDate.now().getYear();
 
-        return Integer.min(year, getPersonBirthYear); // 2024 - 1988
+        String[] birthDateSplit = birthDate.split("/"); // ex) String [03, 25, 1988]
+        int birthYear = Integer.parseInt(birthDateSplit[2]); // 1988
+        int age = currentYear - birthYear;
+
+        return age; // 2024 - 1988
     }
 }

@@ -86,9 +86,19 @@ class PersonControllerTest {
                 .andExpect(jsonPath("$.[0].name").value("John Boyd"))
                 .andExpect(jsonPath("$.[0].address").value("1509 Culver St Culver, 97451"))
                 .andExpect(jsonPath("$.[0].email").value("jaboyd@email.com"))
-                .andExpect(jsonPath("$.[0].age").value(3))
+                .andExpect(jsonPath("$.[0].age").value(40))
                 .andExpect(jsonPath("$.[0].medications",hasSize(2)))
                 .andExpect(jsonPath("$.[0].allergies", hasSize(1)));
+    }
+
+    @Test
+    public void testGetPersonInfo_when_is_empty() throws Exception {
+        List<PersonInfoView> personInfoViewList = new ArrayList<>();
+
+        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+
+        mockMvc.perform(get("/personInfo?firstName=NoExist&lastName=NoExist"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
