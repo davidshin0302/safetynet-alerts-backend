@@ -32,11 +32,21 @@ public class MedicalRecordRepository {
         return medicalRecordList;
     }
 
+    /**
+     * Returning the reference the object that found. **Hashcode(object Id) try to use debug mode.
+     *
+     * @param firstName
+     * @param lastName
+     * @return refernce of MedicalRecord Object or else null.
+     */
     //Helper method, Not access to outside
     private MedicalRecord findMedicalRecordByFirstLastName(String firstName, String lastName) {
         //Returning the reference the object that found. **Hashcode(object Id) try to use debug mode.
         //Primitives are return original but other return by reference.
-        return medicalRecordList.stream().filter(medicalRecord -> medicalRecord.getFirstName().equalsIgnoreCase(firstName) && medicalRecord.getLastName().equalsIgnoreCase(lastName)).findFirst().orElse(null);
+        return medicalRecordList.stream()
+                .filter(medicalRecord -> medicalRecord.getFirstName().equalsIgnoreCase(firstName) && medicalRecord.getLastName().equalsIgnoreCase(lastName))
+                .findFirst()
+                .orElse(null);
     }
 
     //Expose private method through a public wrapper
