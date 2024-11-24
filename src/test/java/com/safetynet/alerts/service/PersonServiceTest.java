@@ -27,8 +27,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(SpringExtension.class)
 public class PersonServiceTest {
 
-    private static final String TEST_FILE_PATH = "src/test/resources/testData.json";
-    private static final String TEST_PERSON_SERVICE_FILE_PATH = "src/test/resources/personService/testPersonService.json";
+    private static final String TEST_FILE_PATH = "src/test/resources";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
@@ -43,27 +42,24 @@ public class PersonServiceTest {
     @Mock
     Logger log;
 
-    private List<Person> personList;
     private List<MedicalRecord> medicalRecordList;
     private List<PersonInfoView> personInfoViewList;
 
     @BeforeEach
     void setUp() throws IOException {
+        when(personRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testPersonSameName.json"), DataObject.class).getPersons());
+        when(medicalRecordRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testPersonSameName.json"), DataObject.class).getMedicalRecords());
 
-        when(personRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH), DataObject.class).getPersons());
-        when(medicalRecordRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH), DataObject.class).getMedicalRecords());
-
-        personList = personRepository.findAll();
+        List<Person> personList = personRepository.findAll();
         medicalRecordList = medicalRecordRepository.findAll();
     }
 
     @Test
-    public void findPersonInfo() throws IOException {
+    void findPersonInfo() throws IOException {
         when(medicalRecordRepository.findRecord("John", "Boyd")).thenReturn(medicalRecordList.get(0));
         personInfoViewList = personService.findPersonInfo("John", "Boyd");
 
         assertFalse(personInfoViewList.isEmpty());
-        assertEquals(1, personInfoViewList.size());
 
         //First name match but last name wrong.
         personInfoViewList = personService.findPersonInfo("John", "NoExist");
@@ -79,9 +75,36 @@ public class PersonServiceTest {
     }
 
     @Test
+    void findPersonInfo_same_name() {
+        when(medicalRecordRepository.findRecord("John", "Boyd")).thenReturn(medicalRecordList.get(0));
+        personInfoViewList = personService.findPersonInfo("John", "Boyd");
+
+        PersonInfoView firstPersonInfo = personInfoViewList.get(0);
+
+        assertEquals(2, personInfoViewList.size());
+        assertEquals("John Boyd", firstPersonInfo.getName());
+        assertEquals("1509 Culver St Culver, 97451",firstPersonInfo.getAddress());
+        assertEquals("jaboyd@email.com", firstPersonInfo.getEmail());
+        assertEquals(2, firstPersonInfo.getMedications().size());
+        assertEquals(1, firstPersonInfo.getAllergies().size());
+
+        //Test if personService returns all the record from same name.
+        when(medicalRecordRepository.findRecord("John", "Boyd")).thenReturn(medicalRecordList.get(1));
+        List<PersonInfoView> secondPersonInfoViewList = personService.findPersonInfo("John", "Boyd");
+        PersonInfoView secondPersonInfo = secondPersonInfoViewList.get(1);
+
+        assertEquals(2, personInfoViewList.size());
+        assertEquals("John Boyd", secondPersonInfo.getName());
+        assertEquals("123 main St MainCity, 00001",secondPersonInfo.getAddress());
+        assertEquals("noJohnBoyd@email.com", secondPersonInfo.getEmail());
+        assertEquals(0, secondPersonInfo.getMedications().size());
+        assertEquals(1, secondPersonInfo.getAllergies().size());
+    }
+
+    @Test
     void findPersonInfo_when_medicalRecord_is_null() throws IOException {
         // Prepare the updated person list from test file
-        List<Person> updatedPersonList = objectMapper.readValue(new File(TEST_PERSON_SERVICE_FILE_PATH), DataObject.class).getPersons();
+        List<Person> updatedPersonList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testPersonService.json"), DataObject.class).getPersons();
         assertEquals(24, updatedPersonList.size());
 
         // Simulate a null medical record for a specific person
