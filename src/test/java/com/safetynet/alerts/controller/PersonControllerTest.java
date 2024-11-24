@@ -10,7 +10,6 @@ import com.safetynet.alerts.view.PersonInfoView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -77,7 +76,7 @@ class PersonControllerTest {
 
     @Test
     public void testGetPersonInfo() throws Exception {
-        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personDir/testPerSonInfo.json"), new TypeReference<List<PersonInfoView>>(){});
+        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personDir/testPersonInfo.json"), new TypeReference<List<PersonInfoView>>(){});
         when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
 
         mockMvc.perform(get("/personInfo?firstName=John&lastName=Boyd"))
