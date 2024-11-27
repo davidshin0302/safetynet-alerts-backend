@@ -32,4 +32,16 @@ public class MedicalRecord {
                 ", allergies=" + allergies +
                 '}';
     }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MedicalRecord medicalRecord)) return false;
+
+        return firstName.equalsIgnoreCase(medicalRecord.firstName) && lastName.equalsIgnoreCase(medicalRecord.lastName);
+    }
+
+    public String uniqueIdentifier(){
+        return firstName + "_" + lastName + "_" + birthdate;
+    }
 }

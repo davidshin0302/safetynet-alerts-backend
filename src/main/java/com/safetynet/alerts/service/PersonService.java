@@ -23,13 +23,18 @@ import java.util.List;
 @Slf4j
 @Service
 @AllArgsConstructor
-@NoArgsConstructor
 public class PersonService {
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
 
     @Autowired
     private PersonRepository personRepository;
+
+    public PersonService(){
+        List<Person> personList = personRepository.findAll();
+        List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
+
+    }
 
     /**
      * Finds person information based on the given first and last names.
