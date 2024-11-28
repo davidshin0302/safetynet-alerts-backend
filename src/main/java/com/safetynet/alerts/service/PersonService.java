@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Retrieve person details (/personInfo?firstName=<firstName>&lastName=<lastName>).
@@ -29,9 +31,10 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
+    private Map<String, Person> personMap;
+    private Map<String, MedicalRecord> medicalRecordMap;
+
     public PersonService() {
-        List<Person> personList = personRepository.findAll();
-        List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
 
     }
 
@@ -81,5 +84,26 @@ public class PersonService {
         int age = currentYear - birthYear;
 
         return age; // 2024 - 1988
+    }
+
+    private void loadInitialPersonInfoList() {
+        medicalRecordMap = medicalRecordRepository.findAll()
+                .stream()
+                .collect(Collectors.toMap(
+                        medicalRecord -> medicalRecord.getUniqueIdentifier(), //same as -> MedicalRecord::getUniqueIdentifier
+                        medicalRecord -> medicalRecord
+                ));
+
+        personMap = personRepository.findAll()
+                .stream()
+                .filter(person -> medicalRecordMap.containsKey(person.getPartialIdentifier()))
+                .collect(Collectors.toMap(
+                        person -> {
+                            MedicalRecord medicalRecord = medicalRecordMap.get(person.getPartialIdentifier());
+                            return person.getUniqueIdentifier(medicalRecord.getBirthdate());
+                        },
+                        person -> person
+                ));
+
     }
 }
