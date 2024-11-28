@@ -51,7 +51,7 @@ public class Person {
         return result;
     }
 
-    public String uniqueIdentifier(String birthdate){
+    public String uniqueIdentifier(String birthdate) {
         return firstName + "_" + lastName + "_" + birthdate;
     }
 }

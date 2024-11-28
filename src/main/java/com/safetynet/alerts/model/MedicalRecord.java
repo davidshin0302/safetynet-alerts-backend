@@ -41,7 +41,7 @@ public class MedicalRecord {
         return firstName.equalsIgnoreCase(medicalRecord.firstName) && lastName.equalsIgnoreCase(medicalRecord.lastName);
     }
 
-    public String uniqueIdentifier(){
+    public String uniqueIdentifier() {
         return firstName + "_" + lastName + "_" + birthdate;
     }
 }

@@ -17,10 +17,9 @@ import java.io.IOException;
 @Slf4j
 public class MedicalRecordController {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping
     public ResponseEntity<String> getAllMedicalRecords() {

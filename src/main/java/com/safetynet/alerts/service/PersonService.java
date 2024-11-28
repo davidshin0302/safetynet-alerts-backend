@@ -7,7 +7,6 @@ import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.PersonInfoView;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -30,7 +29,7 @@ public class PersonService {
     @Autowired
     private PersonRepository personRepository;
 
-    public PersonService(){
+    public PersonService() {
         List<Person> personList = personRepository.findAll();
         List<MedicalRecord> medicalRecords = medicalRecordRepository.findAll();
 

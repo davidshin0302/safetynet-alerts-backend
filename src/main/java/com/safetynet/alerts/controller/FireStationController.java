@@ -16,20 +16,19 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 /**
-* TODO:: Implement below request handler.
-* /firestation?stationNumber=<station_number> (GET): Retrieve a list of people by station.
-* /phoneAlert?firestation=<firestation_number> (GET): Get phone numbers by station.
-* /flood/stations?stations=<list_of_station_numbers> (GET): Get households by fire station(s).
+ * TODO:: Implement below request handler.
+ * /firestation?stationNumber=<station_number> (GET): Retrieve a list of people by station.
+ * /phoneAlert?firestation=<firestation_number> (GET): Get phone numbers by station.
+ * /flood/stations?stations=<list_of_station_numbers> (GET): Get households by fire station(s).
  */
 @RestController
 @RequestMapping("/firestation")
 @Slf4j
 public class FireStationController {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private FireStationRepository fireStationRepository;
-
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @GetMapping
     public ResponseEntity<String> getFireStation() {
