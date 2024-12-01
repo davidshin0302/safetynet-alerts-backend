@@ -1,5 +1,6 @@
 package com.safetynet.alerts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,6 +42,7 @@ public class MedicalRecord {
         return firstName.equalsIgnoreCase(medicalRecord.firstName) && lastName.equalsIgnoreCase(medicalRecord.lastName);
     }
 
+    @JsonIgnore
     public String getUniqueIdentifier() {
         return firstName + "_" + lastName;
     }
