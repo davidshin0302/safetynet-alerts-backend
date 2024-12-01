@@ -46,21 +46,6 @@ public class PersonController {
         }
     }
 
-    @GetMapping(value = "/personInfo")
-    public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) throws JsonProcessingException {
-        List<PersonInfoView> personInfoViewList = personService.findPersonInfo(firstName, lastName);
-
-        if (!personInfoViewList.isEmpty()) {
-            String personInfoViewListToJson = objectMapper.writeValueAsString(personInfoViewList);
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(personInfoViewListToJson);
-        } else {
-            log.info("Unable to find data from first name: {} and last name: {}.", firstName, lastName);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
 
     @PostMapping("/person")
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
