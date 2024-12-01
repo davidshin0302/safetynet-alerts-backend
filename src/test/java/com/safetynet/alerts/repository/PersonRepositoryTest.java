@@ -51,7 +51,7 @@ public class PersonRepositoryTest {
         var actual = objectMapper.readValue(actualJson, Person.class);
 
         //Both conditions are true
-        var expectedFindPerson = personRepository.findPerson(actual.getFirstName(), actual.getLastName());
+        var expectedFindPerson = personRepository.findPerson(actual.getFirstName(), actual.getLastName(), actual.getEmail());
         assertNotNull(actual);
         assertEquals(expectedFindPerson.getFirstName(), actual.getFirstName());
         assertEquals(expectedFindPerson.getLastName(), actual.getLastName());
@@ -61,11 +61,11 @@ public class PersonRepositoryTest {
         assertEquals(expectedFindPerson.getEmail(), actual.getEmail());
 
         //First condition is false
-        assertNull(personRepository.findPerson("noFirstName", actual.getLastName()));
+        assertNull(personRepository.findPerson("noFirstName", actual.getLastName(),actual.getEmail()));
         //First condition is true, second is false
-        assertNull(personRepository.findPerson(actual.getFirstName(), "noLastName"));
+        assertNull(personRepository.findPerson(actual.getFirstName(), "noLastName", "noEmail"));
         //Both conditions are false
-        assertNull(personRepository.findPerson("noFirstName", "noLastName"));
+        assertNull(personRepository.findPerson("noFirstName", "noLastName", "noEmail"));
     }
 
     @Test
@@ -108,13 +108,13 @@ public class PersonRepositoryTest {
 
         personRepository.save(person);
 
-        assertTrue(personRepository.delete(person.getFirstName(), person.getLastName()));
+        assertTrue(personRepository.delete(person.getFirstName(), person.getLastName(), person.getEmail()));
         assertEquals(personList.size(), personRepository.findAll().size());
     }
 
     @Test
     void testDeletePersonWhenPersonIsNull() {
-        var result = personRepository.delete("no", "data");
+        var result = personRepository.delete("no", "data", "noemail");
 
         assertFalse(result, "Unable to find the person");
     }
@@ -128,8 +128,8 @@ public class PersonRepositoryTest {
         assertTrue(personRepository.save(person));
 
         //Verify the person is added to the repository
-        var savedPerson = personRepository.findPerson(person.getFirstName(), person.getLastName());
-        assertNotNull(personRepository.findPerson(person.getFirstName(), person.getLastName()));
+        var savedPerson = personRepository.findPerson(person.getFirstName(), person.getLastName(), person.getEmail());
+        assertNotNull(personRepository.findPerson(person.getFirstName(), person.getLastName(), person.getEmail()));
         assertEquals("big", savedPerson.getFirstName());
         assertEquals("head", savedPerson.getLastName());
 

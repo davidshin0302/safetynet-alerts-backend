@@ -1,11 +1,9 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
-import com.safetynet.alerts.view.PersonInfoView;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
 /**
  * TODO:: Implement below handler request.
@@ -37,9 +34,7 @@ public class PersonController {
         try {
             String personList = objectMapper.writeValueAsString(personRepository.findAll());
 
-            return ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(personList);
+            return ResponseEntity.status(HttpStatus.OK).contentType(MediaType.APPLICATION_JSON).body(personList);
         } catch (IOException | RuntimeException ex) {
             log.error("Error at serializing data: {}", ex.getMessage());
             return new ResponseEntity<>("[PersonController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -50,9 +45,7 @@ public class PersonController {
     @PostMapping("/person")
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
         if (personRepository.save(person)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(personRepository.findPerson(person.getFirstName(), person.getLastName(), person.getEmail()));
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -61,9 +54,7 @@ public class PersonController {
     @PutMapping("/person")
     public ResponseEntity<Person> updateExistingPerson(@RequestBody Person person) throws IOException {
         if (personRepository.updateExistingPerson(person)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(personRepository.findPerson(person.getFirstName(), person.getLastName(), person.getEmail()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -71,7 +62,7 @@ public class PersonController {
 
     @DeleteMapping("/person")
     public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person person) {
-        if (personRepository.delete(person.getFirstName(), person.getLastName())) {
+        if (personRepository.delete(person.getFirstName(), person.getLastName(), person.getEmail())) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();

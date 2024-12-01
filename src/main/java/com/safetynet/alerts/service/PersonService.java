@@ -44,7 +44,18 @@ public class PersonService {
      * @return a list of person information views, each containing the person's name, address, email, age, medications, and allergies
      */
     public List<PersonInfoView> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
-        return new ArrayList<>(personInfoViewMap.values());
+        List<PersonInfoView> personInfoViewList = new ArrayList<>(List.of());
+
+        for(String name : personInfoViewMap.keySet()){
+            String[] splitName = name.split("_");
+            String personFirstName = splitName[0];
+            String personLastName = splitName[1];
+
+            if(personFirstName.equalsIgnoreCase(firstName) && personLastName.equalsIgnoreCase(lastName)){
+                personInfoViewList.add(personInfoViewMap.get(name));
+            }
+        }
+        return personInfoViewList;
     }
 
     @PostConstruct
