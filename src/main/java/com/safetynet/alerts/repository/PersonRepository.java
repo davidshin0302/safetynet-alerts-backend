@@ -23,26 +23,8 @@ public class PersonRepository {
         loadPersonData();
     }
 
-    private void loadPersonData() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String filePath = "src/main/resources/data.json";
-            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            personList.addAll(dataObject.getPersons());
-        } catch (IOException | RuntimeException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
     public List<Person> findAll() {
         return personList;
-    }
-
-    private Person findByFirstAndLastName(String firstName, String lastName) {
-        return personList.stream()
-                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName))
-                .findFirst()
-                .orElse(null);
     }
 
     public Person findPerson(String firstName, String lastName) {
@@ -90,5 +72,23 @@ public class PersonRepository {
             log.error("Person already exist in the list");
         }
         return result;
+    }
+
+    private void loadPersonData() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String filePath = "src/main/resources/data.json";
+            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
+            personList.addAll(dataObject.getPersons());
+        } catch (IOException | RuntimeException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    private Person findByFirstAndLastName(String firstName, String lastName) {
+        return personList.stream()
+                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName))
+                .findFirst()
+                .orElse(null);
     }
 }
