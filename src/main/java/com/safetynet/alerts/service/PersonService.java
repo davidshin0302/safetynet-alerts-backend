@@ -5,14 +5,15 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.PersonInfoView;
+import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.NotBlank;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,20 +24,17 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-@AllArgsConstructor
 public class PersonService {
-    @Autowired
-    private MedicalRecordRepository medicalRecordRepository;
 
     @Autowired
     private PersonRepository personRepository;
 
-    private Map<String, Person> personMap;
-    private Map<String, MedicalRecord> medicalRecordMap;
+    @Autowired
+    private MedicalRecordRepository medicalRecordRepository;
 
-    public PersonService() {
-
-    }
+    private Map<String, Person> personMap = new HashMap<>();
+    private Map<String, MedicalRecord> medicalRecordMap = new HashMap<>();
+    private Map<String, PersonInfoView> personInfoViewMap = new HashMap<>();
 
     /**
      * Finds person information based on the given first and last names.
@@ -46,26 +44,13 @@ public class PersonService {
      * @return a list of person information views, each containing the person's name, address, email, age, medications, and allergies
      */
     public List<PersonInfoView> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
-        List<Person> personList = personRepository.findAll();
-        List<PersonInfoView> personInfoViewList = new ArrayList<>();
+        return new ArrayList<>(personInfoViewMap.values());
+    }
 
-        for (Person person : personList) {
-            if (person.getFirstName().equalsIgnoreCase(firstName) && person.getLastName().equalsIgnoreCase(lastName)) {
-                MedicalRecord medicalRecord = medicalRecordRepository.findRecord(person.getFirstName(), person.getLastName());
-                if (medicalRecord != null) {
-                    String name = person.getFirstName() + " " + person.getLastName();
-                    String address = person.getAddress() + " " + person.getCity() + ", " + person.getZip();
-                    String email = person.getEmail();
-                    int age = findAge(medicalRecord);
-
-                    PersonInfoView personInfoView = new PersonInfoView(name, address, email, age, medicalRecord.getMedications(), medicalRecord.getAllergies());
-                    personInfoViewList.add(personInfoView);
-                } else {
-                    log.info("Medical record is not found from the Person info: {}", person);
-                }
-            }
-        }
-        return personInfoViewList;
+    @PostConstruct
+    private void init(){
+        populatePersonAndMedicalRecordMaps();;
+        populatePersonInfoServiceMaps();
     }
 
     /**
@@ -86,7 +71,7 @@ public class PersonService {
         return age; // 2024 - 1988
     }
 
-    private void loadInitialPersonInfoList() {
+    private void populatePersonAndMedicalRecordMaps() {
         medicalRecordMap = medicalRecordRepository.findAll()
                 .stream()
                 .collect(Collectors.toMap(
@@ -98,12 +83,33 @@ public class PersonService {
                 .stream()
                 .filter(person -> medicalRecordMap.containsKey(person.getPartialIdentifier()))
                 .collect(Collectors.toMap(
-                        person -> {
-                            MedicalRecord medicalRecord = medicalRecordMap.get(person.getPartialIdentifier());
-                            return person.getUniqueIdentifier(medicalRecord.getBirthdate());
-                        },
+                        person -> person.getPartialIdentifier(),
                         person -> person
                 ));
+    }
 
+    private void populatePersonInfoServiceMaps() {
+        if (personInfoViewMap.isEmpty()) {
+            personInfoViewMap = personMap.entrySet().stream()
+                    .collect(Collectors.toMap(
+                            personEntry -> {
+                                Person person = personEntry.getValue();
+                                MedicalRecord medicalRecord = medicalRecordMap.get(personEntry.getKey());
+                                return person.getUniqueIdentifier(medicalRecord.getBirthdate());
+                            },
+                            personEntry -> {
+                                Person person = personEntry.getValue();
+                                MedicalRecord medicalRecord = medicalRecordMap.get(personEntry.getKey());
+                                String name = person.getFirstName() + " " + person.getLastName();
+                                String address = person.getAddress() + ", " + person.getCity() + ", " + person.getZip();
+                                String email = person.getEmail();
+                                int age = findAge(medicalRecord);
+                                List<String> medications = medicalRecord.getMedications();
+                                List<String> allergies = medicalRecord.getAllergies();
+
+                                return new PersonInfoView(name, address, email, age, medications, allergies);
+                            }
+                    ));
+        }
     }
 }
