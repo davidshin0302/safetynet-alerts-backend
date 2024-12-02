@@ -5,7 +5,6 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.PersonInfoView;
-import jakarta.annotation.PostConstruct;
 import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,15 +25,13 @@ import java.util.stream.Collectors;
 @Service
 public class PersonService {
 
+    private final Map<String, PersonInfoView> personInfoViewMap = new HashMap<>();
     @Autowired
     private PersonRepository personRepository;
-
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
-
     private Map<String, Person> personMap = new HashMap<>();
     private Map<String, List<MedicalRecord>> medicalRecordMap = new HashMap<>();
-    private final Map<String, PersonInfoView> personInfoViewMap = new HashMap<>();
 
     /**
      * Finds person information based on the given first and last names.
@@ -60,7 +57,6 @@ public class PersonService {
         return personInfoViewList;
     }
 
-    @PostConstruct
     private void loadPersonInfo() {
         populatePersonAndMedicalRecordMaps();
         populatePersonInfoServiceMaps();
@@ -69,7 +65,6 @@ public class PersonService {
     /**
      * Find brith date from format MM/DD/YYYY
      *
-     * @param birthDate
      * @return int value if age. ex) 25.
      */
     private int findAge(String birthDate) {

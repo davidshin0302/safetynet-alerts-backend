@@ -8,12 +8,10 @@ import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.PersonInfoView;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.slf4j.Logger;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.io.File;
@@ -21,14 +19,12 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.anyString;
 import static org.mockito.Mockito.when;
 
-@Disabled
 @ExtendWith(SpringExtension.class)
 public class PersonServiceTest {
 
-    private static final String TEST_FILE_PATH = "src/test/resources";
+    private static final String TEST_FILE_PATH = "src/test/resources/personService";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
@@ -40,79 +36,71 @@ public class PersonServiceTest {
     @Mock
     MedicalRecordRepository medicalRecordRepository;
 
-    @Mock
-    Logger log;
-
-    private List<MedicalRecord> medicalRecordList;
-    private List<PersonInfoView> personInfoViewList;
 
     @BeforeEach
     void setUp() throws IOException {
-        when(personRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testPersonSameName.json"), DataObject.class).getPersons());
-        when(medicalRecordRepository.findAll()).thenReturn(objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testPersonSameName.json"), DataObject.class).getMedicalRecords());
+        List<Person> personList = objectMapper.readValue(new File(TEST_FILE_PATH + "/testPersonSameName.json"), DataObject.class).getPersons();
+        List<MedicalRecord> medicalRecordList = objectMapper.readValue(new File(TEST_FILE_PATH + "/testPersonSameName.json"), DataObject.class).getMedicalRecords();
 
-        List<Person> personList = personRepository.findAll();
-        medicalRecordList = medicalRecordRepository.findAll();
+        when(personRepository.findAll()).thenReturn(personList);
+        when(medicalRecordRepository.findAll()).thenReturn(medicalRecordList);
     }
 
     @Test
     void findPersonInfo() throws IOException {
-        when(medicalRecordRepository.findRecord("John", "Boyd")).thenReturn(medicalRecordList.get(0));
-        personInfoViewList = personService.findPersonInfo("John", "Boyd");
+        List<PersonInfoView> matchingName = personService.findPersonInfo("John", "Boyd");
 
-        assertFalse(personInfoViewList.isEmpty());
+        assertNotNull(matchingName);
+        assertEquals(2, matchingName.size());
+        assertFalse(matchingName.isEmpty());
 
-        //First name match but last name wrong.
-        personInfoViewList = personService.findPersonInfo("John", "NoExist");
-        assertTrue(personInfoViewList.isEmpty());
+        List<PersonInfoView> firstNameMatchOnly = personService.findPersonInfo("John", "NoName");
+        assertNotNull(firstNameMatchOnly);
+        assertEquals(0, firstNameMatchOnly.size());
 
-        //First name wrong but last name match
-        personInfoViewList = personService.findPersonInfo("NoExist", "Boyd");
-        assertTrue(personInfoViewList.isEmpty());
+        List<PersonInfoView> lastNameMatchOnly = personService.findPersonInfo("John", "NoName");
+        assertNotNull(lastNameMatchOnly);
+        assertEquals(0, lastNameMatchOnly.size());
 
-        //Both first name and last name no match.
-        personInfoViewList = personService.findPersonInfo("NoExist", "NoExist");
-        assertTrue(personInfoViewList.isEmpty());
+        //Expected an empty list for non-existent person info
+        List<PersonInfoView> noMatchingName = personService.findPersonInfo("NoName", "NoName");
+        assertNotNull(noMatchingName);
+        assertTrue(noMatchingName.isEmpty());
     }
 
     @Test
-    void findPersonInfo_same_name() {
-        when(medicalRecordRepository.findRecord("John", "Boyd")).thenReturn(medicalRecordList.get(0));
-        personInfoViewList = personService.findPersonInfo("John", "Boyd");
+    void findPersonInfo_same_name() throws IOException {
+        List<PersonInfoView> infoViewList = personService.findPersonInfo("John", "Boyd");
 
-        PersonInfoView firstPersonInfo = personInfoViewList.get(0);
+        assertEquals(2, infoViewList.size());
 
-        assertEquals(2, personInfoViewList.size());
+        PersonInfoView firstPersonInfo = infoViewList.get(0);
+
         assertEquals("John Boyd", firstPersonInfo.getName());
-        assertEquals("1509 Culver St Culver, 97451",firstPersonInfo.getAddress());
-        assertEquals("jaboyd@email.com", firstPersonInfo.getEmail());
+        assertEquals("123 main St, MainCity, 00001", firstPersonInfo.getAddress());
+        assertEquals("noJohnBoyd@email.com", firstPersonInfo.getEmail());
+        assertEquals(40, firstPersonInfo.getAge());
         assertEquals(2, firstPersonInfo.getMedications().size());
         assertEquals(1, firstPersonInfo.getAllergies().size());
 
-        //Test if personService returns all the record from same name.
-        when(medicalRecordRepository.findRecord("John", "Boyd")).thenReturn(medicalRecordList.get(1));
-        List<PersonInfoView> secondPersonInfoViewList = personService.findPersonInfo("John", "Boyd");
-        PersonInfoView secondPersonInfo = secondPersonInfoViewList.get(1);
+        PersonInfoView secondPersonInfo = infoViewList.get(1);
 
-        assertEquals(2, personInfoViewList.size());
         assertEquals("John Boyd", secondPersonInfo.getName());
-        assertEquals("123 main St MainCity, 00001",secondPersonInfo.getAddress());
-        assertEquals("noJohnBoyd@email.com", secondPersonInfo.getEmail());
+        assertEquals("1509 Culver St, Culver, 97451", secondPersonInfo.getAddress());
+        assertEquals("jaboyd@email.com", secondPersonInfo.getEmail());
         assertEquals(0, secondPersonInfo.getMedications().size());
         assertEquals(1, secondPersonInfo.getAllergies().size());
+
     }
 
     @Test
-    void findPersonInfo_when_medicalRecord_is_null() throws IOException {
-        // Prepare the updated person list from test file
-        List<Person> updatedPersonList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testPersonService.json"), DataObject.class).getPersons();
-        assertEquals(24, updatedPersonList.size());
+    public void findPersonInfo_NoMedicalRecords() throws IOException {
+        List<MedicalRecord> emptyMedicalRecordList = List.of();
 
-        // Simulate a null medical record for a specific person
-        when(personRepository.findAll()).thenReturn(updatedPersonList);
-        when(medicalRecordRepository.findRecord(anyString(), anyString())).thenReturn(null);
+        when(medicalRecordRepository.findAll()).thenReturn(emptyMedicalRecordList);
 
-        personInfoViewList = personService.findPersonInfo("big", "head");
-        assertTrue(personInfoViewList.isEmpty());
+        List<PersonInfoView> results = personService.findPersonInfo("John", "Boyd");
+
+        assertTrue(results.isEmpty(), "Expected no PersonInfoView for Jane Smith");
     }
 }

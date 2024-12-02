@@ -1,0 +1,186 @@
+{
+  "John_Boyd_03/06/1984" : {
+    "name" : "John Boyd",
+    "address" : "1509 Culver St, Culver, 97451",
+    "email" : "jaboyd@email.com",
+    "age" : 40,
+    "medications" : [ "aznol:350mg", "hydrapermazol:100mg" ],
+    "allergies" : [ "nillacilan" ]
+  },
+  "Tessa_Carman_02/18/2012" : {
+    "name" : "Tessa Carman",
+    "address" : "834 Binoc Ave, Culver, 97451",
+    "email" : "tenz@email.com",
+    "age" : 12,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Jamie_Peters_03/06/1982" : {
+    "name" : "Jamie Peters",
+    "address" : "908 73rd St, Culver, 97451",
+    "email" : "jpeter@email.com",
+    "age" : 42,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Brian_Stelzer_12/06/1975" : {
+    "name" : "Brian Stelzer",
+    "address" : "947 E. Rose Dr, Culver, 97451",
+    "email" : "bstel@email.com",
+    "age" : 49,
+    "medications" : [ "ibupurin:200mg", "hydrapermazol:400mg" ],
+    "allergies" : [ "nillacilan" ]
+  },
+  "Sophia_Zemicks_03/06/1988" : {
+    "name" : "Sophia Zemicks",
+    "address" : "892 Downing Ct, Culver, 97451",
+    "email" : "soph@email.com",
+    "age" : 36,
+    "medications" : [ "aznol:60mg", "hydrapermazol:900mg", "pharmacol:5000mg", "terazine:500mg" ],
+    "allergies" : [ "peanut", "shellfish", "aznol" ]
+  },
+  "Clive_Ferguson_03/06/1994" : {
+    "name" : "Clive Ferguson",
+    "address" : "748 Townings Dr, Culver, 97451",
+    "email" : "clivfd@ymail.com",
+    "age" : 30,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Jacob_Boyd_03/06/1989" : {
+    "name" : "Jacob Boyd",
+    "address" : "1509 Culver St, Culver, 97451",
+    "email" : "drk@email.com",
+    "age" : 35,
+    "medications" : [ "pharmacol:5000mg", "terazine:10mg", "noznazol:250mg" ],
+    "allergies" : [ ]
+  },
+  "Foster_Shepard_01/08/1980" : {
+    "name" : "Foster Shepard",
+    "address" : "748 Townings Dr, Culver, 97451",
+    "email" : "jaboyd@email.com",
+    "age" : 44,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Peter_Duncan_09/06/2000" : {
+    "name" : "Peter Duncan",
+    "address" : "644 Gershwin Cir, Culver, 97451",
+    "email" : "jaboyd@email.com",
+    "age" : 24,
+    "medications" : [ ],
+    "allergies" : [ "shellfish" ]
+  },
+  "Tenley_Boyd_02/18/2012" : {
+    "name" : "Tenley Boyd",
+    "address" : "1509 Culver St, Culver, 97451",
+    "email" : "tenz@email.com",
+    "age" : 12,
+    "medications" : [ ],
+    "allergies" : [ "peanut" ]
+  },
+  "Warren_Zemicks_03/06/1985" : {
+    "name" : "Warren Zemicks",
+    "address" : "892 Downing Ct, Culver, 97451",
+    "email" : "ward@email.com",
+    "age" : 39,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Jonanathan_Marrack_01/03/1989" : {
+    "name" : "Jonanathan Marrack",
+    "address" : "29 15th St, Culver, 97451",
+    "email" : "drk@email.com",
+    "age" : 35,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Kendrik_Stelzer_03/06/2014" : {
+    "name" : "Kendrik Stelzer",
+    "address" : "947 E. Rose Dr, Culver, 97451",
+    "email" : "bstel@email.com",
+    "age" : 10,
+    "medications" : [ "noxidian:100mg", "pharmacol:2500mg" ],
+    "allergies" : [ ]
+  },
+  "Eric_Cadigan_08/06/1945" : {
+    "name" : "Eric Cadigan",
+    "address" : "951 LoneTree Rd, Culver, 97451",
+    "email" : "gramps@email.com",
+    "age" : 79,
+    "medications" : [ "tradoxidine:400mg" ],
+    "allergies" : [ ]
+  },
+  "Roger_Boyd_09/06/2017" : {
+    "name" : "Roger Boyd",
+    "address" : "1509 Culver St, Culver, 97451",
+    "email" : "jaboyd@email.com",
+    "age" : 7,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Reginold_Walker_08/30/1979" : {
+    "name" : "Reginold Walker",
+    "address" : "908 73rd St, Culver, 97451",
+    "email" : "reg@email.com",
+    "age" : 45,
+    "medications" : [ "thradox:700mg" ],
+    "allergies" : [ "illisoxian" ]
+  },
+  "Allison_Boyd_03/15/1965" : {
+    "name" : "Allison Boyd",
+    "address" : "112 Steppes Pl, Culver, 97451",
+    "email" : "aly@imail.com",
+    "age" : 59,
+    "medications" : [ "aznol:200mg" ],
+    "allergies" : [ "nillacilan" ]
+  },
+  "Ron_Peters_04/06/1965" : {
+    "name" : "Ron Peters",
+    "address" : "112 Steppes Pl, Culver, 97451",
+    "email" : "jpeter@email.com",
+    "age" : 59,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Lily_Cooper_03/06/1994" : {
+    "name" : "Lily Cooper",
+    "address" : "489 Manchester St, Culver, 97451",
+    "email" : "lily@email.com",
+    "age" : 30,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Zach_Zemicks_03/06/2017" : {
+    "name" : "Zach Zemicks",
+    "address" : "892 Downing Ct, Culver, 97451",
+    "email" : "zarc@email.com",
+    "age" : 7,
+    "medications" : [ ],
+    "allergies" : [ ]
+  },
+  "Felicia_Boyd_01/08/1986" : {
+    "name" : "Felicia Boyd",
+    "address" : "1509 Culver St, Culver, 97451",
+    "email" : "jaboyd@email.com",
+    "age" : 38,
+    "medications" : [ "tetracyclaz:650mg" ],
+    "allergies" : [ "xilliathal" ]
+  },
+  "Tony_Cooper_03/06/1994" : {
+    "name" : "Tony Cooper",
+    "address" : "112 Steppes Pl, Culver, 97451",
+    "email" : "tcoop@ymail.com",
+    "age" : 30,
+    "medications" : [ "hydrapermazol:300mg", "dodoxadin:30mg" ],
+    "allergies" : [ "shellfish" ]
+  },
+  "Shawna_Stelzer_07/08/1980" : {
+    "name" : "Shawna Stelzer",
+    "address" : "947 E. Rose Dr, Culver, 97451",
+    "email" : "ssanw@email.com",
+    "age" : 44,
+    "medications" : [ ],
+    "allergies" : [ ]
+  }
+}
