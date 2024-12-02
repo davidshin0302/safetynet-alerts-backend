@@ -12,71 +12,73 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
+
 @RestController
 @RequestMapping("/medicalRecord")
 @Slf4j
 public class MedicalRecordController {
 
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
     @GetMapping
     public ResponseEntity<String> getAllMedicalRecords() {
-        ResponseEntity<String> response;
+        ResponseEntity<String> responseEntity;
 
         try {
             String medicalRecordList = objectMapper.writeValueAsString(medicalRecordRepository.findAll());
-            response = ResponseEntity.status(HttpStatus.OK)
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(medicalRecordList);
         } catch (IOException | RuntimeException ex) {
             log.error("Error at find all medical records: {}", ex.getMessage());
-            response = new ResponseEntity<>("[MedicalRecordController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
+            responseEntity = new ResponseEntity<>("[MedicalRecordController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return response;
+        return responseEntity;
     }
 
     /**
-     * Handle a new record to be add it.
+     * Handle a new record to be added it.
      *
      * @param medicalRecord Medical Record to add.
      * @return Http status result
      */
     @PostMapping
-    public ResponseEntity<HttpStatus> addMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
-        ResponseEntity<HttpStatus> response;
+    public ResponseEntity<MedicalRecord> addMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
+        ResponseEntity<MedicalRecord> responseEntity;
 
         if (medicalRecordRepository.save(medicalRecord)) {
-            response = new ResponseEntity<>(HttpStatus.CREATED);
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(medicalRecord);
         } else {
-            response = new ResponseEntity<>(HttpStatus.CONFLICT);
+            responseEntity = new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        return response;
+        return responseEntity;
     }
 
     @PutMapping
     public ResponseEntity<HttpStatus> updateMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
-        ResponseEntity<HttpStatus> response;
+        ResponseEntity<HttpStatus> responseEntity;
 
         if (medicalRecordRepository.updateExistingMedicalRecord(medicalRecord)) {
-            response = new ResponseEntity<>(HttpStatus.CREATED);
+            responseEntity = new ResponseEntity<>(HttpStatus.CREATED);
         } else {
-            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return response;
+        return responseEntity;
     }
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
-        ResponseEntity<HttpStatus> response;
+        ResponseEntity<HttpStatus> responseEntity;
 
         if (medicalRecordRepository.delete(medicalRecord)) {
-            response = new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            responseEntity = new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {
-            response = new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return response;
+        return responseEntity;
     }
 }

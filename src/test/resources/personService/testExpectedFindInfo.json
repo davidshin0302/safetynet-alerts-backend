@@ -1,0 +1,27 @@
+[
+  {
+    "name": "John Boyd",
+    "address": "1509 Culver St, Culver, 97451",
+    "email": "jaboyd@email.com",
+    "age": 40,
+    "medications": [
+      "aznol:350mg",
+      "hydrapermazol:100mg"
+    ],
+    "allergies": [
+      "nillacilan"
+    ]
+  },
+  {
+    "name": "John Boyd",
+    "address": "123 Main St, flushing, 11001",
+    "email": "jdoe@email.com",
+    "age": 37,
+    "medications": [
+      "Tylenol:1000mg"
+    ],
+    "allergies": [
+      "apple"
+    ]
+  }
+]

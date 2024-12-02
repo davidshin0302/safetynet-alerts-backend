@@ -3,7 +3,6 @@ package com.safetynet.alerts.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.FireStation;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -22,26 +21,12 @@ public class FireStationRepository {
         loadFireStationData();
     }
 
-    private void loadFireStationData() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String filePath = "src/main/resources/data.json";
-            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            fireStationList.addAll(dataObject.getFireStations());
-        } catch (IOException | RuntimeException ex) {
-            throw new RuntimeException(ex);
-        }
-    }
-
     public List<FireStation> findAll() {
         return fireStationList;
     }
 
     private FireStation findByAddress(String address) {
-        return fireStationList.stream()
-                .filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim()))
-                .findFirst()
-                .orElse(null);
+        return fireStationList.stream().filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim())).findFirst().orElse(null);
     }
 
     public FireStation findFireStation(String address) {
@@ -53,9 +38,9 @@ public class FireStationRepository {
 
         FireStation existingFireStation = findByAddress(fireStation.getAddress());
         /*
-        *Retrieving an object from fireStationList via findByAddress returns a reference,
-        *not a copy. Modifying the object through this reference updates the original in the list,
-        *as both share the same memory location.
+         *Retrieving an object from fireStationList via findByAddress returns a reference,
+         *not a copy. Modifying the object through this reference updates the original in the list,
+         *as both share the same memory location.
          */
         if (existingFireStation != null) {
             existingFireStation.setStation(fireStation.getStation());
@@ -81,11 +66,22 @@ public class FireStationRepository {
     public boolean save(FireStation fireStation) {
         boolean result = false;
 
-        if (findByAddress(fireStation.getAddress()) == null) {
+        if (!fireStationList.contains(fireStation)) {
             result = fireStationList.add(fireStation);
         } else {
             log.info("Fire station is reserved for existing department ");
         }
         return result;
+    }
+
+    private void loadFireStationData() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String filePath = "src/main/resources/data.json";
+            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
+            fireStationList.addAll(dataObject.getFireStations());
+        } catch (IOException | RuntimeException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }

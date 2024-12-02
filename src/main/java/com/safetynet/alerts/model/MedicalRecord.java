@@ -1,5 +1,6 @@
 package com.safetynet.alerts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -31,5 +32,20 @@ public class MedicalRecord {
                 ", medications=" + medications +
                 ", allergies=" + allergies +
                 '}';
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof MedicalRecord medicalRecord)) return false;
+
+        return firstName.equalsIgnoreCase(medicalRecord.getFirstName())
+                && lastName.equalsIgnoreCase(medicalRecord.getLastName())
+                && birthdate.equalsIgnoreCase(medicalRecord.getBirthdate());
+    }
+
+    @JsonIgnore
+    public String getUniqueIdentifier() {
+        return firstName + "_" + lastName;
     }
 }

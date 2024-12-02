@@ -1,6 +1,5 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
@@ -34,21 +33,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(PersonController.class)
 class PersonControllerTest {
 
+    private static final String TEST_FILE_PATH = "src/test/resources";
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private PersonRepository personRepository;
-
     @MockBean
     private PersonService personService;
-
     @InjectMocks
     private PersonController personController;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    private static final String TEST_FILE_PATH = "src/test/resources";
 
     @BeforeEach
     public void setUp() throws IOException {
@@ -72,22 +66,6 @@ class PersonControllerTest {
         mockMvc.perform(get("/person"))
                 .andExpect(status().isInternalServerError());
 
-    }
-
-    @Test
-    public void testGetPersonInfo() throws Exception {
-        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personDir/testPersonInfo.json"), new TypeReference<List<PersonInfoView>>(){});
-        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
-
-        mockMvc.perform(get("/personInfo?firstName=John&lastName=Boyd"))
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.[0].name").value("John Boyd"))
-                .andExpect(jsonPath("$.[0].address").value("1509 Culver St Culver, 97451"))
-                .andExpect(jsonPath("$.[0].email").value("jaboyd@email.com"))
-                .andExpect(jsonPath("$.[0].age").value(40))
-                .andExpect(jsonPath("$.[0].medications",hasSize(2)))
-                .andExpect(jsonPath("$.[0].allergies", hasSize(1)));
     }
 
     @Test
@@ -127,6 +105,7 @@ class PersonControllerTest {
         Person person = new Person();
         person.setFirstName("David");
         person.setLastName("Shin");
+        person.setEmail("david@email.com");
 
         when(personRepository.save(person)).thenReturn(false);
 
