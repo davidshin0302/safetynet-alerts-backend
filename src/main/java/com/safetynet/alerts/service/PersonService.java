@@ -33,8 +33,8 @@ public class PersonService {
     private MedicalRecordRepository medicalRecordRepository;
 
     private Map<String, Person> personMap = new HashMap<>();
-    private Map<String, MedicalRecord> medicalRecordMap = new HashMap<>();
-    private Map<String, PersonInfoView> personInfoViewMap = new HashMap<>();
+    private Map<String, List<MedicalRecord>> medicalRecordMap = new HashMap<>();
+    private final Map<String, PersonInfoView> personInfoViewMap = new HashMap<>();
 
     /**
      * Finds person information based on the given first and last names.
@@ -44,35 +44,35 @@ public class PersonService {
      * @return a list of person information views, each containing the person's name, address, email, age, medications, and allergies
      */
     public List<PersonInfoView> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
-        List<PersonInfoView> personInfoViewList = new ArrayList<>(List.of());
+        init();
+        List<PersonInfoView> personInfoViewList = new ArrayList<>();
 
-        for(String name : personInfoViewMap.keySet()){
-            String[] splitName = name.split("_");
+        for (PersonInfoView personInfoView : personInfoViewMap.values()) {
+            String[] splitName = personInfoView.getName().split(" ");
             String personFirstName = splitName[0];
             String personLastName = splitName[1];
 
-            if(personFirstName.equalsIgnoreCase(firstName) && personLastName.equalsIgnoreCase(lastName)){
-                personInfoViewList.add(personInfoViewMap.get(name));
+            if (personFirstName.equalsIgnoreCase(firstName) && personLastName.equalsIgnoreCase(lastName)) {
+                personInfoViewList.add(personInfoView);
             }
         }
+
         return personInfoViewList;
     }
 
     @PostConstruct
-    private void init(){
-        populatePersonAndMedicalRecordMaps();;
+    private void init() {
+        populatePersonAndMedicalRecordMaps();
         populatePersonInfoServiceMaps();
     }
 
     /**
      * Find brith date from format MM/DD/YYYY
      *
-     * @param medicalRecord
+     * @param birthDate
      * @return int value if age. ex) 25.
      */
-    private int findAge(MedicalRecord medicalRecord) {
-        String birthDate = medicalRecord.getBirthdate();
-
+    private int findAge(String birthDate) {
         int currentYear = LocalDate.now().getYear();
 
         String[] birthDateSplit = birthDate.split("/"); // ex) String [03, 25, 1988]
@@ -83,44 +83,40 @@ public class PersonService {
     }
 
     private void populatePersonAndMedicalRecordMaps() {
-        medicalRecordMap = medicalRecordRepository.findAll()
-                .stream()
-                .collect(Collectors.toMap(
-                        medicalRecord -> medicalRecord.getUniqueIdentifier(), //same as -> MedicalRecord::getUniqueIdentifier
-                        medicalRecord -> medicalRecord
-                ));
+        medicalRecordMap = medicalRecordRepository.findAll().stream().collect(Collectors.groupingBy(medicalRecord -> medicalRecord.getUniqueIdentifier()));
 
-        personMap = personRepository.findAll()
-                .stream()
-                .filter(person -> medicalRecordMap.containsKey(person.getPartialIdentifier()))
-                .collect(Collectors.toMap(
-                        person -> person.getPartialIdentifier(),
-                        person -> person
-                ));
+        personMap = personRepository.findAll().stream().collect(Collectors.toMap(person -> person.getFirstName() + "_" + person.getLastName() + "_" + person.getEmail(), // Unique key per person including address
+                person -> person));
     }
 
     private void populatePersonInfoServiceMaps() {
-        if (personInfoViewMap.isEmpty()) {
-            personInfoViewMap = personMap.entrySet().stream()
-                    .collect(Collectors.toMap(
-                            personEntry -> {
-                                Person person = personEntry.getValue();
-                                MedicalRecord medicalRecord = medicalRecordMap.get(personEntry.getKey());
-                                return person.getUniqueIdentifier(medicalRecord.getBirthdate());
-                            },
-                            personEntry -> {
-                                Person person = personEntry.getValue();
-                                MedicalRecord medicalRecord = medicalRecordMap.get(personEntry.getKey());
-                                String name = person.getFirstName() + " " + person.getLastName();
-                                String address = person.getAddress() + ", " + person.getCity() + ", " + person.getZip();
-                                String email = person.getEmail();
-                                int age = findAge(medicalRecord);
-                                List<String> medications = medicalRecord.getMedications();
-                                List<String> allergies = medicalRecord.getAllergies();
+        personInfoViewMap.clear(); // Clear the map to avoid duplicates on multiple calls
 
-                                return new PersonInfoView(name, address, email, age, medications, allergies);
-                            }
-                    ));
-        }
+        personMap.forEach((personKey, person) -> {
+            List<MedicalRecord> medicalRecords = medicalRecordMap.get(person.getUniqueIdentifier());
+
+            if (medicalRecords != null && !medicalRecords.isEmpty()) {
+                int index = 0;
+                String peronInfoKey = person.getUniqueIdentifier() + "_" + medicalRecords.get(index).getBirthdate();
+                if (personInfoViewMap.containsKey(peronInfoKey)) {
+                    index++;
+                }
+
+                MedicalRecord medicalRecord = medicalRecords.get(index); // Assuming one-to-one relationship
+
+                String key = person.getUniqueIdentifier() + "_" + medicalRecord.getBirthdate();
+
+                // Construct PersonInfoView
+                String name = person.getFirstName() + " " + person.getLastName();
+                String address = person.getAddress() + ", " + person.getCity() + ", " + person.getZip();
+                String email = person.getEmail();
+                int age = findAge(medicalRecord.getBirthdate());
+                List<String> medications = medicalRecord.getMedications();
+                List<String> allergies = medicalRecord.getAllergies();
+
+                // Put the new entry in the map
+                personInfoViewMap.put(key, new PersonInfoView(name, address, email, age, medications, allergies));
+            }
+        });
     }
 }
