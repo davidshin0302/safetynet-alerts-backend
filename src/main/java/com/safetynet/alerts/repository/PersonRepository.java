@@ -26,36 +26,36 @@ public class PersonRepository {
         return personList;
     }
 
-    public Person findPerson(String firstName, String lastName, String email) {
-        return findByFirstAndLastName(firstName, lastName, email);
+    public Person findPerson(String firstName, String lastName) {
+        return findByFirstAndLastName(firstName, lastName);
     }
 
     public boolean updateExistingPerson(Person person) {
         boolean updated = true;
 
-        for (Person existingPerson : personList) {
-            if (existingPerson.equals(person)) {
-                existingPerson.setAddress(person.getAddress());
-                existingPerson.setCity(person.getCity());
-                existingPerson.setZip(person.getZip());
-                existingPerson.setPhone(person.getPhone());
-                existingPerson.setEmail(person.getEmail());
+        Person existingPerson = findByFirstAndLastName(person.getFirstName(), person.getLastName());
 
-                save(existingPerson);
-            } else {
-                updated = false;
-            }
+        if (existingPerson != null) {
+            existingPerson.setAddress(person.getAddress());
+            existingPerson.setCity(person.getCity());
+            existingPerson.setZip(person.getZip());
+            existingPerson.setPhone(person.getPhone());
+            existingPerson.setEmail(person.getEmail());
+
+            save(existingPerson);
+        } else {
+            updated = false;
         }
-
         return updated;
     }
 
-    public boolean delete(String firstName, String lastName, String email) {
+    public boolean delete(String firstName, String lastName) {
         boolean deleted = false;
-        Person person = findByFirstAndLastName(firstName, lastName, email);
+        Person personToDelete = findByFirstAndLastName(firstName, lastName);
 
-        if (person != null) {
-            deleted = personList.remove(person);
+        if (personToDelete != null) {
+            personList.remove(personToDelete);
+            deleted = true;
         } else {
             log.error("Unable to find the person: {} {}", firstName, lastName);
         }
@@ -65,12 +65,10 @@ public class PersonRepository {
     public boolean save(Person person) {
         boolean result = false;
 
-        for (Person existingPerson : personList) {
-            if (!existingPerson.equals(person)) {
-                result = personList.add(person);
-            } else {
-                log.error("Person already exist in the list");
-            }
+        if (findByFirstAndLastName(person.getFirstName(), person.getLastName()) == null) {
+            result = personList.add(person);
+        } else {
+            log.error("Person already exist in the list");
         }
         return result;
     }
@@ -86,9 +84,9 @@ public class PersonRepository {
         }
     }
 
-    private Person findByFirstAndLastName(String firstName, String lastName, String email) {
+    private Person findByFirstAndLastName(String firstName, String lastName) {
         return personList.stream()
-                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName) && existingPerson.getEmail().equalsIgnoreCase(email))
+                .filter(existingPerson -> existingPerson.getFirstName().equalsIgnoreCase(firstName) && existingPerson.getLastName().equalsIgnoreCase(lastName))
                 .findFirst()
                 .orElse(null);
     }

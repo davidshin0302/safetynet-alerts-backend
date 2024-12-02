@@ -74,22 +74,6 @@ class PersonControllerTest {
 
     }
 
-//    @Test
-//    public void testGetPersonInfo() throws Exception {
-//        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personDir/testPersonInfo.json"), new TypeReference<List<PersonInfoView>>(){});
-//        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
-//
-//        mockMvc.perform(get("/personInfo?firstName=John&lastName=Boyd"))
-//                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.[0].name").value("John Boyd"))
-//                .andExpect(jsonPath("$.[0].address").value("1509 Culver St Culver, 97451"))
-//                .andExpect(jsonPath("$.[0].email").value("jaboyd@email.com"))
-//                .andExpect(jsonPath("$.[0].age").value(40))
-//                .andExpect(jsonPath("$.[0].medications",hasSize(2)))
-//                .andExpect(jsonPath("$.[0].allergies", hasSize(1)));
-//    }
-
     @Test
     public void testGetPersonInfo_when_is_empty() throws Exception {
         List<PersonInfoView> personInfoViewList = new ArrayList<>();
@@ -106,7 +90,7 @@ class PersonControllerTest {
         Person testNewPerson = objectMapper.readValue(newPersonFile, Person.class);
 
         when(personRepository.save(testNewPerson)).thenReturn(true); //save new Person first
-        when(personRepository.findPerson(any(String.class), any(String.class), any(String.class))).thenReturn(testNewPerson); //Return newly saved person from personList.
+        when(personRepository.findPerson(any(String.class), any(String.class))).thenReturn(testNewPerson); //Return newly saved person from personList.
 
         mockMvc.perform(post("/person")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -142,7 +126,7 @@ class PersonControllerTest {
         Person testEditPerson = objectMapper.readValue(editPersonFile, Person.class);
 
         when(personRepository.updateExistingPerson(any(Person.class))).thenReturn(true); // check if person exist in the list
-        when(personRepository.findPerson(any(String.class), any(String.class),any(String.class))).thenReturn(testEditPerson); // After checked then add.
+        when(personRepository.findPerson(any(String.class), any(String.class))).thenReturn(testEditPerson); // After checked then add.
 
         mockMvc.perform(put("/person")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -176,7 +160,7 @@ class PersonControllerTest {
         String newPersonFile = new String(Files.readAllBytes(Paths.get(TEST_FILE_PATH + "/personDir/testNewPerson.json")));
         Person deletePerson = objectMapper.readValue(newPersonFile, Person.class);
 
-        when(personRepository.delete(any(String.class), any(String.class), any(String.class))).thenReturn(true); // Simulating successful deletion
+        when(personRepository.delete(any(String.class), any(String.class))).thenReturn(true); // Simulating successful deletion
 
         mockMvc.perform(delete("/person")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -184,7 +168,7 @@ class PersonControllerTest {
                 .andExpect(status().isNoContent());
 
 
-        when(personRepository.delete(any(String.class), any(String.class), any(String.class))).thenReturn(false); // Simulate failure to delete
+        when(personRepository.delete(any(String.class), any(String.class))).thenReturn(false); // Simulate failure to delete
 
         mockMvc.perform(delete("/person")
                         .contentType(MediaType.APPLICATION_JSON)

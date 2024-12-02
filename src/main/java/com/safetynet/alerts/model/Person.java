@@ -52,12 +52,7 @@ public class Person {
     }
 
     @JsonIgnore
-    public String getPartialIdentifier() {
+    public String getUniqueIdentifier() {
         return firstName + "_" + lastName;
-    }
-
-    @JsonIgnore
-    public String getUniqueIdentifier(String birthdate) {
-        return firstName + "_" + lastName + "_" + birthdate;
     }
 }

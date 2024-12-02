@@ -45,7 +45,7 @@ public class PersonController {
     @PostMapping("/person")
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
         if (personRepository.save(person)) {
-            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(personRepository.findPerson(person.getFirstName(), person.getLastName(), person.getEmail()));
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -54,7 +54,7 @@ public class PersonController {
     @PutMapping("/person")
     public ResponseEntity<Person> updateExistingPerson(@RequestBody Person person) throws IOException {
         if (personRepository.updateExistingPerson(person)) {
-            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(personRepository.findPerson(person.getFirstName(), person.getLastName(), person.getEmail()));
+            return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -62,7 +62,7 @@ public class PersonController {
 
     @DeleteMapping("/person")
     public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person person) {
-        if (personRepository.delete(person.getFirstName(), person.getLastName(), person.getEmail())) {
+        if (personRepository.delete(person.getFirstName(), person.getLastName())) {
             return ResponseEntity.noContent().build();
         } else {
             return ResponseEntity.notFound().build();
