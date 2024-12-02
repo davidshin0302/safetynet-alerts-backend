@@ -2,7 +2,7 @@
 name = 'addNewPerson (1)'
 method = 'POST'
 url = 'http://localhost:8080/person'
-sortWeight = 2500000
+sortWeight = 2000000
 id = '9b395241-3125-463d-81ab-d32e55687a0a'
 
 [body]

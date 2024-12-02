@@ -2,7 +2,7 @@
 name = 'addMedicalRecord (1)'
 method = 'POST'
 url = 'http://localhost:8080/medicalRecord'
-sortWeight = 2500000
+sortWeight = 3000000
 id = '340b6e75-1b9f-413c-bf27-604744df0d6e'
 
 [body]
