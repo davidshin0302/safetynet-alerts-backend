@@ -1,5 +1,6 @@
 package com.safetynet.alerts.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -40,7 +41,9 @@ public class Person {
         if (this == o) return true;
         if (!(o instanceof Person person)) return false;
 
-        return firstName.equalsIgnoreCase(person.firstName) && lastName.equalsIgnoreCase(person.lastName);
+        return firstName.equalsIgnoreCase(person.getFirstName())
+                && lastName.equalsIgnoreCase(person.getLastName())
+                && email.equalsIgnoreCase(person.getEmail());
     }
 
     @Override
@@ -48,5 +51,10 @@ public class Person {
         int result = firstName.hashCode();
         result = 31 * result + lastName.hashCode();
         return result;
+    }
+
+    @JsonIgnore
+    public String getUniqueIdentifier() {
+        return firstName + "_" + lastName;
     }
 }

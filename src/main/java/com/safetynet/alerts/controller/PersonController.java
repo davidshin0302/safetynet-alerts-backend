@@ -1,11 +1,9 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
-import com.safetynet.alerts.view.PersonInfoView;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +13,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.List;
 
-/**
- * TODO:: Implement below handler request.
- * /personInfo?firstName=<firstName>&lastName=<lastName> (GET): Retrieve detailed information about a person.
- * /communityEmail?city=<city> (GET): Get emails of people in a city.
- */
+
 @RestController
+@RequestMapping("/person")
 @Slf4j
 public class PersonController {
 
@@ -32,64 +26,61 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
-    @GetMapping("/person")
+    @GetMapping
     public ResponseEntity<String> getPeople() {
+        ResponseEntity<String> responseEntity;
+
         try {
             String personList = objectMapper.writeValueAsString(personRepository.findAll());
 
-            return ResponseEntity.status(HttpStatus.OK)
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(personList);
         } catch (IOException | RuntimeException ex) {
             log.error("Error at serializing data: {}", ex.getMessage());
-            return new ResponseEntity<>("[PersonController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
+            responseEntity = new ResponseEntity<>("[PersonController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+        return responseEntity;
     }
 
-    @GetMapping(value = "/personInfo")
-    public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) throws JsonProcessingException {
-        List<PersonInfoView> personInfoViewList = personService.findPersonInfo(firstName, lastName);
 
-        if (!personInfoViewList.isEmpty()) {
-            String personInfoViewListToJson = objectMapper.writeValueAsString(personInfoViewList);
-
-            return ResponseEntity.status(HttpStatus.OK)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .body(personInfoViewListToJson);
-        } else {
-            log.info("Unable to find data from first name: {} and last name: {}.", firstName, lastName);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @PostMapping("/person")
+    @PostMapping
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
+        ResponseEntity<Person> responseEntity;
+
         if (personRepository.save(person)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
+                    .body(person);
         } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            responseEntity = new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+        return responseEntity;
     }
 
-    @PutMapping("/person")
+    @PutMapping
     public ResponseEntity<Person> updateExistingPerson(@RequestBody Person person) throws IOException {
+        ResponseEntity<Person> responseEntity;
+
         if (personRepository.updateExistingPerson(person)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(personRepository.findPerson(person.getFirstName(), person.getLastName()));
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return responseEntity;
     }
 
-    @DeleteMapping("/person")
+    @DeleteMapping
     public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person person) {
+        ResponseEntity<HttpStatus> responseEntity;
+
         if (personRepository.delete(person.getFirstName(), person.getLastName())) {
-            return ResponseEntity.noContent().build();
+            responseEntity = ResponseEntity.noContent().build();
         } else {
-            return ResponseEntity.notFound().build();
+            responseEntity = ResponseEntity.notFound().build();
         }
+        return responseEntity;
     }
 }
