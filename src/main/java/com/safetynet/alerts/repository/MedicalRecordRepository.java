@@ -19,16 +19,8 @@ public class MedicalRecordRepository {
 
     private final List<MedicalRecord> medicalRecordList = new ArrayList<>();
 
-    @PostConstruct
-    private void loadMedicalRecordData() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String filePath = "src/main/resources/data.json";
-            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            medicalRecordList.addAll(dataObject.getMedicalRecords());
-        } catch (IOException | RuntimeException ex) {
-            throw new RuntimeException(ex);
-        }
+    public MedicalRecordRepository() {
+        loadMedicalRecordData();
     }
 
     public List<MedicalRecord> findAll() {
@@ -79,6 +71,17 @@ public class MedicalRecordRepository {
             result = medicalRecordList.remove(deleteMedicalRecord);
         }
         return result;
+    }
+
+    private void loadMedicalRecordData() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String filePath = "src/main/resources/data.json";
+            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
+            medicalRecordList.addAll(dataObject.getMedicalRecords());
+        } catch (IOException | RuntimeException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     /**

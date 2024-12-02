@@ -3,7 +3,6 @@ package com.safetynet.alerts.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.FireStation;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -18,16 +17,8 @@ public class FireStationRepository {
 
     private final List<FireStation> fireStationList = new ArrayList<>();
 
-    @PostConstruct
-    private void loadFireStationData() {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            String filePath = "src/main/resources/data.json";
-            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
-            fireStationList.addAll(dataObject.getFireStations());
-        } catch (IOException | RuntimeException ex) {
-            throw new RuntimeException(ex);
-        }
+    public FireStationRepository() {
+        loadFireStationData();
     }
 
     public List<FireStation> findAll() {
@@ -81,5 +72,16 @@ public class FireStationRepository {
             log.info("Fire station is reserved for existing department ");
         }
         return result;
+    }
+
+    private void loadFireStationData() {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String filePath = "src/main/resources/data.json";
+            DataObject dataObject = objectMapper.readValue(new File(filePath), DataObject.class);
+            fireStationList.addAll(dataObject.getFireStations());
+        } catch (IOException | RuntimeException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 }
