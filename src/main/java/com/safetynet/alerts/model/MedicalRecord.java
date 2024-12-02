@@ -39,7 +39,9 @@ public class MedicalRecord {
         if (this == o) return true;
         if (!(o instanceof MedicalRecord medicalRecord)) return false;
 
-        return firstName.equalsIgnoreCase(medicalRecord.firstName) && lastName.equalsIgnoreCase(medicalRecord.lastName);
+        return firstName.equalsIgnoreCase(medicalRecord.getFirstName())
+                && lastName.equalsIgnoreCase(medicalRecord.getLastName())
+                && birthdate.equalsIgnoreCase(medicalRecord.getBirthdate());
     }
 
     @JsonIgnore

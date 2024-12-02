@@ -17,9 +17,9 @@ public class FireStation {
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof FireStation that)) return false;
+        if (!(o instanceof FireStation fireStation)) return false;
 
-        return address.equals(that.address) && station.equals(that.station);
+        return address.equals(fireStation.getAddress()) && station.equals(fireStation.getStation());
     }
 
     @Override

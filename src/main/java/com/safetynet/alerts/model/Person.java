@@ -41,7 +41,9 @@ public class Person {
         if (this == o) return true;
         if (!(o instanceof Person person)) return false;
 
-        return firstName.equalsIgnoreCase(person.firstName) && lastName.equalsIgnoreCase(person.lastName);
+        return firstName.equalsIgnoreCase(person.getFirstName())
+                && lastName.equalsIgnoreCase(person.getLastName())
+                && email.equalsIgnoreCase(person.getEmail());
     }
 
     @Override
