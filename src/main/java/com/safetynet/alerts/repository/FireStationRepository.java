@@ -3,7 +3,7 @@ package com.safetynet.alerts.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.FireStation;
-
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -18,10 +18,7 @@ public class FireStationRepository {
 
     private final List<FireStation> fireStationList = new ArrayList<>();
 
-    public FireStationRepository() {
-        loadFireStationData();
-    }
-
+    @PostConstruct
     private void loadFireStationData() {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
@@ -38,10 +35,7 @@ public class FireStationRepository {
     }
 
     private FireStation findByAddress(String address) {
-        return fireStationList.stream()
-                .filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim()))
-                .findFirst()
-                .orElse(null);
+        return fireStationList.stream().filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim())).findFirst().orElse(null);
     }
 
     public FireStation findFireStation(String address) {
@@ -81,7 +75,7 @@ public class FireStationRepository {
     public boolean save(FireStation fireStation) {
         boolean result = false;
 
-        if (findByAddress(fireStation.getAddress()) == null) {
+        if (!fireStationList.contains(fireStation)) {
             result = fireStationList.add(fireStation);
         } else {
             log.info("Fire station is reserved for existing department ");
