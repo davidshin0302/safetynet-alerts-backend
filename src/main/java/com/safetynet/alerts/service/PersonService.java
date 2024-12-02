@@ -44,7 +44,7 @@ public class PersonService {
      * @return a list of person information views, each containing the person's name, address, email, age, medications, and allergies
      */
     public List<PersonInfoView> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
-        init();
+        loadPersonInfo();
         List<PersonInfoView> personInfoViewList = new ArrayList<>();
 
         for (PersonInfoView personInfoView : personInfoViewMap.values()) {
@@ -61,7 +61,7 @@ public class PersonService {
     }
 
     @PostConstruct
-    private void init() {
+    private void loadPersonInfo() {
         populatePersonAndMedicalRecordMaps();
         populatePersonInfoServiceMaps();
     }
