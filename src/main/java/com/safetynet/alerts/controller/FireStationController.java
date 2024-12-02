@@ -50,7 +50,7 @@ public class FireStationController {
         if (fireStationRepository.save(fireStation)) {
             return ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findFireStation(fireStation.getStation()));
+                    .body(fireStation);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
