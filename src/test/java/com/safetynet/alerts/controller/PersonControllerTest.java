@@ -111,6 +111,7 @@ class PersonControllerTest {
         Person person = new Person();
         person.setFirstName("David");
         person.setLastName("Shin");
+        person.setEmail("david@email.com");
 
         when(personRepository.save(person)).thenReturn(false);
 
