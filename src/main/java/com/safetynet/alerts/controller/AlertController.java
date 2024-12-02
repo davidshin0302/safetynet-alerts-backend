@@ -2,6 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.view.CommunityEmail;
 import com.safetynet.alerts.view.PersonInfoView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,5 +48,10 @@ public class AlertController {
         }
 
         return responseEntity;
+    }
+
+    @GetMapping("/communityEmail")
+    public ResponseEntity<List<CommunityEmail>> getCommunityEmail() {
+        //TODO:: do something here..
     }
 }
