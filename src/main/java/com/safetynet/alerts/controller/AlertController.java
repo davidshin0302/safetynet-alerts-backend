@@ -1,9 +1,6 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.repository.MedicalRecordRepository;
-import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.view.PersonInfoView;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +12,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -32,19 +30,22 @@ public class AlertController {
     @Autowired
     private PersonService personService;
 
-    @GetMapping(value = "/personInfo")
-    public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) throws JsonProcessingException {
-        List<PersonInfoView> personInfoViewList = personService.findPersonInfo(firstName, lastName);
+    @GetMapping("/personInfo")
+    public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) throws IOException {
+        ResponseEntity<String> responseEntity;
 
-        if (!personInfoViewList.isEmpty()) {
-            String personInfoViewListToJson = objectMapper.writeValueAsString(personInfoViewList);
+        List<PersonInfoView> personInfoViewList;
 
-            return ResponseEntity.status(HttpStatus.OK)
+        try {
+            personInfoViewList = personService.findPersonInfo(firstName, lastName);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(personInfoViewListToJson);
-        } else {
-            log.info("Unable to find data from first name: {} and last name: {}.", firstName, lastName);
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+                    .body(objectMapper.writeValueAsString(personInfoViewList));
+        } catch (RuntimeException ex) {
+            log.error("Error Occurred while searching for {} {}", firstName, lastName);
+            responseEntity = new ResponseEntity<>("[AlertController:Line 46]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return responseEntity;
     }
 }
