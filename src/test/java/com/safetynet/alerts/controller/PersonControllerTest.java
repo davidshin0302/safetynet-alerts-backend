@@ -1,6 +1,5 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
@@ -34,21 +33,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(PersonController.class)
 class PersonControllerTest {
 
+    private static final String TEST_FILE_PATH = "src/test/resources";
+    private final ObjectMapper objectMapper = new ObjectMapper();
     @Autowired
     private MockMvc mockMvc;
-
     @MockBean
     private PersonRepository personRepository;
-
     @MockBean
     private PersonService personService;
-
     @InjectMocks
     private PersonController personController;
-
-    private ObjectMapper objectMapper = new ObjectMapper();
-
-    private static final String TEST_FILE_PATH = "src/test/resources";
 
     @BeforeEach
     public void setUp() throws IOException {
