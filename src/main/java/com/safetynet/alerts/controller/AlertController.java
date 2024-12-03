@@ -1,8 +1,6 @@
 package com.safetynet.alerts.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.CommunityEmailService;
 import com.safetynet.alerts.service.FireResponseService;
 import com.safetynet.alerts.service.PersonService;
@@ -19,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 
 /**
  * TODO:: Implement below request handler.

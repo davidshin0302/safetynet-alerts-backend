@@ -8,6 +8,7 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.CommunityEmailService;
+import com.safetynet.alerts.service.FireResponseService;
 import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.view.PersonInfoView;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,6 +46,8 @@ class AlertControllerTest {
     private PersonService personService;
     @MockBean
     private CommunityEmailService communityEmailService;
+    @MockBean
+    private FireResponseService fireResponseService;
     @Mock
     private PersonRepository personRepository;
     @Mock

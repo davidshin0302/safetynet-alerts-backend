@@ -3,7 +3,6 @@ package com.safetynet.alerts.repository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.MedicalRecord;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
