@@ -33,7 +33,7 @@ public class FireResponseService {
     public FireResponse findFireResponse(String address) {
         loadFireResponseService();
 
-        return fireResponseMap.get(address);
+        return fireResponseMap.getOrDefault(address, new FireResponse());
     }
 
     private void loadFireResponseService() {
