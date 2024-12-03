@@ -15,12 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-/**
- * TODO:: Implement below request handler.
- * /firestation?stationNumber=<station_number> (GET): Retrieve a list of people by station.
- * /phoneAlert?firestation=<firestation_number> (GET): Get phone numbers by station.
- * /flood/stations?stations=<list_of_station_numbers> (GET): Get households by fire station(s).
- */
+
 @RestController
 @RequestMapping("/firestation")
 @Slf4j
@@ -32,48 +27,86 @@ public class FireStationController {
 
     @GetMapping
     public ResponseEntity<String> getFireStation() {
+        ResponseEntity<String> responseEntity;
+
+        log.info("...Get request handling /firestation");
 
         try {
             String fireStationList = objectMapper.writeValueAsString(fireStationRepository.findAll());
 
-            return ResponseEntity.status(HttpStatus.OK)
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(fireStationList);
+
+            log.info("processed GET request /firestation request ...");
         } catch (IOException | RuntimeException ex) {
             log.error("Error at serializing data: {}", ex.getMessage());
-            return new ResponseEntity<>("[FireStationController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
+
+            responseEntity = new ResponseEntity<>("[FireStationController]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
+        return responseEntity;
     }
 
     @PostMapping
     public ResponseEntity<FireStation> addFireStation(@Valid @RequestBody FireStation fireStation) {
+        ResponseEntity<FireStation> responseEntity;
+
+        log.info("...POST request handling /firestation");
+
         if (fireStationRepository.save(fireStation)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(fireStation);
+
+            log.info("processed POST request /firestation request....");
         } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            log.warn("Unable to save fire station:{}", fireStation);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.CONFLICT);
         }
+
+        return responseEntity;
     }
 
     @PutMapping
     public ResponseEntity<FireStation> updateExistingFireStation(@RequestBody FireStation fireStation) throws IOException {
+        ResponseEntity<FireStation> responseEntity;
+
+        log.info("...PUT request handling /firestation");
+
         if (fireStationRepository.updateExistingFireStationNumber(fireStation)) {
-            return ResponseEntity.status(HttpStatus.CREATED)
+            responseEntity = ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(fireStationRepository.findFireStation(fireStation.getAddress()));
+
+            log.info("processed PUT request /firestation request....");
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            log.warn("Unable to update the fire station: {}", fireStation);
+
+            responseEntity = new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        return responseEntity;
     }
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteExistingFireStation(@RequestBody String address) throws IOException {
+        ResponseEntity<HttpStatus> responseEntity;
+
+        log.info("...DELETE request handling /firestation");
+
         FireStation fireStation = objectMapper.readValue(address, FireStation.class);
         if (fireStationRepository.delete(fireStation.getAddress())) {
-            return ResponseEntity.noContent().build();
+            responseEntity = ResponseEntity.noContent().build();
+
+            log.info("Processed DELETE request /firestation");
         } else {
-            return ResponseEntity.notFound().build();
+            log.warn("Unable delete fire station: {}", fireStation);
+
+            responseEntity = ResponseEntity.notFound().build();
         }
+
+        return responseEntity;
     }
 }

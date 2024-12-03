@@ -44,12 +44,16 @@ public class AlertController {
         ResponseEntity<String> responseEntity;
         List<PersonInfoView> personInfoViewList;
 
+        log.info("...request handling /personInfo?firstName={}&lastName={}", firstName, lastName);
+
         try {
             personInfoViewList = personService.findPersonInfo(firstName, lastName);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(personInfoViewList));
-        } catch (IOException |RuntimeException ex) {
+
+            log.info("processed /personInfo?firstName={}&lastName={} reuest...", firstName, lastName);
+        } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while searching for {} {}.", firstName, lastName);
             responseEntity = new ResponseEntity<>("[AlertController:Line 46]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -62,11 +66,15 @@ public class AlertController {
         ResponseEntity<String> responseEntity;
         List<String> communityEmailsList;
 
+        log.info("...request handling /communityEmail?city={}", city);
+
         try {
             communityEmailsList = communityEmailService.findCommunityEmailsByCity(city);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(communityEmailsList));
+
+            log.info("processed /communityEmail?city={} request...", city);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving community emails by {}.", city);
             responseEntity = new ResponseEntity<>("[AlertController:Line:68]: ", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -80,11 +88,15 @@ public class AlertController {
         ResponseEntity<String> responseEntity;
         FireResponse fireResponse;
 
-        try{
+        log.info("...request handling /fire?address={}", address);
+
+        try {
             fireResponse = fireResponseService.findFireResponse(address);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(fireResponse));
+
+            log.info("processed /fire?address={} request...", address);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving fire response service from {}.", address);
             responseEntity = new ResponseEntity<>("[AlertController:Line:93]: ", HttpStatus.INTERNAL_SERVER_ERROR);
