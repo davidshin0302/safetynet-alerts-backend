@@ -18,11 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.io.IOException;
 import java.util.List;
 
-/**
- * TODO:: Implement below request handler.
- * /childAlert?address=<address> (GET): Retrieve children at an address and their household members.
- * /fire?address=<address> (GET): Get fire station servicing an address and people living there.
- */
+
 @RestController
 @Slf4j
 public class AlertController {
@@ -39,6 +35,17 @@ public class AlertController {
     @Autowired
     private FireResponseService fireResponseService;
 
+    /**
+     * Retrieves person information based on provided first and last name.
+     *
+     * @param firstName The first name of the person to search for.
+     * @param lastName The last name of the person to search for.
+     * @return A ResponseEntity containing the person information as JSON or an error message
+     *         depending on the success of the operation. The status code will be set accordingly:
+     *         - `200 OK`: Person information found.
+     *         - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * @throws RuntimeException,IOException If either `firstName` or `lastName` is null or empty.
+     */
     @GetMapping("/personInfo")
     public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) {
         ResponseEntity<String> responseEntity;
@@ -61,6 +68,16 @@ public class AlertController {
         return responseEntity;
     }
 
+    /**
+     * Retrieves a list of community emails for a given city.
+     *
+     * @param city The city for which to retrieve community emails.
+     * @return A ResponseEntity containing a list of community emails as JSON or an error message
+     *         depending on the success of the operation. The status code will be set accordingly:
+     *         - `200 OK`: Community emails found for the city.
+     *         - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * @throws RuntimeException,IOException If `city` is null or empty.
+     */
     @GetMapping("/communityEmail")
     public ResponseEntity<String> getCommunityEmail(@RequestParam String city) {
         ResponseEntity<String> responseEntity;
@@ -83,6 +100,16 @@ public class AlertController {
         return responseEntity;
     }
 
+    /**
+     * Retrieves fire response information for a given address.
+     *
+     * @param address The address for which to retrieve fire response information.
+     * @return A ResponseEntity containing fire response details as JSON or an error message
+     *         depending on the success of the operation. The status code will be set accordingly:
+     *         - `200 OK`: Fire response information found for the address.
+     *         - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * @throws RuntimeException,IOException  If `address` is null or empty.
+     */
     @GetMapping("/fire")
     public ResponseEntity<String> getFireResponse(@RequestParam String address) {
         ResponseEntity<String> responseEntity;

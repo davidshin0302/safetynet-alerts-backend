@@ -123,7 +123,6 @@ public class PersonController {
      * @return A ResponseEntity with a NO_CONTENT status on successful deletion, or a NOT_FOUND status if
      *         the person with the provided names could not be found.
      */
-
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person person) {
         ResponseEntity<HttpStatus> responseEntity;
