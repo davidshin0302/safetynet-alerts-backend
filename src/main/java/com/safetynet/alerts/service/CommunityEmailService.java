@@ -2,46 +2,32 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.view.CommunityEmail;
-import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
 public class CommunityEmailService {
-    private final Map<String, List<CommunityEmail>> communityEmailsMap = new HashMap<>();
+    private Map<String, List<Person>> communityEmailsMap = new HashMap<>();
     @Autowired
     private PersonRepository personRepository;
 
-    public Map<String, List<CommunityEmail>> findCommunityEmailsByCity(@NotBlank String city) {
+    public List<String> findCommunityEmailsByCity(String city) {
+        loadCommunityEmails();
+        List<String> personList;
+
+        return communityEmailsMap.get(city).stream().map(Person::getEmail).collect(Collectors.toList());
+    }
+
+    private void loadCommunityEmails() {
         List<Person> personList = personRepository.findAll();
 
-        for (Person person : personList) {
-            if (city.equalsIgnoreCase(person.getCity())) {
-                if (communityEmailsMap.containsKey(city)) {
-                    List<CommunityEmail> communityEmailServiceList = communityEmailsMap.get(city);
-                    CommunityEmail communityEmail = new CommunityEmail();
-                    communityEmail.setEmail(person.getEmail());
-
-                    communityEmailServiceList.add(communityEmail);
-                } else {
-                    List<CommunityEmail> communityEmailList = new ArrayList<>();
-                    CommunityEmail communityEmail = new CommunityEmail();
-                    communityEmail.setEmail(person.getEmail());
-
-                    communityEmailList.add(communityEmail);
-
-                    communityEmailsMap.put(city, communityEmailList);
-                }
-            }
-        }
-        return communityEmailsMap;
+        communityEmailsMap = personList.stream().collect(Collectors.groupingBy(Person::getCity)); // same as person -> person.getCity();
     }
 }
