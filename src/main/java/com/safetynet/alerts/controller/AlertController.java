@@ -4,7 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.service.CommunityEmailService;
+import com.safetynet.alerts.service.FireResponseService;
 import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.PersonInfoView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 /**
  * TODO:: Implement below request handler.
@@ -35,6 +38,9 @@ public class AlertController {
 
     @Autowired
     private CommunityEmailService communityEmailService;
+
+    @Autowired
+    private FireResponseService fireResponseService;
 
     @GetMapping("/personInfo")
     public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) {
@@ -67,6 +73,24 @@ public class AlertController {
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving community emails by {}.", city);
             responseEntity = new ResponseEntity<>("[AlertController:Line:68]: ", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
+
+    @GetMapping("/fire")
+    public ResponseEntity<String> getAddressFireStation(@RequestParam String address) {
+        ResponseEntity<String> responseEntity;
+        Map<String, FireResponse> fireResponseMap;
+
+        try{
+            fireResponseMap = fireResponseService.findFireResponse(address);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(communityEmailService));
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving fire response service from {}.", address);
+            responseEntity = new ResponseEntity<>("[AlertController:Line:93]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return responseEntity;
