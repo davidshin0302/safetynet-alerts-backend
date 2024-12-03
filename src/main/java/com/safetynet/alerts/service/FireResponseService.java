@@ -27,7 +27,6 @@ public class FireResponseService {
     private FireStationRepository fireStationRepository;
     @Autowired
     private PersonService personService;
-
     private List<FireStation> fireStationList;
 
 

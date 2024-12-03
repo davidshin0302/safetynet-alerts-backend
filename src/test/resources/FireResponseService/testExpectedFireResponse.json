@@ -1,0 +1,66 @@
+{
+  "address": "1509 Culver St",
+  "fireStationNumber": "3",
+  "residents": [
+    {
+      "name": "John Boyd",
+      "phone": "841-874-6512",
+      "age": 40,
+      "medicalInfo": {
+        "medicatinos": [
+          "aznol:350mg",
+          "hydrapermazol:100mg"
+        ],
+        "allergies": [
+          "nillacilan"
+        ]
+      }
+    },
+    {
+      "name": "Jacob Boyd",
+      "phone": "841-874-6513",
+      "age": 35,
+      "medicalInfo": {
+        "medicatinos": [
+          "pharmacol:5000mg",
+          "terazine:10mg",
+          "noznazol:250mg"
+        ],
+        "allergies": []
+      }
+    },
+    {
+      "name": "Tenley Boyd",
+      "phone": "841-874-6512",
+      "age": 12,
+      "medicalInfo": {
+        "medicatinos": [],
+        "allergies": [
+          "peanut"
+        ]
+      }
+    },
+    {
+      "name": "Roger Boyd",
+      "phone": "841-874-6512",
+      "age": 7,
+      "medicalInfo": {
+        "medicatinos": [],
+        "allergies": []
+      }
+    },
+    {
+      "name": "Felicia Boyd",
+      "phone": "841-874-6544",
+      "age": 38,
+      "medicalInfo": {
+        "medicatinos": [
+          "tetracyclaz:650mg"
+        ],
+        "allergies": [
+          "xilliathal"
+        ]
+      }
+    }
+  ]
+}

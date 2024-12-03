@@ -64,7 +64,7 @@ class AlertControllerTest {
 
     @Test
     void getPersonInfo() throws Exception {
-        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testExpectedFindInfo.json"), new TypeReference<List<PersonInfoView>>() {
+        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testExpectedMultiplePerson.json"), new TypeReference<List<PersonInfoView>>() {
         });
 
         when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
