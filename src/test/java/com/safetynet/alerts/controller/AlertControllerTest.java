@@ -7,6 +7,7 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
+import com.safetynet.alerts.service.CommunityEmailService;
 import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.view.PersonInfoView;
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +17,6 @@ import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -25,11 +25,11 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @WebMvcTest(AlertController.class)
 class AlertControllerTest {
@@ -43,6 +43,8 @@ class AlertControllerTest {
     private AlertController alertController;
     @MockBean
     private PersonService personService;
+    @MockBean
+    private CommunityEmailService communityEmailService;
     @Mock
     private PersonRepository personRepository;
     @Mock
@@ -72,9 +74,30 @@ class AlertControllerTest {
 
     @Test
     void getPersonInfo_RuntimeException() throws Exception {
-        when(personService.findPersonInfo(anyString(), anyString())).thenThrow(new RuntimeException("RuntimeEception error"));
+        when(personService.findPersonInfo(anyString(), anyString())).thenThrow(new RuntimeException("RuntimeException error"));
 
         mockMvc.perform(get("/personInfo?firstName=NoName&lastName=NoName"))
+                .andExpect(status().isInternalServerError());
+    }
+
+    @Test
+    void getCommunityEmail() throws Exception {
+        List<String> communityEmailList = objectMapper.readValue(new File(TEST_FILE_PATH + "/CommunityEmail/testExpectedCommunityEmail.json"), new TypeReference<List<String>>() {
+        });
+
+        when(communityEmailService.findCommunityEmailsByCity(anyString())).thenReturn(communityEmailList);
+
+        mockMvc.perform(get("/communityEmail?city=Culver"))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$", hasSize(23)));
+    }
+
+    @Test
+    void getCommunityEmail_RuntimeException() throws Exception {
+        when(communityEmailService.findCommunityEmailsByCity(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
+
+        mockMvc.perform(get("/communityEmail?city=Culver"))
                 .andExpect(status().isInternalServerError());
     }
 }
