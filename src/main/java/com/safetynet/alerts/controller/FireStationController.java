@@ -25,6 +25,14 @@ public class FireStationController {
     @Autowired
     private FireStationRepository fireStationRepository;
 
+    /**
+     * Gets a list of all fire stations and returns them as a JSON response.
+     *
+     * @return A ResponseEntity containing a list of fire stations in JSON format
+     *         on success, or a ResponseEntity with an internal server error status
+     *         if an error occurs during serialization.
+     * @throws IOException  If an error occurs during serialization of the fire station list.
+     */
     @GetMapping
     public ResponseEntity<String> getFireStation() {
         ResponseEntity<String> responseEntity;
@@ -48,6 +56,15 @@ public class FireStationController {
         return responseEntity;
     }
 
+    /**
+     * Adds a new fire station to the system.
+     *
+     * @param fireStation The fire station information to be added. This parameter must be a valid fire station object
+     *                    annotated with @Valid and @RequestBody for validation.
+     * @return A ResponseEntity containing the newly created fire station information in JSON format with a CREATED status
+     *         on success, or a CONFLICT status if the fire station could not be saved.
+     * @throws RuntimeException  If any unexpected error occurs during saving.
+     */
     @PostMapping
     public ResponseEntity<FireStation> addFireStation(@Valid @RequestBody FireStation fireStation) {
         ResponseEntity<FireStation> responseEntity;
@@ -69,6 +86,16 @@ public class FireStationController {
         return responseEntity;
     }
 
+    /**
+     * Updates an existing fire station in the system.
+     *
+     * @param fireStation The updated fire station information. This parameter must be a valid fire station object
+     *                    containing the address of the fire station to be updated and any other updated fields. The object
+     *                    should be annotated with @RequestBody to indicate it's coming from the request body.
+     * @return A ResponseEntity containing the updated fire station information in JSON format with a CREATED status
+     *         on success, or a NOT_FOUND status if the fire station with the provided address could not be found.
+     * @throws IOException  If an error occurs during retrieval of the updated fire station after the update.
+     */
     @PutMapping
     public ResponseEntity<FireStation> updateExistingFireStation(@RequestBody FireStation fireStation) throws IOException {
         ResponseEntity<FireStation> responseEntity;
@@ -90,6 +117,15 @@ public class FireStationController {
         return responseEntity;
     }
 
+    /**
+     * Deletes an existing fire station from the system based on its address.
+     *
+     * @param address The address of the fire station to be deleted. This parameter is expected to be a String representing
+     *                 the address in JSON format within the request body.
+     * @return ResponseEntity with a NO_CONTENT status on successful deletion, or a NOT_FOUND status if
+     *         the fire station with the provided address could not be found.
+     * @throws IOException  If an error occurs during deserialization of the address from JSON format.
+     */
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteExistingFireStation(@RequestBody String address) throws IOException {
         ResponseEntity<HttpStatus> responseEntity;

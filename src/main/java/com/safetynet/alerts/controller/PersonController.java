@@ -26,6 +26,14 @@ public class PersonController {
     @Autowired
     private PersonService personService;
 
+
+    /**
+     * Gets a list of all people and returns them as a JSON response.
+     *
+     * @return A ResponseEntity containing a list of people in JSON format on success,
+     *         or a ResponseEntity with an internal server error status if an error occurs during serialization.
+     * @throws IOException  If an error occurs during serialization of the people list.
+     */
     @GetMapping
     public ResponseEntity<String> getPeople() {
         ResponseEntity<String> responseEntity;
@@ -48,7 +56,15 @@ public class PersonController {
         return responseEntity;
     }
 
-
+    /**
+     * Adds a new person to the system.
+     *
+     * @param person The person information to be added. This parameter must be a valid person object
+     *                annotated with @Valid for validation.
+     * @return A ResponseEntity containing the newly created person information in JSON format with a CREATED status
+     *         on success, or a CONFLICT status if the person could not be saved.
+     * @throws RuntimeException  If any unexpected error occurs during saving.
+     */
     @PostMapping
     public ResponseEntity<Person> addPerson(@Valid @RequestBody Person person) {
         ResponseEntity<Person> responseEntity;
@@ -69,6 +85,16 @@ public class PersonController {
         return responseEntity;
     }
 
+    /**
+     * Updates an existing person in the system.
+     *
+     * @param person The updated person information. This parameter must be a valid person object
+     *                containing the information for the person to be updated. The object should be annotated with
+     *                @RequestBody to indicate it's coming from the request body.
+     * @return A ResponseEntity containing the updated person information in JSON format with a CREATED status
+     *         on success, or a NOT_FOUND status if the person could not be found.
+     * @throws IOException  If an error occurs during retrieval of the updated person after the update.
+     */
     @PutMapping
     public ResponseEntity<Person> updateExistingPerson(@RequestBody Person person) throws IOException {
         ResponseEntity<Person> responseEntity;
@@ -88,6 +114,15 @@ public class PersonController {
         }
         return responseEntity;
     }
+
+    /**
+     * Deletes an existing person from the system based on their first and last name.
+     *
+     * @param person A person object containing the first and last name of the person to be deleted.
+     *                The object should be annotated with @RequestBody to indicate it's coming from the request body.
+     * @return A ResponseEntity with a NO_CONTENT status on successful deletion, or a NOT_FOUND status if
+     *         the person with the provided names could not be found.
+     */
 
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteExistingPerson(@RequestBody Person person) {

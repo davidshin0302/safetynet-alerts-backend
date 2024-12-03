@@ -22,6 +22,14 @@ public class MedicalRecordController {
     @Autowired
     private MedicalRecordRepository medicalRecordRepository;
 
+    /**
+     * Gets a list of all medical records and returns them as a JSON response.
+     *
+     * @return A ResponseEntity containing a list of medical records in JSON format
+     *         on success, or a ResponseEntity with an internal server error status
+     *         if an error occurs during serialization.
+     * @throws IOException  If an error occurs during serialization of the medical record list.
+     */
     @GetMapping
     public ResponseEntity<String> getAllMedicalRecords() {
         ResponseEntity<String> responseEntity;
@@ -43,10 +51,13 @@ public class MedicalRecordController {
     }
 
     /**
-     * Handle a new record to be added it.
+     * Adds a new medical record to the system.
      *
-     * @param medicalRecord Medical Record to add.
-     * @return Http status result
+     * @param medicalRecord The medical record information to be added. This parameter must be a valid medical record object
+     *                    annotated with @RequestBody for validation.
+     * @return A ResponseEntity containing the newly created medical record information in JSON format with a CREATED status
+     *         on success, or a CONFLICT status if the medical record could not be saved.
+     * @throws RuntimeException  If any unexpected error occurs during saving.
      */
     @PostMapping
     public ResponseEntity<MedicalRecord> addMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
@@ -67,6 +78,15 @@ public class MedicalRecordController {
         return responseEntity;
     }
 
+    /**
+     * Updates an existing medical record in the system.
+     *
+     * @param medicalRecord The updated medical record information. This parameter must be a valid medical record object
+     *                    containing the address of the medical record to be updated and any other updated fields. The object
+     *                    should be annotated with @RequestBody to indicate it's coming from the request body.
+     * @return A ResponseEntity with a CREATED status on successful update, or a NOT_FOUND status if
+     *         the medical record could not be found.
+     */
     @PutMapping
     public ResponseEntity<HttpStatus> updateMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         ResponseEntity<HttpStatus> responseEntity;
@@ -85,6 +105,15 @@ public class MedicalRecordController {
         return responseEntity;
     }
 
+    /**
+     * Deletes an existing medical record from the system.
+     *
+     * @param medicalRecord The medical record information to be deleted. This parameter must be a valid medical record object
+     *                   representing the record to be deleted. The object should be annotated with @RequestBody to indicate
+     *                   it's coming from the request body.
+     * @return A ResponseEntity with a NO_CONTENT status on successful deletion, or a NOT_FOUND status if
+     *         the medical record could not be found.
+     */
     @DeleteMapping
     public ResponseEntity<HttpStatus> deleteMedicalRecord(@RequestBody MedicalRecord medicalRecord) {
         ResponseEntity<HttpStatus> responseEntity;
