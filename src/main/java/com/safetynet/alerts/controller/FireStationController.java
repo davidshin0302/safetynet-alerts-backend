@@ -105,7 +105,7 @@ public class FireStationController {
         if (fireStationRepository.updateExistingFireStationNumber(fireStation)) {
             responseEntity = ResponseEntity.status(HttpStatus.CREATED)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(fireStationRepository.findFireStation(fireStation.getAddress()));
+                    .body(fireStation);
 
             log.info("processed PUT request /firestation request....");
         } else {
