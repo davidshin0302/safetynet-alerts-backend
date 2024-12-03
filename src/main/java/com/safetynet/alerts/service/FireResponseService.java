@@ -27,19 +27,19 @@ public class FireResponseService {
     private FireStationRepository fireStationRepository;
     @Autowired
     private PersonService personService;
-    @Autowired
-    private Resident resident;
-    @Autowired
-    private MedicalInfo medicalInfo;
 
-    public Map<String, FireResponse> findFireResponse(String address) {
+    private List<FireStation> fireStationList;
+
+
+    public FireResponse findFireResponse(String address) {
         loadFireResponseService();
 
-        return fireResponseMap;
+        return fireResponseMap.get(address);
     }
 
     private void loadFireResponseService() {
         List<Person> personList = personRepository.findAll();
+        fireStationList = fireStationRepository.findAll();
 
         Map<String, FireResponse> tempMap = new HashMap<>();
 
@@ -48,6 +48,7 @@ public class FireResponseService {
         }
 
         for (Person person : personList) {
+
             if (tempMap.containsKey(person.getAddress())) {
                 FireResponse fireResponse = tempMap.get(person.getAddress());
                 List<Resident> residents = fireResponse.getResidents();
@@ -57,48 +58,48 @@ public class FireResponseService {
                     fireResponse.setResidents(residents);
                 }
 
-                String stationNumber = findStationNumber(tempMap.get(person.getAddress()).getFireStationNumber());
+                String matchingStationNumber = findStationNumber(person.getAddress());
 
-                setResident(person.getFirstName(), person.getLastName(), person.getAddress(), person.getPhone());
+                Resident resident = setResident(person.getFirstName(), person.getLastName(), person.getAddress(), person.getPhone());
                 residents.add(resident);
-                fireResponse.setFireStationNumber(stationNumber);
+                fireResponse.setFireStationNumber(matchingStationNumber);
+                fireResponse.setAddress(person.getAddress());
             }
         }
 
         fireResponseMap.putAll(tempMap);
     }
 
-    private String findStationNumber(String stationNumber) {
-        String result = stationNumber;
+    private String findStationNumber(String address) {
+        FireStation matchingFireStation = fireStationList.stream()
+                .filter(fireStation -> fireStation.getAddress().equalsIgnoreCase(address))
+                .findFirst()
+                .orElse(null);
 
-        if (stationNumber == null) {
-            List<FireStation> fireStationList = fireStationRepository.findAll();
-
-            FireStation matchingFireStation = fireStationList.stream()
-                    .filter(fireStation -> fireStation.getAddress().equalsIgnoreCase(person.getAddress()))
-                    .findFirst()
-                    .orElse(null);
-
-            if (matchingFireStation != null) {
-                result = matchingFireStation.getStation();
-            }
-        }
-
-        return result;
+        return matchingFireStation.getStation();
     }
 
-    private void setResident(String firstName, String lastName, String address, String phoneNumber) {
+    private Resident setResident(String firstName, String lastName, String address, String phoneNumber) {
+        MedicalInfo medicalInfo = new MedicalInfo();
+        Resident resident = new Resident();
+
         List<PersonInfoView> personInfoViewList = personService.findPersonInfo(firstName, lastName);
-        PersonInfoView personInfoView = personInfoViewList.stream().filter(resident -> resident.getAddress().equalsIgnoreCase(address)).findFirst().orElse(null);
+        PersonInfoView matchinPersonInfoView = personInfoViewList.stream().filter(personInfoView -> {
+            String[] splitAddress = personInfoView.getAddress().split(",");
 
-        if (personInfoView != null) {
-            medicalInfo.setMedicatinos(personInfoView.getMedications());
-            medicalInfo.setAllergies(personInfoView.getAllergies());
+            return address.equalsIgnoreCase(splitAddress[0]);
+        }).findFirst().orElse(null);
 
-            resident.setName(personInfoView.getName());
+        if (matchinPersonInfoView != null) {
+            medicalInfo.setMedicatinos(matchinPersonInfoView.getMedications());
+            medicalInfo.setAllergies(matchinPersonInfoView.getAllergies());
+
+            resident.setName(matchinPersonInfoView.getName());
             resident.setPhone(phoneNumber);
-            resident.setAge(personInfoView.getAge());
+            resident.setAge(matchinPersonInfoView.getAge());
             resident.setMedicalInfo(medicalInfo);
         }
+
+        return resident;
     }
 }

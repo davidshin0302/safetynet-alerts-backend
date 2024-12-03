@@ -79,15 +79,15 @@ public class AlertController {
     }
 
     @GetMapping("/fire")
-    public ResponseEntity<String> getAddressFireStation(@RequestParam String address) {
+    public ResponseEntity<String> getFireResponse(@RequestParam String address) {
         ResponseEntity<String> responseEntity;
-        Map<String, FireResponse> fireResponseMap;
+        FireResponse fireResponse;
 
         try{
-            fireResponseMap = fireResponseService.findFireResponse(address);
+            fireResponse = fireResponseService.findFireResponse(address);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(objectMapper.writeValueAsString(communityEmailService));
+                    .body(objectMapper.writeValueAsString(fireResponse));
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving fire response service from {}.", address);
             responseEntity = new ResponseEntity<>("[AlertController:Line:93]: ", HttpStatus.INTERNAL_SERVER_ERROR);
