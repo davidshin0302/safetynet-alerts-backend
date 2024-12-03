@@ -1,6 +1,9 @@
 package com.safetynet.alerts.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.safetynet.alerts.model.Person;
+import com.safetynet.alerts.service.CommunityEmailService;
 import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.view.PersonInfoView;
 import lombok.extern.slf4j.Slf4j;
@@ -30,10 +33,12 @@ public class AlertController {
     @Autowired
     private PersonService personService;
 
-    @GetMapping("/personInfo")
-    public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) throws IOException {
-        ResponseEntity<String> responseEntity;
+    @Autowired
+    private CommunityEmailService communityEmailService;
 
+    @GetMapping("/personInfo")
+    public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) {
+        ResponseEntity<String> responseEntity;
         List<PersonInfoView> personInfoViewList;
 
         try {
@@ -41,9 +46,27 @@ public class AlertController {
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(personInfoViewList));
-        } catch (RuntimeException ex) {
-            log.error("Error Occurred while searching for {} {}", firstName, lastName);
+        } catch (IOException |RuntimeException ex) {
+            log.error("Error Occurred while searching for {} {}.", firstName, lastName);
             responseEntity = new ResponseEntity<>("[AlertController:Line 46]: ", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
+
+    @GetMapping("/communityEmail")
+    public ResponseEntity<String> getCommunityEmail(@RequestParam String city) {
+        ResponseEntity<String> responseEntity;
+        List<String> communityEmailsList;
+
+        try {
+            communityEmailsList = communityEmailService.findCommunityEmailsByCity(city);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(communityEmailsList));
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving community emails by {}.", city);
+            responseEntity = new ResponseEntity<>("[AlertController:Line:68]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return responseEntity;
