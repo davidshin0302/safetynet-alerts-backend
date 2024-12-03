@@ -20,9 +20,12 @@ public class CommunityEmailService {
 
     public List<String> findCommunityEmailsByCity(String city) {
         loadCommunityEmails();
-        List<String> personList;
+        List<String> communityEmailList = List.of();
 
-        return communityEmailsMap.get(city).stream().map(Person::getEmail).collect(Collectors.toList());
+        if (communityEmailsMap.get(city) != null) {
+            communityEmailList = communityEmailsMap.get(city).stream().map(Person::getEmail).toList();
+        }
+        return communityEmailList;
     }
 
     private void loadCommunityEmails() {
