@@ -36,6 +36,10 @@ public class FireResponseService {
         return fireResponseMap.getOrDefault(address, new FireResponse());
     }
 
+    public Map<String, FireResponse> getFireResponse(){
+        return fireResponseMap;
+    }
+
     private void loadFireResponseService() {
         List<Person> personList = personRepository.findAll();
         fireStationList = fireStationRepository.findAll();
