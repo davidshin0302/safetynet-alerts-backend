@@ -10,6 +10,7 @@ import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.CommunityEmailService;
 import com.safetynet.alerts.service.FireResponseService;
 import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.PersonInfoView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.hasValue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -76,10 +78,21 @@ class AlertControllerTest {
     }
 
     @Test
-    void getPersonInfo_RuntimeException() throws Exception {
+    void setAlertController_RuntimeException() throws Exception {
         when(personService.findPersonInfo(anyString(), anyString())).thenThrow(new RuntimeException("RuntimeException error"));
+        when(communityEmailService.findCommunityEmailsByCity(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
+        when(fireResponseService.findFireResponse(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
 
+        //getPersonInfo_RuntimeException
         mockMvc.perform(get("/personInfo?firstName=NoName&lastName=NoName"))
+                .andExpect(status().isInternalServerError());
+
+        //getCommunityEmail_RuntimeException
+        mockMvc.perform(get("/communityEmail?city=noCity"))
+                .andExpect(status().isInternalServerError());
+
+        //getFireResponse_RuntimeException
+        mockMvc.perform(get("/fire?address=no address"))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -97,10 +110,14 @@ class AlertControllerTest {
     }
 
     @Test
-    void getCommunityEmail_RuntimeException() throws Exception {
-        when(communityEmailService.findCommunityEmailsByCity(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
+    void getFireResponse() throws Exception {
+        FireResponse fireResponse = objectMapper.readValue(new File(TEST_FILE_PATH + "/FireResponseService/testExpectedFireResponse.json"), FireResponse.class);
+        when(fireResponseService.findFireResponse(anyString())).thenReturn(fireResponse);
 
-        mockMvc.perform(get("/communityEmail?city=Culver"))
-                .andExpect(status().isInternalServerError());
+        mockMvc.perform(get("/fire?address=1509 Culver St"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.address").value(fireResponse.getAddress()))
+                .andExpect(jsonPath("$.fireStationNumber").value(fireResponse.getFireStationNumber()))
+                .andExpect(jsonPath("$.residents", hasSize(5)));
     }
 }
