@@ -26,7 +26,10 @@ public class FireStationRepository {
     }
 
     private FireStation findByAddress(String address) {
-        return fireStationList.stream().filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim())).findFirst().orElse(null);
+        return fireStationList.stream()
+                .filter(existingFireStation -> existingFireStation.getAddress().trim().equalsIgnoreCase(address.trim()))
+                .findFirst()
+                .orElse(null);
     }
 
     public FireStation findFireStation(String address) {
