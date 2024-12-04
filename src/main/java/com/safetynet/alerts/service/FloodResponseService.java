@@ -1,7 +1,24 @@
 package com.safetynet.alerts.service;
 
-public class FloodResponseService {
+import com.safetynet.alerts.view.FireResponse;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
+@Service
+public class FloodResponseService {
+    @Autowired
+    private FireResponseService fireResponseService;
+
+    private Map<String, FireResponse> floodResponseMap;
+
+    public Map<String, FireResponse> findFloodResponse(List<String> stations){
+        return floodResponseMap;
+    }
     /*
     TODO:: Implement flood station response service based on this json object.
     {
