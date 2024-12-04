@@ -120,25 +120,24 @@ public class FireStationController {
     /**
      * Deletes an existing fire station from the system based on its address.
      *
-     * @param address The address of the fire station to be deleted. This parameter is expected to be a String representing
+     * @param fireStation The address of the fire station to be deleted. This parameter is expected to be a String representing
      *                 the address in JSON format within the request body.
      * @return ResponseEntity with a NO_CONTENT status on successful deletion, or a NOT_FOUND status if
      *         the fire station with the provided address could not be found.
      * @throws IOException  If an error occurs during deserialization of the address from JSON format.
      */
     @DeleteMapping
-    public ResponseEntity<HttpStatus> deleteExistingFireStation(@RequestBody String address) throws IOException {
+    public ResponseEntity<HttpStatus> deleteExistingFireStation(@RequestBody FireStation fireStation) throws IOException {
         ResponseEntity<HttpStatus> responseEntity;
 
         log.info("...DELETE request handling /firestation");
 
-        FireStation fireStation = objectMapper.readValue(address, FireStation.class);
         if (fireStationRepository.delete(fireStation.getAddress())) {
             responseEntity = ResponseEntity.noContent().build();
 
             log.info("Processed DELETE request /firestation");
         } else {
-            log.warn("Unable delete fire station: {}", fireStation);
+            log.warn("Unable delete fire station by provide address: {}", fireStation.getAddress());
 
             responseEntity = ResponseEntity.notFound().build();
         }

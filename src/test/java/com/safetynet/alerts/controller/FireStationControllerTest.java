@@ -73,15 +73,14 @@ class FireStationControllerTest {
         String newFireStation = objectMapper.writeValueAsString(fireStation);
 
         when(fireStationRepository.save(fireStation)).thenReturn(true);
-//        when(fireStationRepository.findFireStation(fireStation.getAddress())).thenReturn(fireStation);
+        when(fireStationRepository.findFireStation(fireStation.getAddress())).thenReturn(fireStation);
 
         //Verify new firestation is saved and return with 201 code.
         mockMvc.perform(post("/firestation")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(newFireStation))
-                .andExpect(status().isConflict())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(content().string("FireStation could not be saved."));
+                .andExpect(status().isCreated());
     }
 
     @Test
