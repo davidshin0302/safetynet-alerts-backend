@@ -37,6 +37,7 @@ public class FireResponseService {
     }
 
     public Map<String, FireResponse> getFireResponse(){
+        loadFireResponseService();
         return fireResponseMap;
     }
 

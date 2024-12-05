@@ -6,6 +6,7 @@ import com.safetynet.alerts.service.FireResponseService;
 import com.safetynet.alerts.service.FloodResponseService;
 import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.view.FireResponse;
+import com.safetynet.alerts.view.FloodResponse;
 import com.safetynet.alerts.view.PersonInfoView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -152,10 +153,10 @@ public class AlertController {
         log.info("...request handling /flood/stations={}", stations);
 
         try{
-            fireResponseMap = floodResponseService.findFloodResponse(stations);
+            Map<String, List<FloodResponse>> floodResponseMap = floodResponseService.findFloodResponse(stations);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(objectMapper.writeValueAsString(fireResponseMap));
+                    .body(objectMapper.writeValueAsString(floodResponseMap));
 
             log.info("processed /flood/stations={}", stations);
         } catch (IOException | RuntimeException ex) {
