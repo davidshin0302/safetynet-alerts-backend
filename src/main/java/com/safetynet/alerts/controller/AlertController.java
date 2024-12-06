@@ -2,7 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.service.*;
-import com.safetynet.alerts.view.ChildAlert;
+import com.safetynet.alerts.view.ChildInfo;
 import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.FloodResponse;
 import com.safetynet.alerts.view.PersonInfo;
@@ -40,7 +40,7 @@ public class AlertController {
     private FloodResponseService floodResponseService;
 
     @Autowired
-    private ChildAlertService childAlertService;
+    private ChildAlertResponseService childAlertResponseService;
 
     /**
      * Retrieves person information based on provided first and last name.
@@ -191,7 +191,7 @@ public class AlertController {
         log.info("...request handling /childAlert?address={}", address);
 
         try{
-            List<ChildAlert> childInfoList = childAlertService.findChildAlert(address);
+            List<ChildInfo> childInfoList = childAlertResponseService.findChildAlert(address);
             String result = objectMapper.writeValueAsString(childInfoList);
 
             if(childInfoList.isEmpty()){
