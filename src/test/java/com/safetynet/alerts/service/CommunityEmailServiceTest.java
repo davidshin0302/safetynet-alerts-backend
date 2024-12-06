@@ -42,7 +42,7 @@ class CommunityEmailServiceTest {
     @Test
     void findCommunityEmailsByCity() throws IOException {
         List<String> actualCommunityEmailList = communityEmailService.findCommunityEmailsByCity("Culver");
-        List<String> expectedCommunityEmailList = objectMapper.readValue(new File(TEST_FILE_PATH + "/CommunityEmail/testExpectedCommunityEmail.json"), new TypeReference<List<String>>() {
+        List<String> expectedCommunityEmailList = objectMapper.readValue(new File(TEST_FILE_PATH + "/communityEmail/testExpectedCommunityEmail.json"), new TypeReference<List<String>>() {
         });
 
         assertNotNull(expectedCommunityEmailList);

@@ -19,6 +19,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -56,13 +57,23 @@ class FireResponseServiceTest {
 
     @Test
     void findFireResponse() throws IOException {
-        FireResponse expectedFireResponse = objectMapper.readValue(new File(TEST_FILE_PATH + "/FireResponseService/testExpectedFireResponse.json"), FireResponse.class);
+        FireResponse expectedFireResponse = objectMapper.readValue(new File(TEST_FILE_PATH + "/fireResponseService/testExpectedFireResponse.json"), FireResponse.class);
         String address = "1509 Culver St";
         FireResponse actualFireResponse = fireResponseService.findFireResponse(address);
 
         assertNotNull(actualFireResponse);
         assertEquals(actualFireResponse.getFireStationNumber(), expectedFireResponse.getFireStationNumber());
 
+    }
+
+    @Test
+    void getFireResponse() {
+        Map<String, FireResponse> fireResponseMap = fireResponseService.getFireResponse();
+
+        assertNotNull(fireResponseMap);
+        assertEquals(11, fireResponseMap.size());
+        assertTrue(fireResponseMap.containsKey("748 Townings Dr"));
+        assertTrue(fireResponseMap.containsKey("951 LoneTree Rd"));
     }
 
     @Test
