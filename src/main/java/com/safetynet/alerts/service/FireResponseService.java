@@ -26,7 +26,7 @@ public class FireResponseService {
     @Autowired
     private FireStationRepository fireStationRepository;
     @Autowired
-    private PersonService personService;
+    private PersonInfoService personInfoService;
     private List<FireStation> fireStationList;
 
 
@@ -87,7 +87,7 @@ public class FireResponseService {
         MedicalInfo medicalInfo = new MedicalInfo();
         Resident resident = new Resident();
 
-        List<PersonInfoView> personInfoViewList = personService.findPersonInfo(firstName, lastName);
+        List<PersonInfoView> personInfoViewList = personInfoService.findPersonInfo(firstName, lastName);
         PersonInfoView matchinPersonInfoView = personInfoViewList.stream().filter(personInfoView -> {
             String[] splitAddress = personInfoView.getAddress().split(",");
 

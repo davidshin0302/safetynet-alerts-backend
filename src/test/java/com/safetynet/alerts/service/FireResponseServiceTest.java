@@ -35,7 +35,7 @@ class FireResponseServiceTest {
     FireResponseService fireResponseService;
 
     @Mock
-    PersonService personService;
+    PersonInfoService personInfoService;
 
     @Mock
     PersonRepository personRepository;
@@ -52,7 +52,7 @@ class FireResponseServiceTest {
 
         when(personRepository.findAll()).thenReturn(personList);
         when(fireStationRepository.findAll()).thenReturn(fireStationList);
-        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+        when(personInfoService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
     }
 
     @Test

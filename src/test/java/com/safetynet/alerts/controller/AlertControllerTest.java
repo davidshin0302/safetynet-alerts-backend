@@ -10,7 +10,7 @@ import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.CommunityEmailService;
 import com.safetynet.alerts.service.FireResponseService;
 import com.safetynet.alerts.service.FloodResponseService;
-import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.service.PersonInfoService;
 import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.FloodResponse;
 import com.safetynet.alerts.view.PersonInfoView;
@@ -48,7 +48,7 @@ class AlertControllerTest {
     @InjectMocks
     private AlertController alertController;
     @MockBean
-    private PersonService personService;
+    private PersonInfoService personInfoService;
     @MockBean
     private CommunityEmailService communityEmailService;
     @MockBean
@@ -74,7 +74,7 @@ class AlertControllerTest {
         List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testExpectedMultiplePerson.json"), new TypeReference<List<PersonInfoView>>() {
         });
 
-        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+        when(personInfoService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
 
         mockMvc.perform(get("/personInfo?firstName=John&lastName=Boyd"))
                 .andExpect(status().isOk())
@@ -84,7 +84,7 @@ class AlertControllerTest {
 
     @Test
     void setAlertController_RuntimeException() throws Exception {
-        when(personService.findPersonInfo(anyString(), anyString())).thenThrow(new RuntimeException("RuntimeException error"));
+        when(personInfoService.findPersonInfo(anyString(), anyString())).thenThrow(new RuntimeException("RuntimeException error"));
         when(communityEmailService.findCommunityEmailsByCity(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
         when(fireResponseService.findFireResponse(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
         when(floodResponseService.findFloodResponse(anyList())).thenThrow(new RuntimeException("RuntimeException error"));

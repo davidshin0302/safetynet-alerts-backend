@@ -3,7 +3,7 @@ package com.safetynet.alerts.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.service.PersonInfoService;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +24,7 @@ public class PersonController {
     @Autowired
     private PersonRepository personRepository;
     @Autowired
-    private PersonService personService;
+    private PersonInfoService personInfoService;
 
 
     /**

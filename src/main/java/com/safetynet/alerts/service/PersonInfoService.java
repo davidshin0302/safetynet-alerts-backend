@@ -6,6 +6,7 @@ import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.PersonInfoView;
 import jakarta.validation.constraints.NotBlank;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +23,9 @@ import java.util.stream.Collectors;
  * Retrieve community emails (/communityEmail?city=<city>).
  */
 @Slf4j
+@Getter
 @Service
-public class PersonService {
+public class PersonInfoService {
 
     private final Map<String, PersonInfoView> personInfoViewMap = new HashMap<>();
     @Autowired
