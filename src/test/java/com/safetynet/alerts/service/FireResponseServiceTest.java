@@ -8,7 +8,7 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.FireResponse;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.view.PersonInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,12 +47,12 @@ class FireResponseServiceTest {
     void setUp() throws IOException {
         List<Person> personList = objectMapper.readValue(new File(TEST_FILE_PATH + "/testData.json"), DataObject.class).getPersons();
         List<FireStation> fireStationList = objectMapper.readValue(new File(TEST_FILE_PATH + "/testData.json"), DataObject.class).getFireStations();
-        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testExpectedOnePerson.json"), new TypeReference<List<PersonInfoView>>() {
+        List<PersonInfo> personInfoList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testExpectedOnePerson.json"), new TypeReference<List<PersonInfo>>() {
         });
 
         when(personRepository.findAll()).thenReturn(personList);
         when(fireStationRepository.findAll()).thenReturn(fireStationList);
-        when(personInfoService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+        when(personInfoService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoList);
     }
 
     @Test

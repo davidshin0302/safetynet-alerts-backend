@@ -1,13 +1,11 @@
 package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.service.CommunityEmailService;
-import com.safetynet.alerts.service.FireResponseService;
-import com.safetynet.alerts.service.FloodResponseService;
-import com.safetynet.alerts.service.PersonService;
+import com.safetynet.alerts.service.*;
+import com.safetynet.alerts.view.ChildAlert;
 import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.FloodResponse;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.view.PersonInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +28,7 @@ public class AlertController {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PersonService personService;
+    private PersonInfoService personInfoService;
 
     @Autowired
     private CommunityEmailService communityEmailService;
@@ -40,6 +38,9 @@ public class AlertController {
 
     @Autowired
     private FloodResponseService floodResponseService;
+
+    @Autowired
+    private ChildAlertService childAlertService;
 
     /**
      * Retrieves person information based on provided first and last name.
@@ -55,15 +56,15 @@ public class AlertController {
     @GetMapping("/personInfo")
     public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) {
         ResponseEntity<String> responseEntity;
-        List<PersonInfoView> personInfoViewList;
+        List<PersonInfo> personInfoList;
 
         log.info("...request handling /personInfo?firstName={}&lastName={}", firstName, lastName);
 
         try {
-            personInfoViewList = personService.findPersonInfo(firstName, lastName);
+            personInfoList = personInfoService.findPersonInfo(firstName, lastName);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(objectMapper.writeValueAsString(personInfoViewList));
+                    .body(objectMapper.writeValueAsString(personInfoList));
 
             log.info("processed /personInfo?firstName={}&lastName={} reuest...", firstName, lastName);
         } catch (IOException | RuntimeException ex) {
@@ -144,16 +145,29 @@ public class AlertController {
 
         return responseEntity;
     }
-
-    @GetMapping("/flood/stations")
+/**
+ * Retrieves flood response information for a list of fire stations.
+ *
+ * @param stations A list of fire station IDs for which to retrieve flood response information.
+ * @return A ResponseEntity containing:
+ *         - A JSON representation of the flood response details mapped by station if the operation is successful.
+ *         - An error response with a status code if an issue occurs.
+ *
+ *         The status codes include:
+ *         - `200 OK`: Flood response information successfully retrieved.
+ *         - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+ * @throws RuntimeException If an unexpected runtime exception occurs during processing.
+ * @throws IOException If an error occurs while serializing the flood response data to JSON.
+ */
+ @GetMapping("/flood/stations")
     public ResponseEntity<String> getFloodResponse(@RequestParam List<String> stations){
         ResponseEntity<String> responseEntity;
-        Map<String, FireResponse> fireResponseMap;
+        Map<String, List<FloodResponse>> floodResponseMap;
 
         log.info("...request handling /flood/stations={}", stations);
 
         try{
-            Map<String, List<FloodResponse>> floodResponseMap = floodResponseService.findFloodResponse(stations);
+            floodResponseMap = floodResponseService.findFloodResponse(stations);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(floodResponseMap));
@@ -161,6 +175,34 @@ public class AlertController {
             log.info("processed /flood/stations={}", stations);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving flood response service from the list: {}.", stations);
+            log.error(ex.getMessage());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return  responseEntity;
+    }
+
+    @GetMapping("/childAlert")
+    public ResponseEntity<String> getChildAlert(@RequestParam String address){
+        ResponseEntity<String> responseEntity;
+
+
+        log.info("...request handling /childAlert?address={}", address);
+
+        try{
+            List<ChildAlert> childInfoList = childAlertService.findChildAlert(address);
+            String result = objectMapper.writeValueAsString(childInfoList);
+
+            if(childInfoList.isEmpty()){
+                result = " ";
+            }
+
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(result);
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving child alert  service from the address: {}.", address);
             log.error(ex.getMessage());
 
             responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

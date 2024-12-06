@@ -4,7 +4,7 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.view.PersonInfo;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @Service
 public class PersonInfoService {
 
-    private final Map<String, PersonInfoView> personInfoViewMap = new HashMap<>();
+    private final Map<String, PersonInfo> personInfoViewMap = new HashMap<>();
     @Autowired
     private PersonRepository personRepository;
     @Autowired
@@ -42,21 +42,21 @@ public class PersonInfoService {
      * @param lastName  the last name of the person to find
      * @return a list of person information views, each containing the person's name, address, email, age, medications, and allergies
      */
-    public List<PersonInfoView> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
+    public List<PersonInfo> findPersonInfo(@NotBlank String firstName, @NotBlank String lastName) {
         loadPersonInfo();
-        List<PersonInfoView> personInfoViewList = new ArrayList<>();
+        List<PersonInfo> personInfoList = new ArrayList<>();
 
-        for (PersonInfoView personInfoView : personInfoViewMap.values()) {
-            String[] splitName = personInfoView.getName().split(" ");
+        for (PersonInfo personInfo : personInfoViewMap.values()) {
+            String[] splitName = personInfo.getName().split(" ");
             String personFirstName = splitName[0];
             String personLastName = splitName[1];
 
             if (personFirstName.equalsIgnoreCase(firstName) && personLastName.equalsIgnoreCase(lastName)) {
-                personInfoViewList.add(personInfoView);
+                personInfoList.add(personInfo);
             }
         }
 
-        return personInfoViewList;
+        return personInfoList;
     }
 
     private void loadPersonInfo() {
@@ -103,7 +103,7 @@ public class PersonInfoService {
 
                 String key = person.getUniqueIdentifier() + "_" + medicalRecord.getBirthdate();
 
-                // Construct PersonInfoView
+                // Construct PersonInfo
                 String name = person.getFirstName() + " " + person.getLastName();
                 String address = person.getAddress() + ", " + person.getCity() + ", " + person.getZip();
                 String email = person.getEmail();
@@ -112,7 +112,7 @@ public class PersonInfoService {
                 List<String> allergies = medicalRecord.getAllergies();
 
                 // Put the new entry in the map
-                personInfoViewMap.put(key, new PersonInfoView(name, address, email, age, medications, allergies));
+                personInfoViewMap.put(key, new PersonInfo(name, address, email, age, medications, allergies));
             }
         });
     }

@@ -13,7 +13,7 @@ import com.safetynet.alerts.service.FloodResponseService;
 import com.safetynet.alerts.service.PersonInfoService;
 import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.FloodResponse;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.view.PersonInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -71,10 +71,10 @@ class AlertControllerTest {
 
     @Test
     void getPersonInfo() throws Exception {
-        List<PersonInfoView> personInfoViewList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testExpectedMultiplePerson.json"), new TypeReference<List<PersonInfoView>>() {
+        List<PersonInfo> personInfoList = objectMapper.readValue(new File(TEST_FILE_PATH + "/personService/testExpectedMultiplePerson.json"), new TypeReference<List<PersonInfo>>() {
         });
 
-        when(personInfoService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+        when(personInfoService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoList);
 
         mockMvc.perform(get("/personInfo?firstName=John&lastName=Boyd"))
                 .andExpect(status().isOk())
