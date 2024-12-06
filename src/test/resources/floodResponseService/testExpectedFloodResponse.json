@@ -1,0 +1,257 @@
+{
+  "stations": [
+    {
+      "stationNumber": "1",
+      "households": [
+        {
+          "address": "947 E. Rose Dr",
+          "fireStationNumber": "1",
+          "residents": [
+            {
+              "name": "Brian Stelzer",
+              "phone": "841-874-7784",
+              "age": 49,
+              "medicalInfo": {
+                "medicatinos": [
+                  "ibupurin:200mg",
+                  "hydrapermazol:400mg"
+                ],
+                "allergies": [
+                  "nillacilan"
+                ]
+              }
+            },
+            {
+              "name": "Shawna Stelzer",
+              "phone": "841-874-7784",
+              "age": 44,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": []
+              }
+            },
+            {
+              "name": "Kendrik Stelzer",
+              "phone": "841-874-7784",
+              "age": 10,
+              "medicalInfo": {
+                "medicatinos": [
+                  "noxidian:100mg",
+                  "pharmacol:2500mg"
+                ],
+                "allergies": []
+              }
+            }
+          ]
+        },
+        {
+          "address": "644 Gershwin Cir",
+          "fireStationNumber": "1",
+          "residents": [
+            {
+              "name": "Peter Duncan",
+              "phone": "841-874-6512",
+              "age": 24,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": [
+                  "shellfish"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stationNumber": "2",
+      "households": [
+        {
+          "address": "892 Downing Ct",
+          "fireStationNumber": "2",
+          "residents": [
+            {
+              "name": "Sophia Zemicks",
+              "phone": "841-874-7878",
+              "age": 36,
+              "medicalInfo": {
+                "medicatinos": [
+                  "aznol:60mg",
+                  "hydrapermazol:900mg",
+                  "pharmacol:5000mg",
+                  "terazine:500mg"
+                ],
+                "allergies": [
+                  "peanut",
+                  "shellfish",
+                  "aznol"
+                ]
+              }
+            },
+            {
+              "name": "Warren Zemicks",
+              "phone": "841-874-7512",
+              "age": 39,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": []
+              }
+            },
+            {
+              "name": "Zach Zemicks",
+              "phone": "841-874-7512",
+              "age": 7,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": []
+              }
+            }
+          ]
+        },
+        {
+          "address": "29 15th St",
+          "fireStationNumber": "2",
+          "residents": [
+            {
+              "name": "Jonanathan Marrack",
+              "phone": "841-874-6513",
+              "age": 35,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": []
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "stationNumber": "3",
+      "households": [
+        {
+          "address": "1509 Culver St",
+          "fireStationNumber": "3",
+          "residents": [
+            {
+              "name": "John Boyd",
+              "phone": "841-874-6512",
+              "age": 40,
+              "medicalInfo": {
+                "medicatinos": [
+                  "aznol:350mg",
+                  "hydrapermazol:100mg"
+                ],
+                "allergies": [
+                  "nillacilan"
+                ]
+              }
+            },
+            {
+              "name": "Jacob Boyd",
+              "phone": "841-874-6513",
+              "age": 35,
+              "medicalInfo": {
+                "medicatinos": [
+                  "pharmacol:5000mg",
+                  "terazine:10mg",
+                  "noznazol:250mg"
+                ],
+                "allergies": []
+              }
+            },
+            {
+              "name": "Tenley Boyd",
+              "phone": "841-874-6512",
+              "age": 12,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": [
+                  "peanut"
+                ]
+              }
+            },
+            {
+              "name": "Roger Boyd",
+              "phone": "841-874-6512",
+              "age": 7,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": []
+              }
+            },
+            {
+              "name": "Felicia Boyd",
+              "phone": "841-874-6544",
+              "age": 38,
+              "medicalInfo": {
+                "medicatinos": [
+                  "tetracyclaz:650mg"
+                ],
+                "allergies": [
+                  "xilliathal"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "address": "834 Binoc Ave",
+          "fireStationNumber": "3",
+          "residents": [
+            {
+              "name": "Tessa Carman",
+              "phone": "841-874-6512",
+              "age": 12,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": []
+              }
+            }
+          ]
+        },
+        {
+          "address": "112 Steppes Pl",
+          "fireStationNumber": "3",
+          "residents": [
+            {
+              "name": "Tony Cooper",
+              "phone": "841-874-6874",
+              "age": 30,
+              "medicalInfo": {
+                "medicatinos": [
+                  "hydrapermazol:300mg",
+                  "dodoxadin:30mg"
+                ],
+                "allergies": [
+                  "shellfish"
+                ]
+              }
+            },
+            {
+              "name": "Ron Peters",
+              "phone": "841-874-8888",
+              "age": 59,
+              "medicalInfo": {
+                "medicatinos": [],
+                "allergies": []
+              }
+            },
+            {
+              "name": "Allison Boyd",
+              "phone": "841-874-9888",
+              "age": 59,
+              "medicalInfo": {
+                "medicatinos": [
+                  "aznol:200mg"
+                ],
+                "allergies": [
+                  "nillacilan"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
