@@ -3,8 +3,10 @@ package com.safetynet.alerts.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.service.CommunityEmailService;
 import com.safetynet.alerts.service.FireResponseService;
+import com.safetynet.alerts.service.FloodResponseService;
 import com.safetynet.alerts.service.PersonService;
 import com.safetynet.alerts.view.FireResponse;
+import com.safetynet.alerts.view.FloodResponse;
 import com.safetynet.alerts.view.PersonInfoView;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -34,6 +37,9 @@ public class AlertController {
 
     @Autowired
     private FireResponseService fireResponseService;
+
+    @Autowired
+    private FloodResponseService floodResponseService;
 
     /**
      * Retrieves person information based on provided first and last name.
@@ -62,6 +68,8 @@ public class AlertController {
             log.info("processed /personInfo?firstName={}&lastName={} reuest...", firstName, lastName);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while searching for {} {}.", firstName, lastName);
+            log.error(ex.getMessage());
+
             responseEntity = new ResponseEntity<>("[AlertController:Line 46]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -94,6 +102,8 @@ public class AlertController {
             log.info("processed /communityEmail?city={} request...", city);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving community emails by {}.", city);
+            log.error(ex.getMessage());
+
             responseEntity = new ResponseEntity<>("[AlertController:Line:68]: ", HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -126,9 +136,36 @@ public class AlertController {
             log.info("processed /fire?address={} request...", address);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving fire response service from {}.", address);
+            log.error(ex.getMessage());
+
             responseEntity = new ResponseEntity<>("[AlertController:Line:93]: ", HttpStatus.INTERNAL_SERVER_ERROR);
+
         }
 
         return responseEntity;
+    }
+
+    @GetMapping("/flood/stations")
+    public ResponseEntity<String> getFloodResponse(@RequestParam List<String> stations){
+        ResponseEntity<String> responseEntity;
+        Map<String, FireResponse> fireResponseMap;
+
+        log.info("...request handling /flood/stations={}", stations);
+
+        try{
+            Map<String, List<FloodResponse>> floodResponseMap = floodResponseService.findFloodResponse(stations);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(floodResponseMap));
+
+            log.info("processed /flood/stations={}", stations);
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving flood response service from the list: {}.", stations);
+            log.error(ex.getMessage());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return  responseEntity;
     }
 }
