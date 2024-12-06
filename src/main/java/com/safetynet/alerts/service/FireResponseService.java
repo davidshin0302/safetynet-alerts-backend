@@ -95,7 +95,7 @@ public class FireResponseService {
         }).findFirst().orElse(null);
 
         if (matchinPersonInfoView != null) {
-            medicalInfo.setMedicatinos(matchinPersonInfoView.getMedications());
+            medicalInfo.setMedications(matchinPersonInfoView.getMedications());
             medicalInfo.setAllergies(matchinPersonInfoView.getAllergies());
 
             resident.setName(matchinPersonInfoView.getName());

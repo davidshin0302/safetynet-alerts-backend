@@ -12,6 +12,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MedicalInfo {
-    private List<String> medicatinos;
+    private List<String> medications;
     private List<String> allergies;
 }
