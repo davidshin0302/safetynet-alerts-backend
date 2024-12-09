@@ -7,7 +7,7 @@
       "phone": "841-874-6512",
       "age": 40,
       "medicalInfo": {
-        "medicatinos": [
+        "medications": [
           "aznol:350mg",
           "hydrapermazol:100mg"
         ],
@@ -21,7 +21,7 @@
       "phone": "841-874-6513",
       "age": 35,
       "medicalInfo": {
-        "medicatinos": [
+        "medications": [
           "pharmacol:5000mg",
           "terazine:10mg",
           "noznazol:250mg"
@@ -34,7 +34,7 @@
       "phone": "841-874-6512",
       "age": 12,
       "medicalInfo": {
-        "medicatinos": [],
+        "medications": [],
         "allergies": [
           "peanut"
         ]
@@ -45,7 +45,7 @@
       "phone": "841-874-6512",
       "age": 7,
       "medicalInfo": {
-        "medicatinos": [],
+        "medications": [],
         "allergies": []
       }
     },
@@ -54,7 +54,7 @@
       "phone": "841-874-6544",
       "age": 38,
       "medicalInfo": {
-        "medicatinos": [
+        "medications": [
           "tetracyclaz:650mg"
         ],
         "allergies": [
