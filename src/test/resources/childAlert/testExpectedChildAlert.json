@@ -1,0 +1,23 @@
+{
+  "children": [
+    {
+      "firstName": "Kendrik",
+      "lastName": "Stelzer",
+      "age": 10
+    }
+  ],
+  "otherPersons": [
+    {
+      "firstName": "Shawna",
+      "lastName": "Stelzer",
+      "age": 44,
+      "address": "947 E. Rose Dr"
+    },
+    {
+      "firstName": "Brian",
+      "lastName": "Stelzer",
+      "age": 49,
+      "address": "947 E. Rose Dr"
+    }
+  ]
+}

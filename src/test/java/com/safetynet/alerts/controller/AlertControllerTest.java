@@ -7,10 +7,8 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.service.CommunityEmailService;
-import com.safetynet.alerts.service.FireResponseService;
-import com.safetynet.alerts.service.FloodResponseService;
-import com.safetynet.alerts.service.PersonInfoService;
+import com.safetynet.alerts.service.*;
+import com.safetynet.alerts.view.ChildAlertResponse;
 import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.FloodResponse;
 import com.safetynet.alerts.view.PersonInfo;
@@ -26,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -55,6 +54,8 @@ class AlertControllerTest {
     private FireResponseService fireResponseService;
     @MockBean
     private FloodResponseService floodResponseService;
+    @MockBean
+    private ChildAlertResponseService childAlertResponseService;
     @Mock
     private PersonRepository personRepository;
     @Mock
@@ -88,6 +89,7 @@ class AlertControllerTest {
         when(communityEmailService.findCommunityEmailsByCity(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
         when(fireResponseService.findFireResponse(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
         when(floodResponseService.findFloodResponse(anyList())).thenThrow(new RuntimeException("RuntimeException error"));
+        when(childAlertResponseService.findChildAlert(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
 
         //getPersonInfo_RuntimeException
         mockMvc.perform(get("/personInfo?firstName=NoName&lastName=NoName"))
@@ -103,6 +105,10 @@ class AlertControllerTest {
 
         //getFloodResponse
         mockMvc.perform(get("/flood/stations?stations={}"))
+                .andExpect(status().isInternalServerError());
+
+        //getChildAlertResponse
+        mockMvc.perform(get("/childAlert?address={}"))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -143,5 +149,42 @@ class AlertControllerTest {
                 .andExpect(jsonPath("$.stations[0].households", hasSize(2)))
                 .andExpect(jsonPath("$.stations[1].households", hasSize(2)))
                 .andExpect(jsonPath("$.stations[2].households", hasSize(3)));
+    }
+
+    @Test
+    void getChildAlert() throws Exception {
+        ChildAlertResponse childAlertResponseMap = objectMapper.readValue(new File(TEST_FILE_PATH + "/childAlert/testExpectedChildAlert.json"), ChildAlertResponse.class);
+
+        when(childAlertResponseService.findChildAlert(anyString())).thenReturn(childAlertResponseMap);
+
+        mockMvc.perform(get("/childAlert?address=947 E. Rose Dr"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.children", hasSize(1)))
+                .andExpect(jsonPath("$.otherPersons", hasSize(2)))
+                .andExpect(jsonPath("$.children[0].firstName").value("Kendrik"))
+                .andExpect(jsonPath("$.children[0].lastName").value("Stelzer"))
+                .andExpect(jsonPath("$.children[0].age").value(10))
+                .andExpect(jsonPath("$.otherPersons", hasSize(2)))
+                .andExpect(jsonPath("$.otherPersons[0].age").value(49))
+                .andExpect(jsonPath("$.otherPersons[0].firstName").value("Brian"))
+                .andExpect(jsonPath("$.otherPersons[0].lastName").value("Stelzer"))
+                .andExpect(jsonPath("$.otherPersons[0].address").value("947 E. Rose Dr"))
+                .andExpect(jsonPath("$.otherPersons[1].age").value(44))
+                .andExpect(jsonPath("$.otherPersons[1].firstName").value("Shawna"))
+                .andExpect(jsonPath("$.otherPersons[1].lastName").value("Stelzer"))
+                .andExpect(jsonPath("$.otherPersons[1].address").value("947 E. Rose Dr"));
+    }
+
+    @Test
+    void getChildAlert_no_matching_children() throws Exception {
+        ChildAlertResponse childAlertResponse = new ChildAlertResponse();
+        childAlertResponse.setChildren(new HashSet<>());
+        childAlertResponse.setOtherPersons(new HashSet<>());
+
+        when(childAlertResponseService.findChildAlert(anyString())).thenReturn(childAlertResponse);
+
+        mockMvc.perform(get("/childAlert?address=wrong address"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").value(""));
     }
 }
