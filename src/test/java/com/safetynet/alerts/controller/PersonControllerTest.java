@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.service.PersonService;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.service.PersonInfoService;
+import com.safetynet.alerts.view.PersonInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -40,7 +40,7 @@ class PersonControllerTest {
     @MockBean
     private PersonRepository personRepository;
     @MockBean
-    private PersonService personService;
+    private PersonInfoService personInfoService;
     @InjectMocks
     private PersonController personController;
 
@@ -70,9 +70,9 @@ class PersonControllerTest {
 
     @Test
     public void testGetPersonInfo_when_is_empty() throws Exception {
-        List<PersonInfoView> personInfoViewList = new ArrayList<>();
+        List<PersonInfo> personInfoList = new ArrayList<>();
 
-        when(personService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoViewList);
+        when(personInfoService.findPersonInfo(anyString(), anyString())).thenReturn(personInfoList);
 
         mockMvc.perform(get("/personInfo?firstName=NoExist&lastName=NoExist"))
                 .andExpect(status().isNotFound());

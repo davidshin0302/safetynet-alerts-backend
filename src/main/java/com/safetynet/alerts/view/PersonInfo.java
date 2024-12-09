@@ -11,7 +11,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class PersonInfoView {
+public class PersonInfo {
     private String name;
     private String address;
     private String email;

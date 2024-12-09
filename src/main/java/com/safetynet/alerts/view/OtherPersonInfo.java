@@ -5,13 +5,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class MedicalInfo {
-    private List<String> medications;
-    private List<String> allergies;
+public class OtherPersonInfo {
+    String firstName;
+    String lastName;
+    int age;
+    String address;
 }
