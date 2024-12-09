@@ -24,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -160,26 +161,27 @@ class AlertControllerTest {
         mockMvc.perform(get("/childAlert?address=947 E. Rose Dr"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.children", hasSize(1)))
-                .andExpect(jsonPath("$.otherPersons", hasSize(2)))
                 .andExpect(jsonPath("$.children[0].firstName").value("Kendrik"))
                 .andExpect(jsonPath("$.children[0].lastName").value("Stelzer"))
                 .andExpect(jsonPath("$.children[0].age").value(10))
+
                 .andExpect(jsonPath("$.otherPersons", hasSize(2)))
-                .andExpect(jsonPath("$.otherPersons[0].age").value(49))
-                .andExpect(jsonPath("$.otherPersons[0].firstName").value("Brian"))
-                .andExpect(jsonPath("$.otherPersons[0].lastName").value("Stelzer"))
-                .andExpect(jsonPath("$.otherPersons[0].address").value("947 E. Rose Dr"))
-                .andExpect(jsonPath("$.otherPersons[1].age").value(44))
-                .andExpect(jsonPath("$.otherPersons[1].firstName").value("Shawna"))
+                .andExpect(jsonPath("$.otherPersons[1].age").value(49))
+                .andExpect(jsonPath("$.otherPersons[1].firstName").value("Brian"))
                 .andExpect(jsonPath("$.otherPersons[1].lastName").value("Stelzer"))
-                .andExpect(jsonPath("$.otherPersons[1].address").value("947 E. Rose Dr"));
+                .andExpect(jsonPath("$.otherPersons[1].address").value("947 E. Rose Dr"))
+
+                .andExpect(jsonPath("$.otherPersons[0].age").value(44))
+                .andExpect(jsonPath("$.otherPersons[0].firstName").value("Shawna"))
+                .andExpect(jsonPath("$.otherPersons[0].lastName").value("Stelzer"))
+                .andExpect(jsonPath("$.otherPersons[0].address").value("947 E. Rose Dr"));
     }
 
     @Test
     void getChildAlert_no_matching_children() throws Exception {
         ChildAlertResponse childAlertResponse = new ChildAlertResponse();
-        childAlertResponse.setChildren(new HashSet<>());
-        childAlertResponse.setOtherPersons(new HashSet<>());
+        childAlertResponse.setChildren(new ArrayList<>());
+        childAlertResponse.setOtherPersons(new ArrayList<>());
 
         when(childAlertResponseService.findChildAlert(anyString())).thenReturn(childAlertResponse);
 
