@@ -1,13 +1,8 @@
 package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.safetynet.alerts.service.CommunityEmailService;
-import com.safetynet.alerts.service.FireResponseService;
-import com.safetynet.alerts.service.FloodResponseService;
-import com.safetynet.alerts.service.PersonService;
-import com.safetynet.alerts.view.FireResponse;
-import com.safetynet.alerts.view.FloodResponse;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.service.*;
+import com.safetynet.alerts.view.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,7 +25,7 @@ public class AlertController {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PersonService personService;
+    private PersonInfoService personInfoService;
 
     @Autowired
     private CommunityEmailService communityEmailService;
@@ -41,29 +36,32 @@ public class AlertController {
     @Autowired
     private FloodResponseService floodResponseService;
 
+    @Autowired
+    private ChildAlertResponseService childAlertResponseService;
+
     /**
      * Retrieves person information based on provided first and last name.
      *
      * @param firstName The first name of the person to search for.
-     * @param lastName The last name of the person to search for.
+     * @param lastName  The last name of the person to search for.
      * @return A ResponseEntity containing the person information as JSON or an error message
-     *         depending on the success of the operation. The status code will be set accordingly:
-     *         - `200 OK`: Person information found.
-     *         - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * depending on the success of the operation. The status code will be set accordingly:
+     * - `200 OK`: Person information found.
+     * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
      * @throws RuntimeException,IOException If either `firstName` or `lastName` is null or empty.
      */
     @GetMapping("/personInfo")
     public ResponseEntity<String> getPersonInfo(@RequestParam String firstName, @RequestParam String lastName) {
         ResponseEntity<String> responseEntity;
-        List<PersonInfoView> personInfoViewList;
+        List<PersonInfo> personInfoList;
 
         log.info("...request handling /personInfo?firstName={}&lastName={}", firstName, lastName);
 
         try {
-            personInfoViewList = personService.findPersonInfo(firstName, lastName);
+            personInfoList = personInfoService.findPersonInfo(firstName, lastName);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
-                    .body(objectMapper.writeValueAsString(personInfoViewList));
+                    .body(objectMapper.writeValueAsString(personInfoList));
 
             log.info("processed /personInfo?firstName={}&lastName={} reuest...", firstName, lastName);
         } catch (IOException | RuntimeException ex) {
@@ -81,9 +79,9 @@ public class AlertController {
      *
      * @param city The city for which to retrieve community emails.
      * @return A ResponseEntity containing a list of community emails as JSON or an error message
-     *         depending on the success of the operation. The status code will be set accordingly:
-     *         - `200 OK`: Community emails found for the city.
-     *         - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * depending on the success of the operation. The status code will be set accordingly:
+     * - `200 OK`: Community emails found for the city.
+     * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
      * @throws RuntimeException,IOException If `city` is null or empty.
      */
     @GetMapping("/communityEmail")
@@ -115,10 +113,10 @@ public class AlertController {
      *
      * @param address The address for which to retrieve fire response information.
      * @return A ResponseEntity containing fire response details as JSON or an error message
-     *         depending on the success of the operation. The status code will be set accordingly:
-     *         - `200 OK`: Fire response information found for the address.
-     *         - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
-     * @throws RuntimeException,IOException  If `address` is null or empty.
+     * depending on the success of the operation. The status code will be set accordingly:
+     * - `200 OK`: Fire response information found for the address.
+     * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * @throws RuntimeException,IOException If `address` is null or empty.
      */
     @GetMapping("/fire")
     public ResponseEntity<String> getFireResponse(@RequestParam String address) {
@@ -145,15 +143,29 @@ public class AlertController {
         return responseEntity;
     }
 
+    /**
+     * Retrieves flood response information for a list of fire stations.
+     *
+     * @param stations A list of fire station IDs for which to retrieve flood response information.
+     * @return A ResponseEntity containing:
+     * - A JSON representation of the flood response details mapped by station if the operation is successful.
+     * - An error response with a status code if an issue occurs.
+     * <p>
+     * The status codes include:
+     * - `200 OK`: Flood response information successfully retrieved.
+     * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * @throws RuntimeException If an unexpected runtime exception occurs during processing.
+     * @throws IOException      If an error occurs while serializing the flood response data to JSON.
+     */
     @GetMapping("/flood/stations")
-    public ResponseEntity<String> getFloodResponse(@RequestParam List<String> stations){
+    public ResponseEntity<String> getFloodResponse(@RequestParam List<String> stations) {
         ResponseEntity<String> responseEntity;
-        Map<String, FireResponse> fireResponseMap;
+        Map<String, List<FloodResponse>> floodResponseMap;
 
         log.info("...request handling /flood/stations={}", stations);
 
-        try{
-            Map<String, List<FloodResponse>> floodResponseMap = floodResponseService.findFloodResponse(stations);
+        try {
+            floodResponseMap = floodResponseService.findFloodResponse(stations);
             responseEntity = ResponseEntity.status(HttpStatus.OK)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(objectMapper.writeValueAsString(floodResponseMap));
@@ -166,6 +178,51 @@ public class AlertController {
             responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return  responseEntity;
+        return responseEntity;
+    }
+
+    /**
+     * Retrieves child alert information for a given address.
+     *
+     * @param address The address for which to retrieve child alert information.
+     * @return A ResponseEntity containing:
+     * - A JSON representation of the `ChildAlertResponse` object containing child alert details if successful.
+     * - An empty JSON string (`""`) if no child alerts are found for the provided address.
+     * - An error response with a status code if an issue occurs.
+     * <p>
+     * The status codes include:
+     * - `200 OK`: Child alert information successfully retrieved.
+     * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
+     * @throws IOException      If an error occurs while serializing the child alert data to JSON.
+     * @throws RuntimeException If an unexpected runtime exception occurs during processing.
+     */
+    @GetMapping("/childAlert")
+    public ResponseEntity<String> getChildAlert(@RequestParam String address) {
+        ResponseEntity<String> responseEntity;
+
+
+        log.info("...request handling /childAlert?address={}", address);
+
+        try {
+            String result;
+            ChildAlertResponse childAlertResponse = childAlertResponseService.findChildAlert(address);
+
+            if (childAlertResponse.getChildren().isEmpty()) {
+                result = objectMapper.writeValueAsString("");
+            } else {
+                result = objectMapper.writeValueAsString(childAlertResponse);
+            }
+
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(result);
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving child alert  service from the address: {}.", address);
+            log.error(ex.getMessage());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
     }
 }

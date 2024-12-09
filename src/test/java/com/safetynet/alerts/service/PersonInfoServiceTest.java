@@ -6,7 +6,7 @@ import com.safetynet.alerts.model.MedicalRecord;
 import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.view.PersonInfo;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,13 +22,13 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-public class PersonServiceTest {
+public class PersonInfoServiceTest {
 
     private static final String TEST_FILE_PATH = "src/test/resources/personService";
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @InjectMocks
-    PersonService personService;
+    PersonInfoService personInfoService;
 
     @Mock
     PersonRepository personRepository;
@@ -48,33 +48,33 @@ public class PersonServiceTest {
 
     @Test
     void findPersonInfo() throws IOException {
-        List<PersonInfoView> matchingName = personService.findPersonInfo("John", "Boyd");
+        List<PersonInfo> matchingName = personInfoService.findPersonInfo("John", "Boyd");
 
         assertNotNull(matchingName);
         assertEquals(2, matchingName.size());
         assertFalse(matchingName.isEmpty());
 
-        List<PersonInfoView> firstNameMatchOnly = personService.findPersonInfo("John", "NoName");
+        List<PersonInfo> firstNameMatchOnly = personInfoService.findPersonInfo("John", "NoName");
         assertNotNull(firstNameMatchOnly);
         assertEquals(0, firstNameMatchOnly.size());
 
-        List<PersonInfoView> lastNameMatchOnly = personService.findPersonInfo("John", "NoName");
+        List<PersonInfo> lastNameMatchOnly = personInfoService.findPersonInfo("John", "NoName");
         assertNotNull(lastNameMatchOnly);
         assertEquals(0, lastNameMatchOnly.size());
 
         //Expected an empty list for non-existent person info
-        List<PersonInfoView> noMatchingName = personService.findPersonInfo("NoName", "NoName");
+        List<PersonInfo> noMatchingName = personInfoService.findPersonInfo("NoName", "NoName");
         assertNotNull(noMatchingName);
         assertTrue(noMatchingName.isEmpty());
     }
 
     @Test
     void findPersonInfo_same_name() throws IOException {
-        List<PersonInfoView> infoViewList = personService.findPersonInfo("John", "Boyd");
+        List<PersonInfo> infoViewList = personInfoService.findPersonInfo("John", "Boyd");
 
         assertEquals(2, infoViewList.size());
 
-        PersonInfoView firstPersonInfo = infoViewList.get(0);
+        PersonInfo firstPersonInfo = infoViewList.get(0);
 
         assertEquals("John Boyd", firstPersonInfo.getName());
         assertEquals("123 main St, MainCity, 00001", firstPersonInfo.getAddress());
@@ -83,7 +83,7 @@ public class PersonServiceTest {
         assertEquals(2, firstPersonInfo.getMedications().size());
         assertEquals(1, firstPersonInfo.getAllergies().size());
 
-        PersonInfoView secondPersonInfo = infoViewList.get(1);
+        PersonInfo secondPersonInfo = infoViewList.get(1);
 
         assertEquals("John Boyd", secondPersonInfo.getName());
         assertEquals("1509 Culver St, Culver, 97451", secondPersonInfo.getAddress());
@@ -99,8 +99,8 @@ public class PersonServiceTest {
 
         when(medicalRecordRepository.findAll()).thenReturn(emptyMedicalRecordList);
 
-        List<PersonInfoView> results = personService.findPersonInfo("John", "Boyd");
+        List<PersonInfo> results = personInfoService.findPersonInfo("John", "Boyd");
 
-        assertTrue(results.isEmpty(), "Expected no PersonInfoView for Jane Smith");
+        assertTrue(results.isEmpty(), "Expected no PersonInfo for Jane Smith");
     }
 }

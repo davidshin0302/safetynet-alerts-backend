@@ -6,7 +6,7 @@ import com.safetynet.alerts.repository.FireStationRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.MedicalInfo;
-import com.safetynet.alerts.view.PersonInfoView;
+import com.safetynet.alerts.view.PersonInfo;
 import com.safetynet.alerts.view.Resident;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class FireResponseService {
     @Autowired
     private FireStationRepository fireStationRepository;
     @Autowired
-    private PersonService personService;
+    private PersonInfoService personInfoService;
     private List<FireStation> fireStationList;
 
 
@@ -87,20 +87,20 @@ public class FireResponseService {
         MedicalInfo medicalInfo = new MedicalInfo();
         Resident resident = new Resident();
 
-        List<PersonInfoView> personInfoViewList = personService.findPersonInfo(firstName, lastName);
-        PersonInfoView matchinPersonInfoView = personInfoViewList.stream().filter(personInfoView -> {
+        List<PersonInfo> personInfoList = personInfoService.findPersonInfo(firstName, lastName);
+        PersonInfo matchinPersonInfo = personInfoList.stream().filter(personInfoView -> {
             String[] splitAddress = personInfoView.getAddress().split(",");
 
             return address.equalsIgnoreCase(splitAddress[0]);
         }).findFirst().orElse(null);
 
-        if (matchinPersonInfoView != null) {
-            medicalInfo.setMedicatinos(matchinPersonInfoView.getMedications());
-            medicalInfo.setAllergies(matchinPersonInfoView.getAllergies());
+        if (matchinPersonInfo != null) {
+            medicalInfo.setMedications(matchinPersonInfo.getMedications());
+            medicalInfo.setAllergies(matchinPersonInfo.getAllergies());
 
-            resident.setName(matchinPersonInfoView.getName());
+            resident.setName(matchinPersonInfo.getName());
             resident.setPhone(phoneNumber);
-            resident.setAge(matchinPersonInfoView.getAge());
+            resident.setAge(matchinPersonInfo.getAge());
             resident.setMedicalInfo(medicalInfo);
         }
 
