@@ -2,7 +2,7 @@ package com.safetynet.alerts.view;
 
 import lombok.*;
 
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -10,6 +10,6 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ChildAlertResponse {
-    Set<ChildInfo> children;
-    Set<OtherPersonInfo> otherPersons;
+    List<ChildInfo> children;
+    List<OtherPersonInfo> otherPersons;
 }

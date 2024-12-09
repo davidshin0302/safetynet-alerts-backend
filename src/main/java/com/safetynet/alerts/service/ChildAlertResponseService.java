@@ -8,15 +8,15 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 @Service
 public class ChildAlertResponseService {
-    private final Set<ChildInfo> childInfoList = new HashSet<>();
-    private final Set<OtherPersonInfo> otherPersonInfoList = new HashSet<>();
+    private final List<ChildInfo> childInfoList = new ArrayList<>();
+    private final List<OtherPersonInfo> otherPersonInfoList = new ArrayList<>();
     @Autowired
     private PersonInfoService personInfoService;
 
