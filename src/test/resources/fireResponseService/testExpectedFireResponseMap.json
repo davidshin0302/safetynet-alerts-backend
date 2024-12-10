@@ -1,0 +1,324 @@
+{
+  "748 Townings Dr": {
+    "address": "748 Townings Dr",
+    "fireStationNumber": "3",
+    "residents": [
+      {
+        "name": "Foster Shepard",
+        "phone": "841-874-6544",
+        "age": 44,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      },
+      {
+        "name": "Clive Ferguson",
+        "phone": "841-874-6741",
+        "age": 30,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "951 LoneTree Rd": {
+    "address": "951 LoneTree Rd",
+    "fireStationNumber": "2",
+    "residents": [
+      {
+        "name": "Eric Cadigan",
+        "phone": "841-874-7458",
+        "age": 79,
+        "medicalInfo": {
+          "medications": [
+            "tradoxidine:400mg"
+          ],
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "489 Manchester St": {
+    "address": "489 Manchester St",
+    "fireStationNumber": "4",
+    "residents": [
+      {
+        "name": "Lily Cooper",
+        "phone": "841-874-9845",
+        "age": 30,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "908 73rd St": {
+    "address": "908 73rd St",
+    "fireStationNumber": "1",
+    "residents": [
+      {
+        "name": "Reginold Walker",
+        "phone": "841-874-8547",
+        "age": 45,
+        "medicalInfo": {
+          "medications": [
+            "thradox:700mg"
+          ],
+          "allergies": [
+            "illisoxian"
+          ]
+        }
+      },
+      {
+        "name": "Jamie Peters",
+        "phone": "841-874-7462",
+        "age": 42,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "947 E. Rose Dr": {
+    "address": "947 E. Rose Dr",
+    "fireStationNumber": "1",
+    "residents": [
+      {
+        "name": "Brian Stelzer",
+        "phone": "841-874-7784",
+        "age": 49,
+        "medicalInfo": {
+          "medications": [
+            "ibupurin:200mg",
+            "hydrapermazol:400mg"
+          ],
+          "allergies": [
+            "nillacilan"
+          ]
+        }
+      },
+      {
+        "name": "Shawna Stelzer",
+        "phone": "841-874-7784",
+        "age": 44,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      },
+      {
+        "name": "Kendrik Stelzer",
+        "phone": "841-874-7784",
+        "age": 10,
+        "medicalInfo": {
+          "medications": [
+            "noxidian:100mg",
+            "pharmacol:2500mg"
+          ],
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "644 Gershwin Cir": {
+    "address": "644 Gershwin Cir",
+    "fireStationNumber": "1",
+    "residents": [
+      {
+        "name": "Peter Duncan",
+        "phone": "841-874-6512",
+        "age": 24,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": [
+            "shellfish"
+          ]
+        }
+      }
+    ]
+  },
+  "1509 Culver St": {
+    "address": "1509 Culver St",
+    "fireStationNumber": "3",
+    "residents": [
+      {
+        "name": "John Boyd",
+        "phone": "841-874-6512",
+        "age": 40,
+        "medicalInfo": {
+          "medications": [
+            "aznol:350mg",
+            "hydrapermazol:100mg"
+          ],
+          "allergies": [
+            "nillacilan"
+          ]
+        }
+      },
+      {
+        "name": "Jacob Boyd",
+        "phone": "841-874-6513",
+        "age": 35,
+        "medicalInfo": {
+          "medications": [
+            "pharmacol:5000mg",
+            "terazine:10mg",
+            "noznazol:250mg"
+          ],
+          "allergies": []
+        }
+      },
+      {
+        "name": "Tenley Boyd",
+        "phone": "841-874-6512",
+        "age": 12,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": [
+            "peanut"
+          ]
+        }
+      },
+      {
+        "name": "Roger Boyd",
+        "phone": "841-874-6512",
+        "age": 7,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      },
+      {
+        "name": "Felicia Boyd",
+        "phone": "841-874-6544",
+        "age": 38,
+        "medicalInfo": {
+          "medications": [
+            "tetracyclaz:650mg"
+          ],
+          "allergies": [
+            "xilliathal"
+          ]
+        }
+      }
+    ]
+  },
+  "892 Downing Ct": {
+    "address": "892 Downing Ct",
+    "fireStationNumber": "2",
+    "residents": [
+      {
+        "name": "Sophia Zemicks",
+        "phone": "841-874-7878",
+        "age": 36,
+        "medicalInfo": {
+          "medications": [
+            "aznol:60mg",
+            "hydrapermazol:900mg",
+            "pharmacol:5000mg",
+            "terazine:500mg"
+          ],
+          "allergies": [
+            "peanut",
+            "shellfish",
+            "aznol"
+          ]
+        }
+      },
+      {
+        "name": "Warren Zemicks",
+        "phone": "841-874-7512",
+        "age": 39,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      },
+      {
+        "name": "Zach Zemicks",
+        "phone": "841-874-7512",
+        "age": 7,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "834 Binoc Ave": {
+    "address": "834 Binoc Ave",
+    "fireStationNumber": "3",
+    "residents": [
+      {
+        "name": "Tessa Carman",
+        "phone": "841-874-6512",
+        "age": 12,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      }
+    ]
+  },
+  "112 Steppes Pl": {
+    "address": "112 Steppes Pl",
+    "fireStationNumber": "3",
+    "residents": [
+      {
+        "name": "Tony Cooper",
+        "phone": "841-874-6874",
+        "age": 30,
+        "medicalInfo": {
+          "medications": [
+            "hydrapermazol:300mg",
+            "dodoxadin:30mg"
+          ],
+          "allergies": [
+            "shellfish"
+          ]
+        }
+      },
+      {
+        "name": "Ron Peters",
+        "phone": "841-874-8888",
+        "age": 59,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      },
+      {
+        "name": "Allison Boyd",
+        "phone": "841-874-9888",
+        "age": 59,
+        "medicalInfo": {
+          "medications": [
+            "aznol:200mg"
+          ],
+          "allergies": [
+            "nillacilan"
+          ]
+        }
+      }
+    ]
+  },
+  "29 15th St": {
+    "address": "29 15th St",
+    "fireStationNumber": "2",
+    "residents": [
+      {
+        "name": "Jonanathan Marrack",
+        "phone": "841-874-6513",
+        "age": 35,
+        "medicalInfo": {
+          "medications": [],
+          "allergies": []
+        }
+      }
+    ]
+  }
+}
