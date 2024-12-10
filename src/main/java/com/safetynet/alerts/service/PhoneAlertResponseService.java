@@ -10,12 +10,18 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This service retrieves phone numbers for residents within the coverage area of a specific fire station.
+ * It relies on the `FireResponseService` to obtain fire response information for a given fire station number.
+ * The service then extracts phone numbers from residents associated with that fire station.
+ */
 @Slf4j
 @Service
 public class PhoneAlertResponseService {
     @Autowired
     private FireResponseService fireResponseService;
 
+    //TODO::[BUG]  Need to fix fail to add all the resident when matching station number is found. *Duplicate line number. Check each household!
     public List<String> findPhoneAlert(String fireStationNumber) {
         Map<String, FireResponse> fireResponseMap = fireResponseService.getFireResponse();
         List<String> phoneNumbers = new ArrayList<>();

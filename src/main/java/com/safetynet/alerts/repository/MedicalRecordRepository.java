@@ -11,7 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * This repository provides methods for managing medical record data.
+ * It offers functionalities for retrieving all medical records, finding a specific medical record by address,
+ * updating existing medical record information (specifically the station number), and deleting a medical record.
+ * The repository also handles loading medical record data from a JSON file during initialization.
+ */
 @Repository
 @Slf4j
 public class MedicalRecordRepository {

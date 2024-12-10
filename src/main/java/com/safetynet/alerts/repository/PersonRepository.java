@@ -1,6 +1,5 @@
 package com.safetynet.alerts.repository;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.model.DataObject;
 import com.safetynet.alerts.model.Person;
@@ -12,6 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This repository provides methods for managing person data.
+ * It offers functionalities for retrieving all persons(or people), finding a specific person by address,
+ * updating existing person information (specifically the station number), and deleting a person.
+ * The repository also handles loading person data from a JSON file during initialization.
+ */
 @Repository
 @Slf4j
 public class PersonRepository {

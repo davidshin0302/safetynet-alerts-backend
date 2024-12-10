@@ -2,7 +2,10 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.service.*;
-import com.safetynet.alerts.view.*;
+import com.safetynet.alerts.view.ChildAlertResponse;
+import com.safetynet.alerts.view.FireResponse;
+import com.safetynet.alerts.view.FloodResponse;
+import com.safetynet.alerts.view.PersonInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * This class handles incoming alert requests and retrieves information from various services.
+ */
 @RestController
 @Slf4j
 public class AlertController {
