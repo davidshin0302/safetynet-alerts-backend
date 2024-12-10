@@ -39,6 +39,9 @@ public class AlertController {
     @Autowired
     private ChildAlertResponseService childAlertResponseService;
 
+    @Autowired
+    private PhoneAlertResponseService phoneAlertResponseService;
+
     /**
      * Retrieves person information based on provided first and last name.
      *
@@ -218,6 +221,27 @@ public class AlertController {
                     .body(result);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving child alert  service from the address: {}.", address);
+            log.error(ex.getMessage());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
+
+    @GetMapping("/phoneAlert")
+    public ResponseEntity<String> getPhoneAlertResponse(@RequestParam String firestation) {
+        ResponseEntity<String> responseEntity;
+
+        log.info("...request handling /phoneAlert?firestation={}", firestation);
+
+        try {
+            List<String> phoneNumberList = phoneAlertResponseService.findPhoneAlert(firestation);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(phoneNumberList));
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving phone alert  service from the given fire station: {}.", firestation);
             log.error(ex.getMessage());
 
             responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
