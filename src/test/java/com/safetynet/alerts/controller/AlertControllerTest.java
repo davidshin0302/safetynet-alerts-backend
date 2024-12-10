@@ -94,6 +94,7 @@ class AlertControllerTest {
         when(fireResponseService.findFireResponse(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
         when(floodResponseService.findFloodResponse(anyList())).thenThrow(new RuntimeException("RuntimeException error"));
         when(childAlertResponseService.findChildAlert(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
+        when(phoneAlertResponseService.findPhoneAlert(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
 
         //getPersonInfo_RuntimeException
         mockMvc.perform(get("/personInfo?firstName=NoName&lastName=NoName"))
@@ -113,6 +114,10 @@ class AlertControllerTest {
 
         //getChildAlertResponse
         mockMvc.perform(get("/childAlert?address={}"))
+                .andExpect(status().isInternalServerError());
+
+        //getPhoneAlertResponse
+        mockMvc.perform(get("/phoneAlert?firestation=={}"))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -207,5 +212,16 @@ class AlertControllerTest {
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0]").value("841-874-6544"))
                 .andExpect(jsonPath("$[1]").value("841-874-6741"));
+    }
+
+    @Test
+    void getPhoneAlert_no_station() throws Exception {
+        List<String> expectedPhoneNumbers = new ArrayList<>();
+
+        when(phoneAlertResponseService.findPhoneAlert(anyString())).thenReturn(expectedPhoneNumbers);
+
+        mockMvc.perform(get("/phoneAlert?firestation=999"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(0)));
     }
 }
