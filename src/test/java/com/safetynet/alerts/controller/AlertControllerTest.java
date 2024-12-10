@@ -57,10 +57,13 @@ class AlertControllerTest {
     private FloodResponseService floodResponseService;
     @MockBean
     private ChildAlertResponseService childAlertResponseService;
+    @MockBean
+    private PhoneAlertResponseService phoneAlertResponseService;
     @Mock
     private PersonRepository personRepository;
     @Mock
     private MedicalRecordRepository medicalRecordRepository;
+
 
     @BeforeEach
     void setUp() throws IOException {
@@ -188,5 +191,21 @@ class AlertControllerTest {
         mockMvc.perform(get("/childAlert?address=wrong address"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(""));
+    }
+
+    @Test
+    void getPhoneAlertResponse() throws Exception {
+        List<String> expectedPhoneNumbers = new ArrayList<>();
+        expectedPhoneNumbers.add("841-874-6544");
+        expectedPhoneNumbers.add("841-874-6741");
+
+
+        when(phoneAlertResponseService.findPhoneAlert(anyString())).thenReturn(expectedPhoneNumbers);
+
+        mockMvc.perform(get("/phoneAlert?firestation=3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0]").value("841-874-6544"))
+                .andExpect(jsonPath("$[1]").value("841-874-6741"));
     }
 }
