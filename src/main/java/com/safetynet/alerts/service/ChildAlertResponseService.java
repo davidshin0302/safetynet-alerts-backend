@@ -12,6 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This service is responsible for retrieving and processing child alert information based on a given address.
+ * It fetches person information from the `PersonInfoService`, filters the data based on age and address,
+ * and constructs a `ChildAlertResponse` object containing child and other person details.
+ */
 @Slf4j
 @Service
 public class ChildAlertResponseService {

@@ -12,7 +12,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-
+/**
+ * This controller provides RESTful endpoints for managing medical records.
+ * It offers functionalities for retrieving a list of all medical records,
+ * adding a new medical record, updating an existing one, and deleting a record.
+ */
 @RestController
 @RequestMapping("/medicalRecord")
 @Slf4j

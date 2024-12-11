@@ -17,6 +17,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This service is responsible for generating fire response information based on addresses.
+ * It retrieves data from various sources, including `PersonRepository`, `FireStationRepository`, and `PersonInfoService`.
+ * The service builds a map where keys are addresses and values are `FireResponse` objects.
+ * Each `FireResponse` object contains details about residents at an address (name, phone, age, medical information),
+ * as well as the assigned fire station number for that address.
+ * <p>
+ * The service offers two methods:
+ * - `findFireResponse(String address)`: Retrieves the `FireResponse` object for a specific address.
+ * - `getFireResponse()`: Returns the entire map of address-to-fire response information.
+ */
 @Slf4j
 @Service
 public class FireResponseService {
@@ -36,7 +47,7 @@ public class FireResponseService {
         return fireResponseMap.getOrDefault(address, new FireResponse());
     }
 
-    public Map<String, FireResponse> getFireResponse(){
+    public Map<String, FireResponse> getFireResponse() {
         loadFireResponseService();
         return fireResponseMap;
     }

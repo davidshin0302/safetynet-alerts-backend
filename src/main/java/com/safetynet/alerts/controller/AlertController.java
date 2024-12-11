@@ -2,7 +2,10 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.service.*;
-import com.safetynet.alerts.view.*;
+import com.safetynet.alerts.view.ChildAlertResponse;
+import com.safetynet.alerts.view.FireResponse;
+import com.safetynet.alerts.view.FloodResponse;
+import com.safetynet.alerts.view.PersonInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,7 +19,9 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * This class handles incoming alert requests and retrieves information from various services.
+ */
 @RestController
 @Slf4j
 public class AlertController {
@@ -39,12 +44,15 @@ public class AlertController {
     @Autowired
     private ChildAlertResponseService childAlertResponseService;
 
+    @Autowired
+    private PhoneAlertResponseService phoneAlertResponseService;
+
     /**
      * Retrieves person information based on provided first and last name.
      *
      * @param firstName The first name of the person to search for.
      * @param lastName  The last name of the person to search for.
-     * @return A ResponseEntity containing the person information as JSON or an error message
+     * @return A {@link ResponseEntity} containing the person information as JSON or an error message
      * depending on the success of the operation. The status code will be set accordingly:
      * - `200 OK`: Person information found.
      * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
@@ -78,7 +86,7 @@ public class AlertController {
      * Retrieves a list of community emails for a given city.
      *
      * @param city The city for which to retrieve community emails.
-     * @return A ResponseEntity containing a list of community emails as JSON or an error message
+     * @return A {@link ResponseEntity} containing a list of community emails as JSON or an error message
      * depending on the success of the operation. The status code will be set accordingly:
      * - `200 OK`: Community emails found for the city.
      * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
@@ -112,7 +120,7 @@ public class AlertController {
      * Retrieves fire response information for a given address.
      *
      * @param address The address for which to retrieve fire response information.
-     * @return A ResponseEntity containing fire response details as JSON or an error message
+     * @return A {@link ResponseEntity} containing fire response details as JSON or an error message
      * depending on the success of the operation. The status code will be set accordingly:
      * - `200 OK`: Fire response information found for the address.
      * - `500 INTERNAL_SERVER_ERROR`: An error occurred while processing the request.
@@ -147,7 +155,7 @@ public class AlertController {
      * Retrieves flood response information for a list of fire stations.
      *
      * @param stations A list of fire station IDs for which to retrieve flood response information.
-     * @return A ResponseEntity containing:
+     * @return A {@link ResponseEntity} containing:
      * - A JSON representation of the flood response details mapped by station if the operation is successful.
      * - An error response with a status code if an issue occurs.
      * <p>
@@ -185,7 +193,7 @@ public class AlertController {
      * Retrieves child alert information for a given address.
      *
      * @param address The address for which to retrieve child alert information.
-     * @return A ResponseEntity containing:
+     * @return A {@link ResponseEntity} containing:
      * - A JSON representation of the `ChildAlertResponse` object containing child alert details if successful.
      * - An empty JSON string (`""`) if no child alerts are found for the provided address.
      * - An error response with a status code if an issue occurs.
@@ -218,6 +226,40 @@ public class AlertController {
                     .body(result);
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving child alert  service from the address: {}.", address);
+            log.error(ex.getMessage());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
+
+    /**
+     * Retrieves phone numbers for residents within the coverage area of a specific fire station.
+     *
+     * @param firestation The fire station number to retrieve phone numbers for.
+     * @return A {@link ResponseEntity} containing:
+     * - A JSON array of phone numbers if successful.
+     * - An empty JSON string (`""`) if no phone numbers are found for the provided fire station.
+     * - An error response with a status code of `500 INTERNAL_SERVER_ERROR` if an issue occurs.
+     * <p>
+     * This method delegates the core phone number retrieval logic to the {@link PhoneAlertResponseService}.
+     * @throws IOException      If an error occurs while serializing the phone number list to JSON.
+     * @throws RuntimeException If an unexpected runtime exception occurs during processing.
+     */
+    @GetMapping("/phoneAlert")
+    public ResponseEntity<String> getPhoneAlertResponse(@RequestParam String firestation) {
+        ResponseEntity<String> responseEntity;
+
+        log.info("...request handling /phoneAlert?firestation={}", firestation);
+
+        try {
+            List<String> phoneNumberList = phoneAlertResponseService.findPhoneAlert(firestation);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(phoneNumberList));
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving phone alert  service from the given fire station: {}.", firestation);
             log.error(ex.getMessage());
 
             responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
