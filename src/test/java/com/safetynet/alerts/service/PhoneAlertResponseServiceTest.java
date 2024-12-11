@@ -42,6 +42,13 @@ class PhoneAlertResponseServiceTest {
         List<String> expectedPhoneAlertResponse = phoneAlertResponseService.findPhoneAlert("3");
 
         assertNotNull(expectedPhoneAlertResponse);
-        assertEquals(2, expectedPhoneAlertResponse.size());
+        assertEquals(7, expectedPhoneAlertResponse.size());
+        assertEquals("841-874-6741", expectedPhoneAlertResponse.get(0));
+        assertEquals("841-874-6544", expectedPhoneAlertResponse.get(1));
+        assertEquals("841-874-6874", expectedPhoneAlertResponse.get(2));
+        assertEquals("841-874-6512", expectedPhoneAlertResponse.get(3));
+        assertEquals("841-874-6513", expectedPhoneAlertResponse.get(4));
+        assertEquals("841-874-8888", expectedPhoneAlertResponse.get(5));
+        assertEquals("841-874-9888", expectedPhoneAlertResponse.get(6));
     }
 }
