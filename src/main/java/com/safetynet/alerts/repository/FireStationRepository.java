@@ -11,6 +11,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This repository provides methods for managing fire station data.
+ * It offers functionalities for retrieving all fire stations, finding a specific fire station by address,
+ * updating existing fire station information (specifically the station number), and deleting a fire station.
+ * The repository also handles loading fire station data from a JSON file during initialization.
+ */
 @Repository
 @Slf4j
 public class FireStationRepository {

@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-
+/**
+ * This controller provides RESTful endpoints for managing addresses.
+ * It offers operations for retrieving, creating, updating, and deleting addresses.
+ */
 @RestController
 @RequestMapping("/firestation")
 @Slf4j

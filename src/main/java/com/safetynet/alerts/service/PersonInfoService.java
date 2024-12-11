@@ -18,8 +18,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
- * Retrieve person details (/personInfo?firstName=<firstName>&lastName=<lastName>).
- * Retrieve community emails (/communityEmail?city=<city>).
+ * This service provides access to person information, including name, address, email, age, medications, and allergies.
+ * It retrieves data from both `PersonRepository` and `MedicalRecordRepository` and combines them into
+ * `PersonInfo` objects. The service offers functionalities for finding person information based on first and last names
+ * and retrieving a map containing all the constructed `PersonInfo` objects.
+ *
+ * Internally, the service maintains separate maps for person data and medical records to improve performance
+ * during information retrieval.
  */
 @Slf4j
 @Service

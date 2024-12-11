@@ -14,7 +14,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
-
+/**
+ * This controller provides RESTful endpoints for managing person records.
+ * It offers functionalities for retrieving a list of all person records,
+ * adding a new person record, updating an existing one, and deleting a record.
+ */
 @RestController
 @RequestMapping("/person")
 @Slf4j

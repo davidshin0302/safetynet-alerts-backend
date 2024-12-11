@@ -11,6 +11,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * This service is responsible for generating flood response information for specified fire stations.
+ * It leverages the `FireResponseService` to retrieve fire response data and groups it by fire station.
+ * The service returns a map where keys are station numbers and values are lists of `FloodResponse` objects.
+ * Each `FloodResponse` object contains information about households affected by flooding at that station.
+ */
 @Slf4j
 @Service
 public class FloodResponseService {
