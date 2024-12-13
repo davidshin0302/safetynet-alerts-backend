@@ -14,6 +14,6 @@ import java.util.List;
 public class FireStationPersonnel {
     String stationNumber;
     List<OtherPersonInfo> otherPersonInfoList;
-    String adultCount;
-    String childCount;
+    int adultCount;
+    int childCount;
 }
