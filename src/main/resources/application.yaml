@@ -1,3 +1,6 @@
+spring:
+  application:
+    name: SafetyNet Alerts Backend
 management:
   endpoint:
     health:
@@ -6,7 +9,8 @@ management:
     web:
       exposure:
         include: health, info, metrics, httpexchanges
-
-spring:
-  application:
-    name: SafetyNet Alerts Backend
+logging:
+  level:
+    root: INFO
+  file:
+    name:  ./safetynet-alert-backend-logs.log
