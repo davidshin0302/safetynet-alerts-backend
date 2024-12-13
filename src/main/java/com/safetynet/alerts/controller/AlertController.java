@@ -268,6 +268,19 @@ public class AlertController {
         return responseEntity;
     }
 
+    /**
+     * Retrieves information about personnel associated with a specific fire station.
+     *
+     * @param stationNumber The fire station number for which to retrieve personnel information.
+     * @return A {@link ResponseEntity} containing:
+     * - A JSON representation of the `FireStationPersonnel` object containing personnel details if successful.
+     * - An empty JSON string (`""`) if no personnel information is found for the provided station number.
+     * - An error response with a status code of `500 INTERNAL_SERVER_ERROR` if an issue occurs.
+     * <p>
+     * This method delegates the core personnel retrieval logic to the {@link FireStationPersonnelService}.
+     * @throws IOException      If an error occurs while serializing the fire station personnel object to JSON.
+     * @throws RuntimeException If an unexpected runtime exception occurs during processing.
+     */
     @GetMapping("/firestation")
     public ResponseEntity<String> getFireStationPersonnel(@RequestParam String stationNumber){
         ResponseEntity<String> responseEntity;
