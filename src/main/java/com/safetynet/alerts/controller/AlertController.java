@@ -2,10 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.service.*;
-import com.safetynet.alerts.view.ChildAlertResponse;
-import com.safetynet.alerts.view.FireResponse;
-import com.safetynet.alerts.view.FloodResponse;
-import com.safetynet.alerts.view.PersonInfo;
+import com.safetynet.alerts.view.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +43,9 @@ public class AlertController {
 
     @Autowired
     private PhoneAlertResponseService phoneAlertResponseService;
+
+    @Autowired
+    private FireStationPersonnelService fireStationPersonnelService;
 
     /**
      * Retrieves person information based on provided first and last name.
@@ -260,6 +260,27 @@ public class AlertController {
                     .body(objectMapper.writeValueAsString(phoneNumberList));
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving phone alert  service from the given fire station: {}.", firestation);
+            log.error(ex.getMessage());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
+
+    @GetMapping("/firestation")
+    public ResponseEntity<String> getFireStationPersonnel(@RequestParam String stationNumber){
+        ResponseEntity<String> responseEntity;
+
+        log.info("...request handling /firestation?stationNumber={}", stationNumber);
+
+        try {
+            FireStationPersonnel fireStationPersonnel = fireStationPersonnelService.findFireStationPersonnel(stationNumber);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(fireStationPersonnel));
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving a list of people serviced by the corresponding fire station: {}.", stationNumber);
             log.error(ex.getMessage());
 
             responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
