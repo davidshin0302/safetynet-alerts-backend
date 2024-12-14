@@ -282,7 +282,7 @@ public class AlertController {
      * @throws RuntimeException If an unexpected runtime exception occurs during processing.
      */
     @GetMapping(params = "stationNumber", value = "/firestation")
-    public ResponseEntity<String> getFireStationPersonnel(@RequestParam("stationNumber") String stationNumber){
+    public ResponseEntity<String> getFireStationPersonnel(@RequestParam("stationNumber") String stationNumber) {
         ResponseEntity<String> responseEntity;
 
         log.info("...request handling /firestation?stationNumber={}", stationNumber);
