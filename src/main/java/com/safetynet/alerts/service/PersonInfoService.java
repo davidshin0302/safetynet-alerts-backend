@@ -50,9 +50,9 @@ public class PersonInfoService {
         List<PersonInfo> personInfoList = new ArrayList<>();
 
         for (PersonInfo personInfo : personInfoViewMap.values()) {
-            String[] splitName = personInfo.getName().split(" ");
-            String personFirstName = splitName[0];
-            String personLastName = splitName[1];
+            String[] fullName = personInfo.getName().split(" ");
+            String personFirstName = fullName[0];
+            String personLastName = fullName[1];
 
             if (personFirstName.equalsIgnoreCase(firstName) && personLastName.equalsIgnoreCase(lastName)) {
                 personInfoList.add(personInfo);

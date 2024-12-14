@@ -1,0 +1,73 @@
+{
+  "stationNumber": "3",
+  "otherPersonInfoList": [
+    {
+      "firstName": "Ron",
+      "lastName": "Peters",
+      "age": 59,
+      "address": "112 Steppes Pl"
+    },
+    {
+      "firstName": "Allison",
+      "lastName": "Boyd",
+      "age": 59,
+      "address": "112 Steppes Pl"
+    },
+    {
+      "firstName": "Foster",
+      "lastName": "Shepard",
+      "age": 44,
+      "address": "748 Townings Dr"
+    },
+    {
+      "firstName": "John",
+      "lastName": "Boyd",
+      "age": 40,
+      "address": "1509 Culver St"
+    },
+    {
+      "firstName": "Felicia",
+      "lastName": "Boyd",
+      "age": 38,
+      "address": "1509 Culver St"
+    },
+    {
+      "firstName": "Jacob",
+      "lastName": "Boyd",
+      "age": 35,
+      "address": "1509 Culver St"
+    },
+    {
+      "firstName": "Clive",
+      "lastName": "Ferguson",
+      "age": 30,
+      "address": "748 Townings Dr"
+    },
+    {
+      "firstName": "Tony",
+      "lastName": "Cooper",
+      "age": 30,
+      "address": "112 Steppes Pl"
+    },
+    {
+      "firstName": "Tenley",
+      "lastName": "Boyd",
+      "age": 12,
+      "address": "1509 Culver St"
+    },
+    {
+      "firstName": "Tessa",
+      "lastName": "Carman",
+      "age": 12,
+      "address": "834 Binoc Ave"
+    },
+    {
+      "firstName": "Roger",
+      "lastName": "Boyd",
+      "age": 7,
+      "address": "1509 Culver St"
+    }
+  ],
+  "adultCount": 8,
+  "childCount": 3
+}
