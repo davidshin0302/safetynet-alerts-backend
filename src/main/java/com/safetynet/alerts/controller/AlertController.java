@@ -281,8 +281,8 @@ public class AlertController {
      * @throws IOException      If an error occurs while serializing the fire station personnel object to JSON.
      * @throws RuntimeException If an unexpected runtime exception occurs during processing.
      */
-    @GetMapping("/firestation")
-    public ResponseEntity<String> getFireStationPersonnel(@RequestParam String stationNumber){
+    @GetMapping(params = "stationNumber", value = "/firestation")
+    public ResponseEntity<String> getFireStationPersonnel(@RequestParam("stationNumber") String stationNumber){
         ResponseEntity<String> responseEntity;
 
         log.info("...request handling /firestation?stationNumber={}", stationNumber);
