@@ -1,3 +1,6 @@
+spring:
+  application:
+    name: SafetyNet Alerts Backend
 management:
   endpoint:
     health:
@@ -6,7 +9,15 @@ management:
     web:
       exposure:
         include: health, info, metrics, httpexchanges
-
-spring:
-  application:
-    name: SafetyNet Alerts Backend
+logging:
+  level:
+    root: INFO
+  file:
+    name: ${LOG_DIR:./logs}/safetynet-alert-backend-logs.log
+    pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n" #Optional but recommended
+    logback:
+      rollingpolicy:
+        file-name-pattern: ./safetynet-alert-backend-logs-%d{yyyy-MM-dd}.%i.log # Daily rollover with index
+        max-file-size: 1MB # Maximum size of each log file before rollover
+        max-history: 3 # Keep a maximum of 7 old log files
+        total-size-cap: 1MB # Total size of log files to keep

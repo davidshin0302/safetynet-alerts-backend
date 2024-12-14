@@ -2,10 +2,7 @@ package com.safetynet.alerts.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.safetynet.alerts.service.*;
-import com.safetynet.alerts.view.ChildAlertResponse;
-import com.safetynet.alerts.view.FireResponse;
-import com.safetynet.alerts.view.FloodResponse;
-import com.safetynet.alerts.view.PersonInfo;
+import com.safetynet.alerts.view.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,6 +43,9 @@ public class AlertController {
 
     @Autowired
     private PhoneAlertResponseService phoneAlertResponseService;
+
+    @Autowired
+    private FireStationPersonnelService fireStationPersonnelService;
 
     /**
      * Retrieves person information based on provided first and last name.
@@ -260,6 +260,40 @@ public class AlertController {
                     .body(objectMapper.writeValueAsString(phoneNumberList));
         } catch (IOException | RuntimeException ex) {
             log.error("Error Occurred while retrieving phone alert  service from the given fire station: {}.", firestation);
+            log.error(ex.getMessage());
+
+            responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return responseEntity;
+    }
+
+    /**
+     * Retrieves information about personnel associated with a specific fire station.
+     *
+     * @param stationNumber The fire station number for which to retrieve personnel information.
+     * @return A {@link ResponseEntity} containing:
+     * - A JSON representation of the `FireStationPersonnel` object containing personnel details if successful.
+     * - An empty JSON string (`""`) if no personnel information is found for the provided station number.
+     * - An error response with a status code of `500 INTERNAL_SERVER_ERROR` if an issue occurs.
+     * <p>
+     * This method delegates the core personnel retrieval logic to the {@link FireStationPersonnelService}.
+     * @throws IOException      If an error occurs while serializing the fire station personnel object to JSON.
+     * @throws RuntimeException If an unexpected runtime exception occurs during processing.
+     */
+    @GetMapping(params = "stationNumber", value = "/firestation")
+    public ResponseEntity<String> getFireStationPersonnel(@RequestParam("stationNumber") String stationNumber) {
+        ResponseEntity<String> responseEntity;
+
+        log.info("...request handling /firestation?stationNumber={}", stationNumber);
+
+        try {
+            FireStationPersonnel fireStationPersonnel = fireStationPersonnelService.findFireStationPersonnel(stationNumber);
+            responseEntity = ResponseEntity.status(HttpStatus.OK)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(objectMapper.writeValueAsString(fireStationPersonnel));
+        } catch (IOException | RuntimeException ex) {
+            log.error("Error Occurred while retrieving a list of people serviced by the corresponding fire station: {}.", stationNumber);
             log.error(ex.getMessage());
 
             responseEntity = new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

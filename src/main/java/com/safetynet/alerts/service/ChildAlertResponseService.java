@@ -42,22 +42,22 @@ public class ChildAlertResponseService {
         Map<String, PersonInfo> personInfoViewMap = personInfoService.getPersonInfoViewMap();
 
         for (PersonInfo personInfo : personInfoViewMap.values()) {
-            String[] splitName = personInfo.getName().split(" ");
+            String[] fullName = personInfo.getName().split(" ");
             String[] splitAddress = personInfo.getAddress().split(",");
 
             if (personInfo.getAge() < 18 && address.equalsIgnoreCase(splitAddress[0])) {
                 ChildInfo childInfo = new ChildInfo();
 
-                childInfo.setFirstName(splitName[0]);
-                childInfo.setLastName(splitName[1]);
+                childInfo.setFirstName(fullName[0]);
+                childInfo.setLastName(fullName[1]);
                 childInfo.setAge(personInfo.getAge());
 
                 childInfoList.add(childInfo);
             } else if (address.equalsIgnoreCase(splitAddress[0])) {
                 OtherPersonInfo otherPersonInfo = new OtherPersonInfo();
 
-                otherPersonInfo.setFirstName(splitName[0]);
-                otherPersonInfo.setLastName(splitName[1]);
+                otherPersonInfo.setFirstName(fullName[0]);
+                otherPersonInfo.setLastName(fullName[1]);
                 otherPersonInfo.setAge(personInfo.getAge());
                 otherPersonInfo.setAddress(splitAddress[0]);
 

@@ -8,10 +8,7 @@ import com.safetynet.alerts.model.Person;
 import com.safetynet.alerts.repository.MedicalRecordRepository;
 import com.safetynet.alerts.repository.PersonRepository;
 import com.safetynet.alerts.service.*;
-import com.safetynet.alerts.view.ChildAlertResponse;
-import com.safetynet.alerts.view.FireResponse;
-import com.safetynet.alerts.view.FloodResponse;
-import com.safetynet.alerts.view.PersonInfo;
+import com.safetynet.alerts.view.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -25,7 +22,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +55,8 @@ class AlertControllerTest {
     private ChildAlertResponseService childAlertResponseService;
     @MockBean
     private PhoneAlertResponseService phoneAlertResponseService;
+    @MockBean
+    private FireStationPersonnelService fireStationPersonnelService;
     @Mock
     private PersonRepository personRepository;
     @Mock
@@ -95,6 +93,7 @@ class AlertControllerTest {
         when(floodResponseService.findFloodResponse(anyList())).thenThrow(new RuntimeException("RuntimeException error"));
         when(childAlertResponseService.findChildAlert(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
         when(phoneAlertResponseService.findPhoneAlert(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
+        when(fireStationPersonnelService.findFireStationPersonnel(anyString())).thenThrow(new RuntimeException("RuntimeException error"));
 
         //getPersonInfo_RuntimeException
         mockMvc.perform(get("/personInfo?firstName=NoName&lastName=NoName"))
@@ -118,6 +117,9 @@ class AlertControllerTest {
 
         //getPhoneAlertResponse
         mockMvc.perform(get("/phoneAlert?firestation=={}"))
+                .andExpect(status().isInternalServerError());
+        //getFireStationPersonnel
+        mockMvc.perform(get("/firestation?stationNumber={}"))
                 .andExpect(status().isInternalServerError());
     }
 
@@ -223,5 +225,38 @@ class AlertControllerTest {
         mockMvc.perform(get("/phoneAlert?firestation=999"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
+    }
+
+    @Test
+    void getFireStationPersonnel() throws Exception {
+        FireStationPersonnel fireStationPersonnel = objectMapper.readValue(new File(TEST_FILE_PATH + "/firestationDir/testExpectedFirePersonnel.json"), FireStationPersonnel.class);
+
+        when(fireStationPersonnelService.findFireStationPersonnel(anyString())).thenReturn(fireStationPersonnel);
+
+        mockMvc.perform(get("/firestation?stationNumber=3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stationNumber").value("3"))
+                .andExpect(jsonPath("$.otherPersonInfoList", hasSize(11)))
+                .andExpect(jsonPath("$.adultCount").value(8))
+                .andExpect(jsonPath("$.childCount").value(3));
+    }
+
+    @Test
+    void getFireStationPersonnel_Non_StationNumber() throws Exception {
+        FireStationPersonnel fireStationPersonnel = FireStationPersonnel.builder()
+                .stationNumber("999")
+                .otherPersonInfoList(new ArrayList<>())
+                .adultCount(0)
+                .childCount(0)
+                .build();
+
+        when(fireStationPersonnelService.findFireStationPersonnel(anyString())).thenReturn(fireStationPersonnel);
+
+        mockMvc.perform(get("/firestation?stationNumber=3"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.stationNumber").value("999"))
+                .andExpect(jsonPath("$.otherPersonInfoList", hasSize(0)))
+                .andExpect(jsonPath("$.adultCount").value(0))
+                .andExpect(jsonPath("$.childCount").value(0));
     }
 }
