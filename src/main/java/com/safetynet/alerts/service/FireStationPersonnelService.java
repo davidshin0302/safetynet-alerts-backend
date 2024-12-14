@@ -9,9 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Service that retrieves personnel information (adult and child counts, and a list of personnel details) for a given fire station.
+ * It uses data from the {@link FireResponseService} to gather resident information.
+ */
 @Slf4j
 @Service
 public class FireStationPersonnelService {
@@ -19,10 +24,9 @@ public class FireStationPersonnelService {
     private FireResponseService fireResponseService;
 
     public FireStationPersonnel findFireStationPersonnel(String stationNumber) {
-        int adultCount;
-        int childCount;
+        int adultCount = 0;
+        int childCount = 0;
         Map<String, FireResponse> fireResponseMap = fireResponseService.getFireResponse();
-        FireStationPersonnel fireStationPersonnel = new FireStationPersonnel();
         List<OtherPersonInfo> otherPersonInfoList = new ArrayList<>();
 
 
@@ -31,31 +35,40 @@ public class FireStationPersonnelService {
 
             if (fireResponse.getFireStationNumber().equalsIgnoreCase(stationNumber)) {
 
-                if (fireStationPersonnel.getStationNumber() == null) {
-                    fireStationPersonnel.setStationNumber(stationNumber);
-                }
-
-                if (fireStationPersonnel.getOtherPersonInfoList() == null) {
-                    fireStationPersonnel.setOtherPersonInfoList(new ArrayList<>());
-                }
-
                 for (Resident resident : residentList) {
-                    String[] splitName = resident.getName().split(" ");
+                    String[] fullName = resident.getName().split(" ");
 
-                    OtherPersonInfo otherPersonInfo = OtherPersonInfo.builder()
-                            .firstName(splitName[0])
-                            .lastName(splitName[1])
-                            .age(resident.getAge())
-                            .address(fireResponse.getAddress())
-                            .build();
-
+                    //Build OtherPersonInfo that contain personnel name, age, address.
+                    OtherPersonInfo otherPersonInfo = buildPersonInfo(fullName, resident, fireResponse.getAddress());
                     otherPersonInfoList.add(otherPersonInfo);
+
+                    //Determine if personnel is adult or child.
+                    if (resident.getAge() >= 18) {
+                        adultCount++;
+                    } else {
+                        childCount++;
+                    }
                 }
             }
         }
-        return null;
+
+        // Sort the list by age (descending - oldest to youngest)
+        otherPersonInfoList.sort(Comparator.comparingInt(resident -> -resident.getAge()));
+
+        return FireStationPersonnel.builder()
+                .stationNumber(stationNumber)
+                .adultCount(adultCount)
+                .childCount(childCount)
+                .otherPersonInfoList(otherPersonInfoList)
+                .build();
     }
 
-    //TODO:: working to create a helper method.
-//    private OtherPersonInfo
+    private OtherPersonInfo buildPersonInfo(String[] fullName, Resident resident, String matchAddress) {
+        return OtherPersonInfo.builder()
+                .firstName(fullName[0])
+                .lastName(fullName[1])
+                .age(resident.getAge())
+                .address(matchAddress)
+                .build();
+    }
 }
