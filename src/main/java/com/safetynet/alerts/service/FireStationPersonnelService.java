@@ -2,14 +2,13 @@ package com.safetynet.alerts.service;
 
 import com.safetynet.alerts.view.FireResponse;
 import com.safetynet.alerts.view.FireStationPersonnel;
-import com.safetynet.alerts.view.OtherPersonInfo;
+import com.safetynet.alerts.view.FireStationPersonnelContact;
 import com.safetynet.alerts.view.Resident;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +26,7 @@ public class FireStationPersonnelService {
         int adultCount = 0;
         int childCount = 0;
         Map<String, FireResponse> fireResponseMap = fireResponseService.getFireResponse();
-        List<OtherPersonInfo> otherPersonInfoList = new ArrayList<>();
+        List<FireStationPersonnelContact> FireStationPersonnelContactList = new ArrayList<>();
 
 
         for (FireResponse fireResponse : fireResponseMap.values()) {
@@ -38,9 +37,9 @@ public class FireStationPersonnelService {
                 for (Resident resident : residentList) {
                     String[] fullName = resident.getName().split(" ");
 
-                    //Build OtherPersonInfo that contain personnel name, age, address.
-                    OtherPersonInfo otherPersonInfo = buildPersonInfo(fullName, resident, fireResponse.getAddress());
-                    otherPersonInfoList.add(otherPersonInfo);
+                    //Build FireStationPersonnelContact that contain personnel name, age, address.
+                    FireStationPersonnelContact FireStationPersonnelContact = buildPersonInfo(fullName, resident, fireResponse.getAddress());
+                    FireStationPersonnelContactList.add(FireStationPersonnelContact);
 
                     //Determine if personnel is adult or child.
                     if (resident.getAge() >= 18) {
@@ -52,22 +51,19 @@ public class FireStationPersonnelService {
             }
         }
 
-        // Sort the list by age (descending - oldest to youngest)
-        otherPersonInfoList.sort(Comparator.comparingInt(resident -> -resident.getAge()));
-
         return FireStationPersonnel.builder()
                 .stationNumber(stationNumber)
                 .adultCount(adultCount)
                 .childCount(childCount)
-                .otherPersonInfoList(otherPersonInfoList)
+                .fireStationPersonnelContacts(FireStationPersonnelContactList)
                 .build();
     }
 
-    private OtherPersonInfo buildPersonInfo(String[] fullName, Resident resident, String matchAddress) {
-        return OtherPersonInfo.builder()
+    private FireStationPersonnelContact buildPersonInfo(String[] fullName, Resident resident, String matchAddress) {
+        return FireStationPersonnelContact.builder()
                 .firstName(fullName[0])
                 .lastName(fullName[1])
-                .age(resident.getAge())
+                .phoneNumber(resident.getPhone())
                 .address(matchAddress)
                 .build();
     }
