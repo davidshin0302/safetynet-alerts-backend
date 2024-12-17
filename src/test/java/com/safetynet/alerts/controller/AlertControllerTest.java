@@ -236,7 +236,7 @@ class AlertControllerTest {
         mockMvc.perform(get("/firestation?stationNumber=3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stationNumber").value("3"))
-                .andExpect(jsonPath("$.otherPersonInfoList", hasSize(11)))
+                .andExpect(jsonPath("$.fireStationPersonnelContacts", hasSize(11)))
                 .andExpect(jsonPath("$.adultCount").value(8))
                 .andExpect(jsonPath("$.childCount").value(3));
     }
@@ -245,7 +245,7 @@ class AlertControllerTest {
     void getFireStationPersonnel_Non_StationNumber() throws Exception {
         FireStationPersonnel fireStationPersonnel = FireStationPersonnel.builder()
                 .stationNumber("999")
-                .otherPersonInfoList(new ArrayList<>())
+                .fireStationPersonnelContacts(new ArrayList<>())
                 .adultCount(0)
                 .childCount(0)
                 .build();
@@ -255,7 +255,7 @@ class AlertControllerTest {
         mockMvc.perform(get("/firestation?stationNumber=3"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.stationNumber").value("999"))
-                .andExpect(jsonPath("$.otherPersonInfoList", hasSize(0)))
+                .andExpect(jsonPath("$.fireStationPersonnelContacts", hasSize(0)))
                 .andExpect(jsonPath("$.adultCount").value(0))
                 .andExpect(jsonPath("$.childCount").value(0));
     }
