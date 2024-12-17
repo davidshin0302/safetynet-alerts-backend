@@ -43,7 +43,7 @@ class FireStationPersonnelServiceTest {
 
         assertNotNull(fireStationPersonnel);
         assertEquals("3", fireStationPersonnel.getStationNumber());
-        assertEquals(11, fireStationPersonnel.getOtherPersonInfoList().size());
+        assertEquals(11, fireStationPersonnel.getFireStationPersonnelContacts().size());
         assertEquals(8, fireStationPersonnel.getAdultCount());
         assertEquals(3, fireStationPersonnel.getChildCount());
     }
@@ -54,7 +54,7 @@ class FireStationPersonnelServiceTest {
 
         assertNotNull(fireStationPersonnel);
         assertEquals("999", fireStationPersonnel.getStationNumber());
-        assertEquals(0, fireStationPersonnel.getOtherPersonInfoList().size());
+        assertEquals(0, fireStationPersonnel.getFireStationPersonnelContacts().size());
         assertEquals(0, fireStationPersonnel.getAdultCount());
         assertEquals(0, fireStationPersonnel.getChildCount());
     }

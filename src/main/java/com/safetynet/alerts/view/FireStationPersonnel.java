@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 public class FireStationPersonnel {
     String stationNumber;
-    List<OtherPersonInfo> otherPersonInfoList;
+    List<FireStationPersonnelContact> fireStationPersonnelContacts;
     int adultCount;
     int childCount;
 }

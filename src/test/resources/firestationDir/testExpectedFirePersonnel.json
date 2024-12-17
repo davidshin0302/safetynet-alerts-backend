@@ -1,6 +1,6 @@
 {
   "stationNumber": "3",
-  "otherPersonInfoList": [
+  "fireStationPersonnelContacts": [
     {
       "firstName": "Ron",
       "lastName": "Peters",
